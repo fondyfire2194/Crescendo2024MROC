@@ -114,12 +114,12 @@ public class SourceAutoCommands {
                                                 new PickupUsingVision(cf,
                                                                 pf.pathMaps.get(sourcepaths.SourceToCenter5
                                                                                 .name()),
-                                                                transfer, intake, swerve, 1.5,
+                                                                transfer, intake, swerve, 1.5, 10,
                                                                 LLPipelines.pipelines.NOTEDET1.ordinal()),
                                                 new PickupUsingVision(cf,
                                                                 pf.pathMaps.get(sourcepaths.SourceToCenter4
                                                                                 .name()),
-                                                                transfer, intake, swerve, 1.5,
+                                                                transfer, intake, swerve, 1.5, 10,
                                                                 LLPipelines.pipelines.NOTEDET1.ordinal()),
                                                 // new RunPPath(swerve,
                                                 // pf.pathMaps.get(sourcepaths.SourceShootToCenter4

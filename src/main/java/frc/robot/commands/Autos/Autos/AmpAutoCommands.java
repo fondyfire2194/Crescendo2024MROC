@@ -122,12 +122,12 @@ public class AmpAutoCommands {
                                                 new PickupUsingVision(cf,
                                                                 pf.pathMaps.get(amppaths.AmpToCenter1
                                                                                 .name()),
-                                                                transfer, intake, swerve, 1.5,
+                                                                transfer, intake, swerve, 1.5,10,
                                                                 LLPipelines.pipelines.NOTEDET1.ordinal()),
                                                 new PickupUsingVision(cf,
                                                                 pf.pathMaps.get(amppaths.AmpToCenter2
                                                                                 .name()),
-                                                                transfer, intake, swerve, 1.5,
+                                                                transfer, intake, swerve, 1.5,10,
                                                                 LLPipelines.pipelines.NOTEDET1.ordinal()),
                                                 () -> innerNoteFirst),
                                 cf.doIntake(2));

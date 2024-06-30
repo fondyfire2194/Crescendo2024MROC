@@ -6,12 +6,10 @@ package frc.robot.commands.Autos.SubwfrStart;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Factories.AutoFactory;
 import frc.robot.Factories.CommandFactory;
@@ -21,8 +19,6 @@ import frc.robot.Factories.PathFactory.sourcepaths;
 import frc.robot.commands.Autos.Autos.CenterToShoot;
 import frc.robot.commands.Autos.Autos.LookForAnotherNote;
 import frc.robot.commands.Autos.Autos.PickupUsingVision;
-import frc.robot.commands.Autos.Autos.SourceAutoCommands;
-import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.commands.Drive.AutoAlignSpeaker;
 import frc.robot.commands.Drive.RotateToAngle;
 import frc.robot.commands.Pathplanner.RunPPath;
@@ -71,7 +67,7 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                                                 new PickupUsingVision(cf,
                                                                 pf.pathMaps.get(sbwfrpaths.Note1ToCenter1Fast
                                                                                 .name()),
-                                                                transfer, intake, swerve, 2.0,
+                                                                transfer, intake, swerve, 2.0,10,
                                                                 LLPipelines.pipelines.NOTEDET1.ordinal()),
 
                                                 cf.doIntake(5)),

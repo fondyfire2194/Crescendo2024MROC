@@ -26,14 +26,17 @@ public class CheckOKSwitchToDrive extends Command {
   private final CommandFactory m_cf;
 
   private final double m_switchoverDistance;
+  private final double m_txtol;
 
   public CheckOKSwitchToDrive(
       SwerveSubsystem swerve,
       CommandFactory cf,
-      double switchOverDistance) {
+      double switchOverDistance,
+      double txtol) {
     m_swerve = swerve;
     m_cf = cf;
     m_switchoverDistance = switchOverDistance;
+    m_txtol = txtol;
   }
 
   // Called when the command is initially scheduled.
@@ -60,8 +63,10 @@ public class CheckOKSwitchToDrive extends Command {
     SmartDashboard.putNumber("RMGDST", m_swerve.remainingdistance);
 
     m_swerve.noteSeen = RobotBase.isReal() && LimelightHelpers.getTV(CameraConstants.rearCamera.camname)
+        && Math.abs(LimelightHelpers.getTX(CameraConstants.rearCamera.camname)) < m_txtol
         && m_swerve.remainingdistance <= m_switchoverDistance;
-        //|| RobotBase.isSimulation() && m_swerve.remainingdistance < m_switchoverDistance / 3;
+    // || RobotBase.isSimulation() && m_swerve.remainingdistance <
+    // m_switchoverDistance / 3;
 
     SmartDashboard.putBoolean("RMGns", m_swerve.noteSeen);
   }

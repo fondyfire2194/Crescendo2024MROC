@@ -27,6 +27,7 @@ public class PickupUsingVision extends SequentialCommandGroup {
                         IntakeSubsystem intake,
                         SwerveSubsystem swerve,
                         double switchoverdistance,
+                        double txtol,
                         int pipelineIndex) {
 
                 addCommands(
@@ -34,7 +35,7 @@ public class PickupUsingVision extends SequentialCommandGroup {
                                                 CameraConstants.rearCamera.camname, pipelineIndex)),
 
                                 Commands.race(
-                                                new CheckOKSwitchToDrive(swerve, cf, switchoverdistance),
+                                                new CheckOKSwitchToDrive(swerve, cf, switchoverdistance, txtol),
 
                                                 new RunPPath(swerve, path)),
 
