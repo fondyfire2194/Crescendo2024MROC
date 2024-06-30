@@ -18,6 +18,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 import frc.robot.utils.AllianceUtil;
+import frc.robot.utils.LLPipelines;
 
 /** Add your docs here. */
 public class SourceAutoCommands {
@@ -25,7 +26,8 @@ public class SourceAutoCommands {
         public SourceAutoCommands(SwerveSubsystem swerve, CommandFactory cf) {
         }
 
-        public Command setSourceStart(SwerveSubsystem swerve, TransferSubsystem transfer, IntakeSubsystem intake, CommandFactory cf) {
+        public Command setSourceStart(SwerveSubsystem swerve, TransferSubsystem transfer, IntakeSubsystem intake,
+                        CommandFactory cf) {
                 return Commands.sequence(
                                 Commands.runOnce(() -> transfer.simnoteatintake = false),
                                 Commands.runOnce(() -> intake.resetIsIntakingSim()),
@@ -87,9 +89,7 @@ public class SourceAutoCommands {
         public Command pickUpNoteAfterShoot(PathFactory pf, CommandFactory cf, SwerveSubsystem swerve,
                         TransferSubsystem transfer, IntakeSubsystem intake, boolean innerNoteFirst) {
 
-                return
-
-                Commands.parallel(
+                return Commands.parallel(
                                 Commands.either(
                                                 new RunPPath(swerve,
                                                                 pf.pathMaps.get(sourcepaths.SourceShootToCenter5
@@ -97,6 +97,33 @@ public class SourceAutoCommands {
                                                 new RunPPath(swerve,
                                                                 pf.pathMaps.get(sourcepaths.SourceShootToCenter4
                                                                                 .name())),
+                                                () -> innerNoteFirst),
+
+                                cf.doIntake(2));
+        }
+
+        public Command pickUpNoteAfterShootVision(PathFactory pf, CommandFactory cf, SwerveSubsystem swerve,
+                        TransferSubsystem transfer, IntakeSubsystem intake, boolean innerNoteFirst) {
+
+                return Commands.parallel(
+                                Commands.either(
+                                                // new RunPPath(swerve,
+                                                // pf.pathMaps.get(sourcepaths.SourceShootToCenter5
+                                                // .name())),
+
+                                                new PickupUsingVision(cf,
+                                                                pf.pathMaps.get(sourcepaths.SourceToCenter5
+                                                                                .name()),
+                                                                transfer, intake, swerve, 1.5,
+                                                                LLPipelines.pipelines.NOTEDET1.ordinal()),
+                                                new PickupUsingVision(cf,
+                                                                pf.pathMaps.get(sourcepaths.SourceToCenter4
+                                                                                .name()),
+                                                                transfer, intake, swerve, 1.5,
+                                                                LLPipelines.pipelines.NOTEDET1.ordinal()),
+                                                // new RunPPath(swerve,
+                                                // pf.pathMaps.get(sourcepaths.SourceShootToCenter4
+                                                // .name())),
                                                 () -> innerNoteFirst),
 
                                 cf.doIntake(2));

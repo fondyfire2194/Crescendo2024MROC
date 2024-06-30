@@ -18,6 +18,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 import frc.robot.utils.AllianceUtil;
+import frc.robot.utils.LLPipelines;
 
 /** Add your docs here. */
 public class AmpAutoCommands {
@@ -109,6 +110,25 @@ public class AmpAutoCommands {
                                                 new RunPPath(swerve,
                                                                 pf.pathMaps.get(amppaths.AmpShootToCenter2
                                                                                 .name())),
+                                                () -> innerNoteFirst),
+                                cf.doIntake(2));
+        }
+
+        public Command pickUpNoteAfterShootVision(PathFactory pf, CommandFactory cf, SwerveSubsystem swerve,
+                        TransferSubsystem transfer, IntakeSubsystem intake, boolean innerNoteFirst) {
+
+                return Commands.parallel(
+                                Commands.either(
+                                                new PickupUsingVision(cf,
+                                                                pf.pathMaps.get(amppaths.AmpToCenter1
+                                                                                .name()),
+                                                                transfer, intake, swerve, 1.5,
+                                                                LLPipelines.pipelines.NOTEDET1.ordinal()),
+                                                new PickupUsingVision(cf,
+                                                                pf.pathMaps.get(amppaths.AmpToCenter2
+                                                                                .name()),
+                                                                transfer, intake, swerve, 1.5,
+                                                                LLPipelines.pipelines.NOTEDET1.ordinal()),
                                                 () -> innerNoteFirst),
                                 cf.doIntake(2));
         }

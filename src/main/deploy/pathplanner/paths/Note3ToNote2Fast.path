@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.754635509271021,
-        "y": 6.896993024755281
+        "x": 2.66,
+        "y": 4.28
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.382681073054455,
-        "y": 7.074597995349838
+        "x": 2.0841042629952553,
+        "y": 4.83414729862635
       },
       "isLocked": false,
-      "linkedName": "Wing 1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.25189859036766,
-        "y": 5.775221672529917
+        "x": 2.813603352325188,
+        "y": 5.553919733431884
       },
       "prevControl": {
-        "x": 7.3342729089624505,
-        "y": 6.100830785286604
+        "x": 1.7533980091656864,
+        "y": 5.777632787493062
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Center 2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 160.62,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "SubWfrQuick",
   "previewStartingState": {
-    "rotation": -138.28167058290114,
+    "rotation": 149.6,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -56,7 +56,7 @@ public class AutoAmpCompleteVisV2 extends SequentialCommandGroup {
                                                 getAnotherNote(swerve, transfer, intake, cf, pf),
                                                 () -> transfer.noteAtIntake()),
 
-                                ampac.pickUpNoteAfterShoot(pf, cf, swerve, transfer, intake,
+                                ampac.pickUpNoteAfterShootVision(pf, cf, swerve, transfer, intake,
                                                 innerNoteFirst),
 
                                 Commands.either(

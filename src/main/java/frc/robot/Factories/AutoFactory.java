@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants;
 import frc.robot.Factories.PathFactory.amppaths;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
 import frc.robot.commands.Autos.AutoStarts.AutoAmpCompleteVisV2;
@@ -17,6 +16,7 @@ import frc.robot.commands.Autos.Autos.AmpAutoCommands;
 import frc.robot.commands.Autos.Autos.CenterToShoot;
 import frc.robot.commands.Autos.Autos.SourceAutoCommands;
 import frc.robot.commands.Autos.SubwfrStart.AutoSbwfrShootThenSequence;
+import frc.robot.commands.Autos.SubwfrStart.AutoSubwr5Note;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.commands.Drive.AutoAlignSpeaker;
 import frc.robot.commands.Pathplanner.RunPPath;
@@ -35,6 +35,7 @@ public class AutoFactory {
         private final LimelightVision m_llv;
 
         private final SubwooferAutoCommands m_sac;
+
         public SendableChooser<Integer> m_subwfrStartChooser = new SendableChooser<Integer>();
 
         public final SendableChooser<Integer> m_ampStartChooser = new SendableChooser<Integer>();
@@ -65,6 +66,8 @@ public class AutoFactory {
 
         private final TransferSubsystem m_transfer;
 
+        private final ArmSubsystem m_arm;
+
         private CommandFactory m_cf;
 
         private SourceAutoCommands m_srcac;
@@ -84,6 +87,7 @@ public class AutoFactory {
                 m_sac = sac;
                 m_srcac = srcac;
                 m_ampac = ampac;
+                m_arm = arm;
                 m_swerve = swerve;
                 m_transfer = transfer;
                 m_intake = intake;
@@ -98,8 +102,9 @@ public class AutoFactory {
                 m_subwfrStartChooser.addOption("W2-C3-SBWFR-W3", 5);
                 m_subwfrStartChooser.addOption("W2-C3-SBWFR-W1", 6);
                 m_subwfrStartChooser.addOption("W2-C3-W2-C3", 7);
+                m_subwfrStartChooser.addOption("W3-W2-W1-C1", 8);
 
-                maxsbwfrauto = 7;
+                maxsbwfrauto = 8;
 
                 minsourceauto = 11;
                 m_sourceStartChooser.setDefaultOption("Not Used", 10);
@@ -234,6 +239,11 @@ public class AutoFactory {
                                                 new AutoAlignSpeaker(m_swerve, 1, true),
                                                 m_sac.shootbydistance(m_cf),
                                                 m_sac.move(sbwfrpaths.Wing2ToCenter3, m_swerve, m_pf));
+
+                        case 8:
+
+                                return new AutoSubwr5Note(m_cf, m_pf, this, m_sac, m_swerve, m_intake, m_transfer,
+                                                m_llv, 1.75, m_arm);
 
                         case 11:
                                 return new AutoSourceCompleteVisV2(m_cf, m_pf, this,
