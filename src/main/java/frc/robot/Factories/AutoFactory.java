@@ -118,14 +118,13 @@ public class AutoFactory {
                 m_ampStartChooser.addOption("C2 then C1", 21);
                 m_ampStartChooser.addOption("C1 then C2", 22);
                 m_ampStartChooser.addOption("W1 then C1", 23);
-                m_ampStartChooser.addOption("W1 then C1", 24);
+                m_ampStartChooser.addOption("W1 then C2", 24);
 
                 maxampauto = 24;
 
                 SmartDashboard.putData("Source Start", m_sourceStartChooser);
                 SmartDashboard.putData("Amp Start", m_ampStartChooser);
                 SmartDashboard.putData("SubwfrStart", m_subwfrStartChooser);
-
         }
 
         // This method is run by an EventLoop in RobotContainer
@@ -227,7 +226,6 @@ public class AutoFactory {
                                                                 m_pf),
                                                 new AutoAlignSpeaker(m_swerve, 1, true),
                                                 m_sac.shootbydistance(m_cf));
-
                         case 7:
                                 return Commands.sequence(
                                                 m_sac.setsbwrstart(m_swerve, m_cf),
@@ -239,19 +237,15 @@ public class AutoFactory {
                                                 new AutoAlignSpeaker(m_swerve, 1, true),
                                                 m_sac.shootbydistance(m_cf),
                                                 m_sac.move(sbwfrpaths.Wing2ToCenter3, m_swerve, m_pf));
-
                         case 8:
-
-                                return new AutoSubwr5Note(m_cf, m_pf, this, m_sac, m_swerve, m_intake, m_transfer,
-                                                m_llv, 1.75, m_arm);
-
+                                return new AutoSubwr5Note(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer,
+                                                m_arm);
                         case 11:
                                 return new AutoSourceCompleteVisV2(m_cf, m_pf, this,
                                                 m_srcac, m_swerve, m_intake, m_transfer, m_llv, 1.75, true);
                         case 12:
                                 return new AutoSourceCompleteVisV2(m_cf, m_pf, this,
                                                 m_srcac, m_swerve, m_intake, m_transfer, m_llv, 1.75, false);
-
                         case 21:
                                 return new AutoAmpCompleteVisV2(m_cf, m_pf, this,
                                                 m_ampac, m_swerve, m_intake, m_transfer, m_llv, true);
@@ -278,7 +272,6 @@ public class AutoFactory {
                                                                 amppaths.Wing1ToCenter2.name()), m_swerve, 3),
                                                 new CenterToShoot(m_cf, m_pf.pathMaps.get(amppaths.Center2ToAmpShoot
                                                                 .name()), m_swerve));
-
                         default:
                                 return Commands.none();
 

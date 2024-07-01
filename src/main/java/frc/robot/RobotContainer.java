@@ -13,6 +13,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -37,6 +38,7 @@ import frc.robot.Factories.PathFactory.sourcepaths;
 import frc.robot.commands.JogClimber;
 import frc.robot.commands.Autos.Autos.AmpAutoCommands;
 import frc.robot.commands.Autos.Autos.SourceAutoCommands;
+import frc.robot.commands.Autos.Autos.TakeLLSnapshot;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.commands.Drive.AlignTargetOdometry;
 import frc.robot.commands.Drive.AlignToNote;
@@ -174,6 +176,8 @@ public class RobotContainer implements Logged {
 
                 SmartDashboard.putData("ClearStickyFaults", this.clearAllStickyFaultsCommand().ignoringDisable(true));
 
+                SmartDashboard.putData("PD", m_pd);
+
                 SmartDashboard.putData("ViewArmShooterData",
                                 new ViewArmShooterByDistance(m_cf, m_sd, m_arm).ignoringDisable(true));
                 SmartDashboard.putData("RotateToNote",
@@ -191,6 +195,8 @@ public class RobotContainer implements Logged {
 
                 SmartDashboard.putData("TrapTuneTo Pref",
                                 new TrapTune(m_swerve));
+                SmartDashboard.putData("TakeSnapshot",
+                                new TakeLLSnapshot("//limelight-frleft"));
 
                 SmartDashboard.putData("Set Robot At 0",
                                 Commands.runOnce(() -> m_swerve.resetPoseEstimator(new Pose2d())));
@@ -293,6 +299,8 @@ public class RobotContainer implements Logged {
                         canivoreCheck.onTrue(Commands.runOnce(() -> logCanivore()));
                 }
 
+               //ela portForwardCameras();
+
         }
 
         public void logCanivore() {
@@ -375,7 +383,7 @@ public class RobotContainer implements Logged {
                 driver.x().onTrue(m_shooter.startShooterCommand(3500, 5));
 
                 // driver.a().and(driver.leftTrigger().negate()).and(driver.rightBumper().negate())
-                //                 .onTrue(m_cf.doAmpShot());
+                // .onTrue(m_cf.doAmpShot());
 
                 driver.povUp().onTrue(m_shooter.increaseRPMCommand(100));
 
@@ -599,6 +607,13 @@ public class RobotContainer implements Logged {
                                 && m_shooter.getTopStickyFaults() != 0 && m_shooter.getBottomStickyFaults() != 0
                                 && m_climber.getLeftStickyFaults() != 0 && m_climber.getRightStickyFaults() != 0
                                 && m_swerve.getModuleStickyFaults() != 0;
+
+        }
+
+        public void portForwardCameras() {
+                for (int port = 5800; port <= 5809; port++) {
+                        PortForwarder.add(port, "limelight.frleft.local", port);
+                }
 
         }
 

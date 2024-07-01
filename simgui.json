@@ -27,6 +27,7 @@
       "/SmartDashboard/SetDriveKP1": "Command",
       "/SmartDashboard/Source Start": "String Chooser",
       "/SmartDashboard/SubwfrStart": "String Chooser",
+      "/SmartDashboard/TakeSnapshot": "Command",
       "/SmartDashboard/TestCan": "Command",
       "/SmartDashboard/TestPaths": "String Chooser",
       "/SmartDashboard/TrapTune": "Command",

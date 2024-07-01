@@ -12,6 +12,7 @@ import com.pathplanner.lib.util.GeometryUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -112,32 +113,36 @@ public class CommandFactory {
         }
 
         public Command positionArmRunShooterByDistance(boolean lob, boolean endAtTargets) {
+                Timer et = new Timer();
                 return new FunctionalCommand(
 
-                                () -> Commands.runOnce(() -> m_transfer.lobbing = lob),
-
+                                () -> Commands.sequence(
+                                                Commands.runOnce(() -> et.start()),
+                                                Commands.runOnce(() -> et.reset()),
+                                                Commands.runOnce(() -> m_transfer.lobbing = lob)),
                                 () -> {
-                                        if (lob) {
-
-                                                double distance = m_swerve.getDistanceFromStage();
-                                                m_shooter.startShooter(
-                                                                Constants.shooterLobRPMMap.get(
-                                                                                distance));
-                                                m_arm.setTolerance(ArmConstants.angleTolerance);
-                                                m_arm.setTarget(getLobArmAngleFromTarget(
-                                                                distance));
-                                        } else {
-
-                                                m_swerve.targetdistance = m_swerve.getDistanceFromTarget(false,
-                                                                false);
-                                                m_shooter.startShooter(
-                                                                m_sd.shooterRPMMap.get(m_swerve.targetdistance));
-                                                m_arm.setTolerance(ArmConstants.angleTolerance);
-                                                m_arm.setTarget(m_sd.armAngleMap.get(m_swerve.targetdistance));
+                                        if (et.hasElapsed(.25)) {
+                                                if (lob) {
+                                                        double stageDistance = m_swerve.getDistanceFromStage();
+                                                        double lobDistance = m_swerve.getDistanceFromLobTarget();
+                                                        m_shooter.startShooter(
+                                                                        Constants.shooterLobRPMMap.get(
+                                                                                        lobDistance));
+                                                        m_arm.setTolerance(ArmConstants.angleTolerance);
+                                                        m_arm.setTarget(getLobArmAngleFromTarget(
+                                                                        stageDistance));
+                                                } else {
+                                                        m_swerve.targetdistance = m_swerve.getDistanceFromSpeaker();
+                                                        m_shooter.startShooter(
+                                                                        m_sd.shooterRPMMap
+                                                                                        .get(m_swerve.targetdistance));
+                                                        m_arm.setTolerance(ArmConstants.angleTolerance);
+                                                        m_arm.setTarget(m_sd.armAngleMap.get(m_swerve.targetdistance));
+                                                }
                                         }
                                 },
 
-                                (interrupted) -> Commands.none(),
+                                (interrupted) -> et.reset(),
 
                                 () -> endAtTargets && m_arm.getAtSetpoint() && m_shooter.bothAtSpeed(5));
         }
@@ -200,17 +205,18 @@ public class CommandFactory {
 
         public Command rumbleCommand(CommandXboxController controller) {
                 return Commands.run(() -> {
-                        if (m_swerve.getOnTarget())
+                        if (m_swerve.alignedToTarget && m_arm.getAtSetpoint() && m_shooter.bothAtSpeed(10))
                                 controller.getHID().setRumble(RumbleType.kLeftRumble, 1.0);
                         else
                                 controller.getHID().setRumble(RumbleType.kLeftRumble, 0.0);
 
-                        if (m_transfer.noteAtIntake())
+                        if (m_transfer.noteAtIntake() || m_intake.getAmps() > ArmConstants.noteAtIntakeAmps)
                                 controller.getHID().setRumble(RumbleType.kRightRumble, 1.0);
                         else
                                 controller.getHID().setRumble(RumbleType.kRightRumble, 0.0);
 
-                }).finallyDo(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.0));
+                })
+                                .finallyDo(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.0));
         }
 
         public Command setStartPosebyAlliance(Pose2d startPose) {

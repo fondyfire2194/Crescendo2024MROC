@@ -199,8 +199,6 @@ public class Robot extends TimedRobot implements Logged {
 
     }
 
-    m_robotContainer.m_arm.enable();
-    m_robotContainer.m_arm.enableArm = true;
 
     LimelightHelpers.setPipelineIndex(CameraConstants.frontLeftCamera.camname,
         LLPipelines.pipelines.APRILTAGALL0.ordinal());
@@ -270,8 +268,7 @@ public class Robot extends TimedRobot implements Logged {
     m_robotContainer.m_arm.armMotor.setIdleMode(IdleMode.kBrake);
 
     m_robotContainer.m_swerve.setIdleMode(true);
-    m_robotContainer.m_arm.enable();
-    m_robotContainer.m_arm.enableArm = true;
+   
     m_robotContainer.m_arm.setGoal(m_robotContainer.m_arm.getAngleRadians());
 
     m_robotContainer.m_shooter.stopMotors();

@@ -4,6 +4,8 @@
 
 package frc.robot.commands.Autos.SubwfrStart;
 
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
@@ -56,9 +58,7 @@ public class SubwooferAutoCommands {
         public Command shootbydistance(CommandFactory cf) {
                 return Commands.sequence(
                                 cf.positionArmRunShooterByDistance(false, true),
-
-                                shoot(cf));
-        }
+                                shoot(cf));        }
 
         public Command move(sbwfrpaths path, SwerveSubsystem swerve, PathFactory pf) {
                 return new RunPPath(swerve, pf.pathMaps.get(path.name()));
@@ -99,6 +99,17 @@ public class SubwooferAutoCommands {
                                 Commands.sequence(
                                                 Commands.waitSeconds(.25),
                                                 cf.doIntake(10)));
+        }
+
+         Command runPathPickupAndShoot(PathPlannerPath path, SwerveSubsystem swerve, ArmSubsystem arm, CommandFactory cf,
+                        PathFactory pf) {
+                return Commands.sequence(
+                                Commands.parallel(
+                                                new RunPPath(swerve, path), 
+                                                cf.doIntake(5)),
+
+                                cf.positionArmRunShooterByDistance(false, true), // might need delay
+                                cf.transferNoteToShooterCommand());
         }
 
 }

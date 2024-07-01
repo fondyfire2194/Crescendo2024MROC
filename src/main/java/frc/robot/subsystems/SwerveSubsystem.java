@@ -89,8 +89,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   SwerveModuleState[] xLockStates = new SwerveModuleState[4];
   public SwerveModuleState[] wheelsAlignedStates = new SwerveModuleState[4];
 
-  private boolean onTarget;
-
   double xlim = Units.inchesToMeters(12);
   double ylim = Units.inchesToMeters(12);
   double deglim = Units.degreesToRadians(5);
@@ -127,7 +125,10 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   public boolean mod3connected;
 
   // Average will be taken over the last 5 samples
-  LinearFilter distanceFilter = LinearFilter.movingAverage(5);
+  LinearFilter speakerDistanceFilter = LinearFilter.movingAverage(10);// was 5
+  LinearFilter stageDistanceFilter = LinearFilter.movingAverage(10);// was 5
+  LinearFilter lobDistanceFilter = LinearFilter.movingAverage(10);// was 5
+  LinearFilter noteDistanceFilter = LinearFilter.movingAverage(10);// was 5
 
   public SwerveSubsystem() {
 
@@ -461,14 +462,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     return states;
   }
 
-  public boolean getOnTarget() {
-    return onTarget;
-  }
-
-  public void setOnTarget(boolean on) {
-    onTarget = on;
-  }
-
   public void zeroGyro() {
     gyro.reset();
     updateKeepAngle();
@@ -479,7 +472,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     if (RobotBase.isReal())
       return gyro.getRotation2d();
     else
-
       return simOdometryPose.getRotation();
   }
 
@@ -590,8 +582,8 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
 
   @Log.NT(key = "spkrDistMtrs")
   public double getDistanceFromSpeaker() {
-    return round2dp(AllianceUtil.getSpeakerPose().getTranslation()
-        .getDistance(getPose().getTranslation()), 2);
+    return round2dp(speakerDistanceFilter.calculate(AllianceUtil.getSpeakerPose().getTranslation()
+        .getDistance(getPose().getTranslation())), 2);
   }
 
   public double getDistanceFromSpeakerFt() {
@@ -600,32 +592,23 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
 
   @Log.NT(key = "lobDistMtrs")
   public double getDistanceFromLobTarget() {
-    return round2dp(AllianceUtil.getLobPose().getTranslation()
-        .getDistance(getPose().getTranslation()), 2);
+    return round2dp(lobDistanceFilter.calculate(AllianceUtil.getLobPose().getTranslation()
+        .getDistance(getPose().getTranslation())), 2);
   }
 
   @Log.NT(key = "stageDistMtrs")
   public double getDistanceFromStage() {
-    return round2dp(AllianceUtil.getStagePose().getTranslation()
-        .getDistance(getPose().getTranslation()), 2);
+    return round2dp(stageDistanceFilter.calculate(AllianceUtil.getStagePose().getTranslation()
+        .getDistance(getPose().getTranslation())), 2);
   }
 
-  public double getDistanceFromTarget(boolean lob, boolean virtual) {
-    if (!virtual) {
-      if (lob)
-        return round2dp(distanceFilter.calculate(AllianceUtil.getLobPose().getTranslation()
-            .getDistance(getPose().getTranslation())), 2);
-      else
-        return round2dp(distanceFilter.calculate(AllianceUtil.getSpeakerPose().getTranslation()
-            .getDistance(getPose().getTranslation())), 2);
-
-    } else
+  public double getDistanceFromVirtual() {    
       return round2dp(virtualPose.getTranslation()
           .getDistance(getPose().getTranslation()), 2);
   }
 
   public double getDistanceFromNote(int number) {
-    return round2dp(distanceFilter.calculate(FieldConstants.centerNotes[number].getTranslation()
+    return round2dp(noteDistanceFilter.calculate(FieldConstants.centerNotes[number].getTranslation()
         .getDistance(getPose().getTranslation())), 2);
   }
 

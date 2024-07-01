@@ -107,10 +107,6 @@ public class SourceAutoCommands {
 
                 return Commands.parallel(
                                 Commands.either(
-                                                // new RunPPath(swerve,
-                                                // pf.pathMaps.get(sourcepaths.SourceShootToCenter5
-                                                // .name())),
-
                                                 new PickupUsingVision(cf,
                                                                 pf.pathMaps.get(sourcepaths.SourceToCenter5
                                                                                 .name()),
@@ -121,9 +117,6 @@ public class SourceAutoCommands {
                                                                                 .name()),
                                                                 transfer, intake, swerve, 1.5, 10,
                                                                 LLPipelines.pipelines.NOTEDET1.ordinal()),
-                                                // new RunPPath(swerve,
-                                                // pf.pathMaps.get(sourcepaths.SourceShootToCenter4
-                                                // .name())),
                                                 () -> innerNoteFirst),
 
                                 cf.doIntake(2));

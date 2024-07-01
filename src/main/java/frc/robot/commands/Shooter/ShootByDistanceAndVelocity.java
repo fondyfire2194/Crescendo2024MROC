@@ -96,7 +96,7 @@ public class ShootByDistanceAndVelocity extends Command {
 
     if (m_swerve.isStopped()) {
       firstPass = true;
-      distance = m_swerve.getDistanceFromTarget(false, false);
+      distance = m_swerve.getDistanceFromSpeaker();
       SmartDashboard.putNumber("SWM/NoteVel", noteVelocity);
       m_shooter.startShooter(m_sd.shooterRPMMap.get(distance));
       m_arm.setGoal(m_sd.armAngleMap.get(distance));
@@ -107,7 +107,7 @@ public class ShootByDistanceAndVelocity extends Command {
     else {
 
       if (firstPass) {
-        distance = m_swerve.getDistanceFromTarget(false, false);
+        distance = m_swerve.getDistanceFromSpeaker();
         shotTime = m_sd.shotTimeMap.get(distance);
         noteVelocity = distance / shotTime;
         firstPass = false;
@@ -151,11 +151,11 @@ public class ShootByDistanceAndVelocity extends Command {
 
         m_swerve.virtualPose = new Pose2d(virtualT2d, speakerPose.getRotation());
 
-        distance = m_swerve.getDistanceFromTarget(false, true);
+        distance = m_swerve.getDistanceFromVirtual();
       }
 
       else
-        distance = m_swerve.getDistanceFromTarget(false, false);
+        distance = m_swerve.getDistanceFromVirtual();
 
       shotTime = m_sd.shotTimeMap.get(distance);
       noteVelocity = distance / shotTime;

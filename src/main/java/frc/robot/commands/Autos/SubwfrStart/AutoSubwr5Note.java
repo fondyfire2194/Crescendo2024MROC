@@ -36,13 +36,10 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
         public AutoSubwr5Note(
                         CommandFactory cf,
                         PathFactory pf,
-                        AutoFactory af,
                         SubwooferAutoCommands sac,
                         SwerveSubsystem swerve,
                         IntakeSubsystem intake,
                         TransferSubsystem transfer,
-                        LimelightVision llv,
-                        double switchoverdistance,
                         ArmSubsystem arm) {
 
                 addCommands( // note
@@ -53,55 +50,31 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                                                                 Constants.subwfrShooterSpeed, 20)),
                                 cf.transferNoteToShooterCommand(),
 
-                                runPathPickupAndShoot(pf.pathMaps.get(sbwfrpaths.SubToNote3Fast.name()), swerve, arm,
+                                sac.runPathPickupAndShoot(pf.pathMaps.get(sbwfrpaths.SubToNote3Fast.name()), swerve,
+                                                arm,
                                                 cf, pf),
 
-                                runPathPickupAndShoot(pf.pathMaps.get(sbwfrpaths.Note3ToNote2Fast.name()), swerve, arm,
+                                sac.runPathPickupAndShoot(pf.pathMaps.get(sbwfrpaths.Note3ToNote2Fast.name()), swerve,
+                                                arm,
                                                 cf, pf),
 
-                                runPathPickupAndShoot(pf.pathMaps.get(sbwfrpaths.Note2ToNote1Fast.name()), swerve, arm,
+                                sac.runPathPickupAndShoot(pf.pathMaps.get(sbwfrpaths.Note2ToNote1Fast.name()), swerve,
+                                                arm,
                                                 cf, pf),
 
                                 Commands.parallel(
-
                                                 new PickupUsingVision(cf,
                                                                 pf.pathMaps.get(sbwfrpaths.Note1ToCenter1Fast
                                                                                 .name()),
-                                                                transfer, intake, swerve, 2.0,10,
+                                                                transfer, intake, swerve, 2.0, 10,
                                                                 LLPipelines.pipelines.NOTEDET1.ordinal()),
 
                                                 cf.doIntake(5)),
 
-                                //Commands.either(
                                 new CenterToShoot(cf,
                                                 pf.pathMaps.get(sbwfrpaths.Center1ToShootFast
                                                                 .name()),
-                                                swerve)
-                                //getAnotherNote(swerve, transfer, intake, cf, pf),
-                               // () -> false)//transfer.noteAtIntake())
-
-                                 // This would pickup from center
-
-                // if note in intake go shoot it or try to find one
-
-                // Commands.either(
-                // srcac.moveShootCenter4_5(cf, pf, swerve, !innerNoteFirst),
-                // getAnotherNote(swerve, transfer, intake, cf, pf),
-                // () -> transfer.noteAtIntake()));
-                );
-        }
-
-        Command runPathPickupAndShoot(PathPlannerPath path, SwerveSubsystem swerve, ArmSubsystem arm, CommandFactory cf,
-                        PathFactory pf) {
-                return Commands.sequence(
-
-                                Commands.parallel(
-                                                new RunPPath(swerve, path), 
-                                                cf.doIntake(5)),
-
-                                cf.positionArmRunShooterByDistance(false, true), // might need delay
-                                cf.transferNoteToShooterCommand());
-
+                                                swerve));
         }
 
         Command getAnotherNote(SwerveSubsystem swerve, TransferSubsystem transfer, IntakeSubsystem intake,
@@ -136,19 +109,4 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                                                 () -> transfer.noteAtIntake()));
         }
 
-        // public Command tryOtherNote(PathFactory pf, CommandFactory cf,
-        // SwerveSubsystem swerve,
-        // TransferSubsystem transfer, boolean innerNoteFirst) {
-        // return Commands.sequence(
-        // Commands.parallel(
-        // Commands.either(
-        // new RunPPath(swerve,
-        // pf.pathMaps.get(sourcepaths.Center5ToCenter4
-        // .name())),
-        // new RunPPath(swerve,
-        // pf.pathMaps.get(sourcepaths.Center4ToCenter5
-        // .name())),
-        // () -> innerNoteFirst),
-        // cf.doIntake(2)));
-        // }
 }
