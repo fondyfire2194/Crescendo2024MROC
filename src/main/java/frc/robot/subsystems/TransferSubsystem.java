@@ -39,7 +39,7 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
   public boolean simnoteatintake;
   public boolean skipFirstNoteInSim;
   public boolean skipSecondNoteInSim;
-  public boolean skipThirdNoteInSim;  
+  public boolean skipThirdNoteInSim;
   @Log.NT(key = "lobbing")
   public boolean lobbing;
   @Log.NT(key = "shootmoving")
@@ -48,7 +48,6 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
   @Log.NT(key = "okshootmoving")
   public boolean OKShootMoving;
   public boolean logShot;
- 
 
   /** Creates a new transfer. */
   public TransferSubsystem() {
@@ -74,8 +73,7 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
     // encoder.setVelocityConversionFactor(TransferConstants.transferConversionVelocityFactor);
     // encoder.setPositionConversionFactor(TransferConstants.transferConversionPositionFactor);
     motor.enableVoltageCompensation(TransferConstants.voltageComp);
-    // motor.setOpenLoopRampRate(1);
-    // motor.setClosedLoopRampRate(1);
+    motor.setClosedLoopRampRate(1);
     motor.burnFlash();
     encoder.setPosition(0.0);
   }
@@ -126,7 +124,7 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
 
   public void runToSensor() {
     enableLimitSwitch(true);
-   
+
     // commandrpm=Pref.getPref("TransferIntakingSpeed");
     commandrpm = TransferConstants.intakingSpeed;
     runAtVelocity(commandrpm);

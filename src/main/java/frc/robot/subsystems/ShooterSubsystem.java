@@ -57,8 +57,6 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   public boolean topMotorConnected;
   public boolean bottomMotorConnected;
 
-  
-
   /** Creates a new Shooter. */
   public ShooterSubsystem() {
 
@@ -92,7 +90,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     encoder.setAverageDepth(4);
     encoder.setMeasurementPeriod(32);
     motor.enableVoltageCompensation(Constants.ShooterConstants.voltageComp);
-
+    motor.setClosedLoopRampRate(1);
     motor.burnFlash();
     encoder.setPosition(0.0);
   }
@@ -203,11 +201,9 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     return bottomCommandRPM != 0 && Math.abs(bottomCommandRPM - getRPMBottom()) < bottomCommandRPM * pct / 100;
   }
 
-  
   public double getTopRPMError() {
     return topCommandRPM - getRPMTop();
   }
-
 
   public double getBottomRPMError() {
     return bottomCommandRPM - getRPMBottom();
@@ -324,7 +320,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
 
   public void setBottomKpKdKi() {
-    bottomController.setFF(Constants.ShooterConstants.bottomShooterKFF,0);
+    bottomController.setFF(Constants.ShooterConstants.bottomShooterKFF, 0);
     bottomController.setP(ShooterConstants.bottomShooterKP, 0);// (Pref.getPref("ShooterBottomKp"), 0);
     bottomController.setD(ShooterConstants.bottomShooterKD, 0);// (Pref.getPref("ShooterBottomKd"), 0);
     bottomController.setI(ShooterConstants.bottomShooterKI, 0);// (Pref.getPref("ShooterBottomKi"), 0);

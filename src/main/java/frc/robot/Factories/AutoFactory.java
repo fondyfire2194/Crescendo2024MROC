@@ -261,7 +261,7 @@ public class AutoFactory {
                                                 m_ampac.pickupNote(m_cf, m_pf.pathMaps.get(
                                                                 amppaths.Wing1ToCenter1.name()), m_swerve, 3),
                                                 new CenterToShoot(m_cf, m_pf.pathMaps.get(amppaths.Center1ToAmpShoot
-                                                                .name()), m_swerve));
+                                                                .name()), m_swerve, false));
                         case 24:
                                 return Commands.sequence(
                                                 m_ampac.setAmpStart(m_swerve, m_transfer, m_intake, m_cf),
@@ -271,7 +271,7 @@ public class AutoFactory {
                                                 m_ampac.pickupNote(m_cf, m_pf.pathMaps.get(
                                                                 amppaths.Wing1ToCenter2.name()), m_swerve, 3),
                                                 new CenterToShoot(m_cf, m_pf.pathMaps.get(amppaths.Center2ToAmpShoot
-                                                                .name()), m_swerve));
+                                                                .name()), m_swerve, false));
                         default:
                                 return Commands.none();
 

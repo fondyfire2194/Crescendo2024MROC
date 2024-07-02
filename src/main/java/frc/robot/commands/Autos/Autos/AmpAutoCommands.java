@@ -92,10 +92,10 @@ public class AmpAutoCommands {
                 return Commands.either(
                                 new CenterToShoot(cf, pf.pathMaps.get(amppaths.Center2ToAmpShoot
                                                 .name()),
-                                                swerve),
+                                                swerve,false),
                                 new CenterToShoot(cf, pf.pathMaps.get(amppaths.Center1ToAmpShoot
                                                 .name()),
-                                                swerve),
+                                                swerve,false),
                                 () -> innerNoteFirst);
         }
 

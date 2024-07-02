@@ -79,10 +79,10 @@ public class SourceAutoCommands {
                                 new CenterToShoot(cf, pf.pathMaps.get(
                                                 sourcepaths.Center4ToSourceShoot
                                                                 .name()),
-                                                swerve),
+                                                swerve,true),
                                 new CenterToShoot(cf, pf.pathMaps.get(sourcepaths.Center5ToSourceShoot
                                                 .name()),
-                                                swerve),
+                                                swerve,true),
                                 () -> innerNoteFirst);
         }
 

@@ -547,7 +547,7 @@ public final class Constants {
                 public static final double bottomShooterKFF = 1.0 / maxShooterMotorRPM;
                 public static final double voltageComp = 12;
                 public static final IdleMode shooterIdleMode = IdleMode.kBrake;
-                public static final int shooterContinuousCurrentLimit = 40;
+                public static final int shooterContinuousCurrentLimit = 50;
 
                 public static double baseRunVelocity = 1500;
                 public static double velocityTolerance = .05;
@@ -573,8 +573,8 @@ public final class Constants {
         public static double autoShootArmAngle = 60;// degrees
         public static double autoShootRPM = 3000;// rpm
 
-        public static double sourceShootAngle = 20; // 26
-        public static double sourceShootSpeed = 3800; // 4000
+        public static double sourceShootAngle = 27; 
+        public static double sourceShootSpeed = 3650; // 4000
 
         public static double ampShootAngle = 20; // 26
         public static double ampShootSpeed = 3800; // 4000

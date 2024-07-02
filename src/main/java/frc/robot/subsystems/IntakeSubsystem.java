@@ -58,6 +58,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     encoder.setVelocityConversionFactor(Constants.IntakeConstants.intakeConversionVelocityFactor);
     encoder.setPositionConversionFactor(Constants.IntakeConstants.intakeConversionPositionFactor);
     motor.enableVoltageCompensation(Constants.IntakeConstants.voltageComp);
+    motor.setClosedLoopRampRate(2);
     motor.burnFlash();
     encoder.setPosition(0.0);
   }
