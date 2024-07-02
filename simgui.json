@@ -111,6 +111,9 @@
       "open": false
     },
     "transitory": {
+      "LiveWindow": {
+        "open": true
+      },
       "Preferences": {
         "open": true
       },

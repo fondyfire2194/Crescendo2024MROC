@@ -17,8 +17,8 @@ import frc.robot.commands.Autos.Autos.CenterToShoot;
 import frc.robot.commands.Autos.Autos.SourceAutoCommands;
 import frc.robot.commands.Autos.SubwfrStart.AutoSbwfrShootThenSequence;
 import frc.robot.commands.Autos.SubwfrStart.AutoSubwr5Note;
+import frc.robot.commands.Autos.SubwfrStart.AutoSubwrCenter3;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
-import frc.robot.commands.Drive.AutoAlignSpeaker;
 import frc.robot.commands.Pathplanner.RunPPath;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -99,10 +99,11 @@ public class AutoFactory {
                 m_subwfrStartChooser.addOption("W2-W3-W1", 2);
                 m_subwfrStartChooser.addOption("W2-W3", 3);
                 m_subwfrStartChooser.addOption("W2-W1", 4);
-                m_subwfrStartChooser.addOption("W2-C3-SBWFR-W3", 5);
-                m_subwfrStartChooser.addOption("W2-C3-SBWFR-W1", 6);
-                m_subwfrStartChooser.addOption("W2-C3-W2-C3", 7);
-                m_subwfrStartChooser.addOption("W3-W2-W1-C1", 8);
+                m_subwfrStartChooser.addOption("W2-C3-SBWFR-W3 SRC", 5);
+                m_subwfrStartChooser.addOption("W2-C3-SBWFR-W1 SRC", 6);
+                m_subwfrStartChooser.addOption("W2-C3-SBWFR-W3 AMP", 7);
+                m_subwfrStartChooser.addOption("W2-C3-SBWFR-W1 AMP", 8);
+                m_subwfrStartChooser.addOption("W3-W2-W1-C1", 9);
 
                 maxsbwfrauto = 8;
 
@@ -199,45 +200,22 @@ public class AutoFactory {
                                                 sbwfrpaths.SubwfrShootToWing1, sbwfrpaths.Wing1ToSubwfrShoot);
 
                         case 5:
-                                return Commands.sequence(
-                                                m_sac.setsbwrstart(m_swerve, m_cf),
-                                                m_sac.sbwfrShoot(m_cf),
-                                                m_sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing2, m_swerve, m_cf,
-                                                                m_pf),
-                                                m_sac.shootbydistance(m_cf),
-                                                m_sac.moveAndPickup(sbwfrpaths.Wing2ToCenter3, m_swerve, m_cf, m_pf),
-                                                m_sac.sbwfrmoveandshoot(sbwfrpaths.Center3ToSubwfrShoot, m_swerve, m_cf,
-                                                                m_pf),
-                                                m_sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing3Shoot, m_swerve, m_cf,
-                                                                m_pf),
-                                                new AutoAlignSpeaker(m_swerve, 1, true),
-                                                m_sac.shootbydistance(m_cf));
+                                return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
+                                                true, true);
 
                         case 6:
-                                return Commands.sequence(
-                                                m_sac.setsbwrstart(m_swerve, m_cf),
-                                                m_sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing2, m_swerve, m_cf,
-                                                                m_pf),
-                                                m_sac.shootbydistance(m_cf),
-                                                m_sac.moveAndPickup(sbwfrpaths.Wing2ToCenter3, m_swerve, m_cf, m_pf),
-                                                m_sac.sbwfrmoveandshoot(sbwfrpaths.Center3ToSubwfrShoot, m_swerve, m_cf,
-                                                                m_pf),
-                                                m_sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing1Shoot, m_swerve, m_cf,
-                                                                m_pf),
-                                                new AutoAlignSpeaker(m_swerve, 1, true),
-                                                m_sac.shootbydistance(m_cf));
+                                return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
+                                                false, true);
+
                         case 7:
-                                return Commands.sequence(
-                                                m_sac.setsbwrstart(m_swerve, m_cf),
-                                                m_sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing2, m_swerve, m_cf,
-                                                                m_pf),
-                                                m_sac.shootbydistance(m_cf),
-                                                m_sac.moveAndPickup(sbwfrpaths.Wing2ToCenter3, m_swerve, m_cf, m_pf),
-                                                m_sac.move(sbwfrpaths.Center3ToWing2, m_swerve, m_pf),
-                                                new AutoAlignSpeaker(m_swerve, 1, true),
-                                                m_sac.shootbydistance(m_cf),
-                                                m_sac.move(sbwfrpaths.Wing2ToCenter3, m_swerve, m_pf));
+                                return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
+                                                true, false);
+
                         case 8:
+                                return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
+                                                false, false);
+
+                        case 9:
                                 return new AutoSubwr5Note(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer,
                                                 m_arm);
                         case 11:

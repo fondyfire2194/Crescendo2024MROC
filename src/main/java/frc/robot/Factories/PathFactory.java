@@ -55,7 +55,7 @@ public class PathFactory {
         Center3ToWing2,
         Center3ToAmpShoot,
         Wing1ToCenter1,
-        Wing1ToCenter2,        
+        Wing1ToCenter2,
         StageClearToAmpShoot;
     }
 
@@ -134,7 +134,9 @@ public class PathFactory {
         Center1ToShootFast,
         TEST3,
         TEST3Curve,
-        TEST0
+        TEST0,
+        StageClearToAmpShoot,
+        StageClearToSourceShoot;
     }
 
     public boolean checkSbwfrFilesExist() {

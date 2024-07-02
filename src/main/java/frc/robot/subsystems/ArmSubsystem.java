@@ -178,8 +178,6 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
             setGoal(armAngleRads);
         }
 
-        SmartDashboard.putNumber("Arm/MotorEncoder", armEncoder.getPosition());
-
         checkCancoderCounter++;
         if (checkCancoderCounter == 10) {
             cancoderconnected = RobotBase.isSimulation() || checkCancoderCanOK();
@@ -243,7 +241,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     @Override
     protected void useOutput(double output, State goalState) {
         if (isEnabled() && enableArm) {
-            pidout = pid.calculate(armAngleRads, getController().getSetpoint().position);
+            pidout = pid.calculate(getAngleRadians(), getController().getSetpoint().position);
             acceleration = (getController().getSetpoint().velocity - lastSpeed)
                     / (Timer.getFPGATimestamp() - lastTime);
         } else {
@@ -280,7 +278,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     @Override
     protected double getMeasurement() {
-        return armAngleRads;
+        return getAngleRadians();
     }
 
     public void resetController() {
@@ -299,14 +297,10 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
         setGoal(anglerads);
     }
 
-    // public Command setGoalCommand(double anglerads) {
-    // return Commands.sequence(
-    // Commands.runOnce(() -> setTarget(anglerads)),
-    // Commands.either(
-    // Commands.runOnce(() -> enable()),
-    // Commands.none(),
-    // () -> isEnabled()));
-    // }
+    @Log.NT(key = "armmotorposition")
+    public double getMotorEncoderAngleRadians() {
+        return armEncoder.getPosition();
+    }
 
     public Command setGoalCommand(double angleRads) {
         return Commands.sequence(
@@ -495,10 +489,10 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     }
 
     public double getCanCoderRad() {
-        double temp = (armCancoder.getAbsolutePosition().getValueAsDouble()
-                * Math.PI) + ArmConstants.cancoderOffsetRadiansAtCalibration;
-        if (temp > Math.PI)
-            temp = temp - Math.PI;
+        double temp = armCancoder.getAbsolutePosition().getValueAsDouble();
+        if (temp > 1)
+            temp -= 1;
+        temp *= (Math.PI) + ArmConstants.cancoderOffsetRadiansAtCalibration;
         return temp;
     }
 

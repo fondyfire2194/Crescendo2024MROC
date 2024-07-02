@@ -38,7 +38,6 @@ import frc.robot.Factories.PathFactory.sourcepaths;
 import frc.robot.commands.JogClimber;
 import frc.robot.commands.Autos.Autos.AmpAutoCommands;
 import frc.robot.commands.Autos.Autos.SourceAutoCommands;
-import frc.robot.commands.Autos.Autos.TakeLLSnapshot;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.commands.Drive.AlignTargetOdometry;
 import frc.robot.commands.Drive.AlignToNote;
@@ -178,25 +177,24 @@ public class RobotContainer implements Logged {
 
                 SmartDashboard.putData("PD", m_pd);
 
-                SmartDashboard.putData("ViewArmShooterData",
-                                new ViewArmShooterByDistance(m_cf, m_sd, m_arm).ignoringDisable(true));
-                SmartDashboard.putData("RotateToNote",
-                                new RotateToFindNote(m_swerve, 45));
-                SmartDashboard.putData("AlignToNote",
-                                new AutoAlignNote(m_swerve, 1, false));
+                // SmartDashboard.putData("ViewArmShooterData",
+                //                 new ViewArmShooterByDistance(m_cf, m_sd, m_arm).ignoringDisable(true));
+                // SmartDashboard.putData("RotateToNote",
+                //                 new RotateToFindNote(m_swerve, 45));
+                // SmartDashboard.putData("AlignToNote",
+                //                 new AutoAlignNote(m_swerve, 1, false));
 
                 SmartDashboard.putData("PP 5metersX",
                                 m_cf.autopathfind(new Pose2d(), 0, 0));
 
-                SmartDashboard.putData("RunTestPickupAndShoot",
-                                new MovePickupShootTest(m_cf, m_swerve, m_arm, m_transfer, m_intake, m_shooter, m_sd,
-                                                CameraConstants.rearCamera.camname,
-                                                4));
+                // SmartDashboard.putData("RunTestPickupAndShoot",
+                //                 new MovePickupShootTest(m_cf, m_swerve, m_arm, m_transfer, m_intake, m_shooter, m_sd,
+                //                                 CameraConstants.rearCamera.camname,
+                //                                 4));
 
-                SmartDashboard.putData("TrapTuneTo Pref",
-                                new TrapTune(m_swerve));
-                SmartDashboard.putData("TakeSnapshot",
-                                new TakeLLSnapshot("//limelight-frleft"));
+                // SmartDashboard.putData("TrapTuneTo Pref",
+                //                 new TrapTune(m_swerve));
+               
 
                 SmartDashboard.putData("Set Robot At 0",
                                 Commands.runOnce(() -> m_swerve.resetPoseEstimator(new Pose2d())));
