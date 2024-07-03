@@ -27,7 +27,6 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                         SubwooferAutoCommands sac,
                         SwerveSubsystem swerve,
                         IntakeSubsystem intake,
-                        TransferSubsystem transfer,
                         ArmSubsystem arm) {
 
                 addCommands( // note
@@ -39,22 +38,22 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                                 cf.transferNoteToShooterCommand(),
 
                                 sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.SubToNote3Fast.name()),
-                                                swerve, transfer, arm,
+                                                swerve, arm,
                                                 cf, pf, 1),
 
                                 sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.Note3ToNote2Fast.name()),
-                                                swerve, transfer, arm,
+                                                swerve, arm,
                                                 cf, pf, 1),
 
                                 sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.Note2ToNote1Fast.name()),
-                                                swerve, transfer, arm,
+                                                swerve, arm,
                                                 cf, pf, 1),
 
                                 Commands.parallel(
                                                 new PickupUsingVision(cf,
                                                                 pf.pathMaps.get(sbwfrpaths.Note1ToCenter1Fast
                                                                                 .name()),
-                                                                transfer, intake, swerve, 2.0, 10,
+                                                        null, intake, swerve, 2.0, 10,
                                                                 LLPipelines.pipelines.NOTEDET1.ordinal()),
 
                                                 cf.doIntake()),

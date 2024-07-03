@@ -107,7 +107,7 @@ public class SubwooferAutoCommands {
                                                 cf.doIntake()));
         }
 
-        Command runPathPickupAndShootIfNote(PathPlannerPath path, SwerveSubsystem swerve, TransferSubsystem transfer,
+        Command runPathPickupAndShootIfNote(PathPlannerPath path, SwerveSubsystem swerve,
                         ArmSubsystem arm, CommandFactory cf,
                         PathFactory pf, double aligntolerance) {
                 return Commands.sequence(
@@ -119,10 +119,11 @@ public class SubwooferAutoCommands {
                                                                 Commands.parallel(
                                                                                 cf.positionArmRunShooterByDistance(
                                                                                                 false, true), // might
-                                                                                new AutoAlignSpeaker(swerve, aligntolerance, true)),
+                                                                                new AutoAlignSpeaker(swerve,
+                                                                                                aligntolerance, true)),
                                                                 cf.transferNoteToShooterCommand()),
                                                 Commands.none(),
-                                                () -> transfer.noteAtIntake()));
+                                                () -> cf.noteAtIntake()));
         }
 
 }

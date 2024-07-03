@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
@@ -114,32 +115,28 @@ public class CommandFactory {
         }
 
         public Command positionArmRunShooterByDistance(boolean lob, boolean endAtTargets) {
-                Timer et = new Timer();
+
                 return new FunctionalCommand(
 
-                                () -> Commands.sequence(
-                                                Commands.runOnce(() -> et.start()),
-                                                Commands.runOnce(() -> et.reset()),
-                                                Commands.runOnce(() -> m_transfer.lobbing = lob)),
+                                () -> Commands.runOnce(() -> m_transfer.lobbing = lob),
                                 () -> {
-                                        if (et.hasElapsed(.25)) {
-                                                if (lob) {
-                                                        double stageDistance = m_swerve.getDistanceFromStage();
-                                                        double lobDistance = m_swerve.getDistanceFromLobTarget();
-                                                        m_shooter.startShooter(
-                                                                        Constants.shooterLobRPMMap.get(
-                                                                                        lobDistance));
-                                                        m_arm.setTolerance(ArmConstants.angleTolerance);
-                                                        m_arm.setTarget(getLobArmAngleFromTarget(
-                                                                        stageDistance));
-                                                } else {
-                                                        m_swerve.targetdistance = m_swerve.getDistanceFromSpeaker();
-                                                        m_shooter.startShooter(
-                                                                        m_sd.shooterRPMMap
-                                                                                        .get(m_swerve.targetdistance));
-                                                        m_arm.setTolerance(ArmConstants.angleTolerance);
-                                                        m_arm.setTarget(m_sd.armAngleMap.get(m_swerve.targetdistance));
-                                                }
+                                        if (lob) {
+                                                double stageDistance = m_swerve.getDistanceFromStage();
+                                                double lobDistance = m_swerve.getDistanceFromLobTarget();
+                                                m_shooter.startShooter(
+                                                                Constants.shooterLobRPMMap.get(
+                                                                                lobDistance));
+                                                m_arm.setTolerance(ArmConstants.angleTolerance);
+                                                m_arm.setTarget(getLobArmAngleFromTarget(
+                                                                stageDistance));
+                                        } else {
+
+                                                m_shooter.startShooter(
+                                                                m_sd.shooterRPMMap
+                                                                                .get(m_swerve.getDistanceFromSpeaker()));
+                                                m_arm.setTolerance(ArmConstants.angleTolerance);
+                                                m_arm.setTarget(m_sd.armAngleMap
+                                                                .get(m_swerve.getDistanceFromSpeaker()));
                                         }
                                 },
 
@@ -168,13 +165,18 @@ public class CommandFactory {
                 return Commands.sequence(
                                 armToIntake(),
                                 m_intake.startIntakeCommand(),
-                                new TransferIntakeToSensor(m_transfer, m_intake, m_swerve, IntakeConstants.notemissestime));
+                                new TransferIntakeToSensor(m_transfer, m_intake, m_swerve,
+                                                IntakeConstants.notemissestime));
         }
 
         public Command doIntakeDelayed(double delaysecs) {
                 return Commands.sequence(
                                 Commands.waitSeconds(delaysecs),
                                 doIntake());
+        }
+
+        public boolean noteAtIntake() {
+                return m_transfer.noteAtIntake();
         }
 
         public Command armToIntake() {

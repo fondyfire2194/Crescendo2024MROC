@@ -205,8 +205,8 @@ public class AutoFactory {
                                 return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
                                                 false);
 
-                        case 9:
-                                return new AutoSubwr5Note(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer,
+                        case 7:
+                                return new AutoSubwr5Note(m_cf, m_pf, m_sac, m_swerve, m_intake,
                                                 m_arm);
                         case 11:
                                 return new AutoSourceCompleteVisV2(m_cf, m_pf, this,
