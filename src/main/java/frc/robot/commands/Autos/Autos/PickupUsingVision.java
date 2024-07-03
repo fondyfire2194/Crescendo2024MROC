@@ -9,6 +9,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.CameraConstants;
+import frc.robot.utils.LLPipelines;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.commands.Drive.DriveToPickupNote;
@@ -27,12 +28,12 @@ public class PickupUsingVision extends SequentialCommandGroup {
                         IntakeSubsystem intake,
                         SwerveSubsystem swerve,
                         double switchoverdistance,
-                        double txtol,
-                        int pipelineIndex) {
+                        double txtol) {
 
                 addCommands(
                                 Commands.runOnce(() -> LimelightHelpers.setPipelineIndex(
-                                                CameraConstants.rearCamera.camname, pipelineIndex)),
+                                                CameraConstants.rearCamera.camname,
+                                                LLPipelines.pipelines.NOTEDET1.ordinal())),
 
                                 Commands.race(
                                                 new CheckOKSwitchToDrive(swerve, cf, switchoverdistance, txtol),

@@ -49,6 +49,7 @@ public class SubwooferAutoCommands {
         public Command shoot(CommandFactory cf, double angle, double rpm) {
                 return Commands.sequence(
                                 setArmShooter(cf, angle, rpm),
+                                cf.checkAtTargets(20),
                                 shoot(cf));
         }
 
@@ -107,9 +108,8 @@ public class SubwooferAutoCommands {
                                                 cf.doIntake()));
         }
 
-        Command runPathPickupAndShootIfNote(PathPlannerPath path, SwerveSubsystem swerve,
-                        ArmSubsystem arm, CommandFactory cf,
-                        PathFactory pf, double aligntolerance) {
+        public Command runPathPickupAndShootIfNote(PathPlannerPath path, SwerveSubsystem swerve,
+                        CommandFactory cf, PathFactory pf, double aligntolerance) {
                 return Commands.sequence(
                                 Commands.parallel(
                                                 new RunPPath(swerve, path),
@@ -118,7 +118,7 @@ public class SubwooferAutoCommands {
                                                 Commands.sequence(
                                                                 Commands.parallel(
                                                                                 cf.positionArmRunShooterByDistance(
-                                                                                                false, true), // might
+                                                                                                false, true),
                                                                                 new AutoAlignSpeaker(swerve,
                                                                                                 aligntolerance, true)),
                                                                 cf.transferNoteToShooterCommand()),

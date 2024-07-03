@@ -42,6 +42,8 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   public boolean isIntaking2;
   @Log.NT(key = "isIntaking3")
   public boolean isIntaking3;
+  @Log.NT(key = "isIntaking4")
+  public boolean isIntaking4;
 
   /** Creates a new Intake. */
   public IntakeSubsystem() {
@@ -97,6 +99,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     isIntaking1 = false;
     isIntaking2 = false;
     isIntaking3 = false;
+    isIntaking4 = false;
   }
 
   @Log.NT(key = "intakerpm")

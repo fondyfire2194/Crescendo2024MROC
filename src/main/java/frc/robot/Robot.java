@@ -91,6 +91,7 @@ public class Robot extends TimedRobot implements Logged {
       SmartDashboard.putBoolean("Skip1", m_robotContainer.m_transfer.skipFirstNoteInSim);
       SmartDashboard.putBoolean("Skip2", m_robotContainer.m_transfer.skipSecondNoteInSim);
       SmartDashboard.putBoolean("Skip3", m_robotContainer.m_transfer.skipThirdNoteInSim);
+      SmartDashboard.putBoolean("Skip4", m_robotContainer.m_transfer.skipFourthNoteInSim);
 
     }
     Monologue.setupMonologue(m_robotContainer, "/Monologue", false, true);
@@ -196,9 +197,9 @@ public class Robot extends TimedRobot implements Logged {
       m_robotContainer.m_intake.isIntaking1 = false;
       m_robotContainer.m_intake.isIntaking2 = false;
       m_robotContainer.m_intake.isIntaking3 = false;
+      m_robotContainer.m_intake.isIntaking4 = false;
 
     }
-
 
     LimelightHelpers.setPipelineIndex(CameraConstants.frontLeftCamera.camname,
         LLPipelines.pipelines.APRILTAGALL0.ordinal());
@@ -268,7 +269,7 @@ public class Robot extends TimedRobot implements Logged {
     m_robotContainer.m_arm.armMotor.setIdleMode(IdleMode.kBrake);
 
     m_robotContainer.m_swerve.setIdleMode(true);
-   
+
     m_robotContainer.m_arm.setGoal(m_robotContainer.m_arm.getAngleRadians());
 
     m_robotContainer.m_shooter.stopMotors();

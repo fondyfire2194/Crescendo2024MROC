@@ -38,6 +38,7 @@ public class TransferIntakeToSensor extends Command {
     m_intake.noteMissed = false;
     if (RobotBase.isSimulation())
       m_swerve.distanceToPickup = 10;// sim
+    m_intake.isIntaking4 = m_intake.isIntaking3;
     m_intake.isIntaking3 = m_intake.isIntaking2;
     m_intake.isIntaking2 = m_intake.isIntaking1;
     m_intake.isIntaking1 = true;

@@ -122,6 +122,8 @@ public class RobotContainer implements Logged {
 
         private Trigger simNoteIntakenTrigger3;
 
+        private Trigger simNoteIntakenTrigger4;
+
         EventLoop checkAutoSelectLoop;
 
         private BooleanEvent doAutoSetup;
@@ -260,27 +262,39 @@ public class RobotContainer implements Logged {
                 // .getAngleDegrees()),
                 // Commands.runOnce(() -> m_transfer.logShot = false)));
 
+double simintakedistancetopickup = .2;
+
                 simNoteIntakenTrigger1 = new Trigger(
                                 () -> RobotBase.isSimulation() &&
                                                 m_intake.isIntaking1 && !m_intake.isIntaking2 && !m_intake.isIntaking3
+                                                && !m_intake.isIntaking4
                                                 && !m_transfer.skipFirstNoteInSim
-                                                && Math.abs(m_swerve.distanceToPickup) < .3);
+                                                && Math.abs(m_swerve.distanceToPickup) < simintakedistancetopickup);
 
                 simNoteIntakenTrigger1.onTrue(Commands.runOnce(() -> m_transfer.simnoteatintake = true));
 
                 simNoteIntakenTrigger2 = new Trigger(
                                 () -> RobotBase.isSimulation()
                                                 && m_intake.isIntaking2 && !m_intake.isIntaking3
+                                                && !m_intake.isIntaking4
                                                 && !m_transfer.skipSecondNoteInSim
-                                                && Math.abs(m_swerve.distanceToPickup) < .3);
+                                                && Math.abs(m_swerve.distanceToPickup) < simintakedistancetopickup);
 
                 simNoteIntakenTrigger2.onTrue(Commands.runOnce(() -> m_transfer.simnoteatintake = true));
 
                 simNoteIntakenTrigger3 = new Trigger(
-                                () -> RobotBase.isSimulation() && m_intake.isIntaking3 && !m_transfer.skipThirdNoteInSim
-                                                && Math.abs(m_swerve.distanceToPickup) < .3);
+                                () -> RobotBase.isSimulation() && m_intake.isIntaking3 && !m_intake.isIntaking4
+                                                && !m_transfer.skipThirdNoteInSim
+                                                && Math.abs(m_swerve.distanceToPickup) < simintakedistancetopickup);
 
                 simNoteIntakenTrigger3.onTrue(Commands.runOnce(() -> m_transfer.simnoteatintake = true));
+
+                simNoteIntakenTrigger4 = new Trigger(
+                                () -> RobotBase.isSimulation() && m_intake.isIntaking4
+                                                && !m_transfer.skipFourthNoteInSim
+                                                && Math.abs(m_swerve.distanceToPickup) < .3);
+
+                simNoteIntakenTrigger4.onTrue(Commands.runOnce(() -> m_transfer.simnoteatintake = true));
 
                 checkAutoSelectLoop = new EventLoop();
 

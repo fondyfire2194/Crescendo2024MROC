@@ -18,7 +18,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 import frc.robot.utils.AllianceUtil;
-import frc.robot.utils.LLPipelines;
 
 /** Add your docs here. */
 public class AmpAutoCommands {
@@ -92,10 +91,10 @@ public class AmpAutoCommands {
                 return Commands.either(
                                 new CenterToShoot(cf, pf.pathMaps.get(amppaths.Center2ToAmpShoot
                                                 .name()),
-                                                swerve,false),
+                                                swerve, false),
                                 new CenterToShoot(cf, pf.pathMaps.get(amppaths.Center1ToAmpShoot
                                                 .name()),
-                                                swerve,false),
+                                                swerve, false),
                                 () -> innerNoteFirst);
         }
 
@@ -122,13 +121,11 @@ public class AmpAutoCommands {
                                                 new PickupUsingVision(cf,
                                                                 pf.pathMaps.get(amppaths.AmpToCenter1
                                                                                 .name()),
-                                                                transfer, intake, swerve, 1.5,10,
-                                                                LLPipelines.pipelines.NOTEDET1.ordinal()),
+                                                                transfer, intake, swerve, 1.5, 10),
                                                 new PickupUsingVision(cf,
                                                                 pf.pathMaps.get(amppaths.AmpToCenter2
                                                                                 .name()),
-                                                                transfer, intake, swerve, 1.5,10,
-                                                                LLPipelines.pipelines.NOTEDET1.ordinal()),
+                                                                transfer, intake, swerve, 1.5, 10),
                                                 () -> innerNoteFirst),
                                 cf.doIntake());
         }
