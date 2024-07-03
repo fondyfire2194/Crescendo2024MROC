@@ -36,6 +36,7 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
   private double commandrpm;
 
   public SparkLimitSwitch m_limitSwitch;
+  @Log.NT(key = "simnoteatintake")
   public boolean simnoteatintake;
   public boolean skipFirstNoteInSim;
   public boolean skipSecondNoteInSim;
@@ -86,7 +87,6 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
 
   public Command stopTransferCommand() {
     commandrpm = 0;
-
     return Commands.runOnce(() -> stopMotor(), this);
   }
 

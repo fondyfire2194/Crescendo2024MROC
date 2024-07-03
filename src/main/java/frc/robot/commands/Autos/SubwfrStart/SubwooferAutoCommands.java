@@ -15,6 +15,7 @@ import frc.robot.Factories.PathFactory;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
 import frc.robot.commands.Pathplanner.RunPPath;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.utils.AllianceUtil;
@@ -22,14 +23,15 @@ import frc.robot.utils.AllianceUtil;
 /** Add your docs here. */
 public class SubwooferAutoCommands {
 
-        public SubwooferAutoCommands(SwerveSubsystem swerve, CommandFactory cf) {
+        public SubwooferAutoCommands(SwerveSubsystem swerve, CommandFactory cf,IntakeSubsystem intake) {
         }
 
-        public Command setsbwrstart(SwerveSubsystem swerve, CommandFactory cf) {
+        public Command setsbwrstart(SwerveSubsystem swerve, CommandFactory cf, IntakeSubsystem intake) {
                 return Commands.sequence(
                                 Commands.runOnce(() -> swerve.pickupTargetX = AllianceUtil.getWingNoteX()),
                                 Commands.runOnce(() -> swerve.targetPose = AllianceUtil.getSpeakerPose()),
                                 Commands.runOnce(() -> swerve.inhibitVision = true),
+                                Commands.runOnce(() -> intake.resetIsIntakingSim()),
                                 cf.setStartPosebyAlliance(FieldConstants.sbwfrStartPose));
         }
 

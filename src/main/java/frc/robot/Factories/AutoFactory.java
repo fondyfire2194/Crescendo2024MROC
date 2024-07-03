@@ -178,23 +178,23 @@ public class AutoFactory {
 
                         case 1:
                                 return new AutoSbwfrShootThenSequence(m_cf, m_pf, m_sac, m_swerve,
-                                                sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot,
+                                                m_intake, sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing1, sbwfrpaths.Wing1ShootToSubwfr,
                                                 sbwfrpaths.SubwfrShootToWing3, sbwfrpaths.Wing3ToSubwfrShoot);
                         case 2:
                                 return new AutoSbwfrShootThenSequence(m_cf, m_pf, m_sac, m_swerve,
-                                                sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot,
+                                                m_intake, sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing3, sbwfrpaths.Wing3ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing1, sbwfrpaths.Wing1ShootToSubwfr);
 
                         case 3:
                                 return new AutoSbwfrShootThenSequence(m_cf, m_pf, m_sac, m_swerve,
-                                                sbwfrpaths.SubwfrShootToWing3, sbwfrpaths.Wing3ToSubwfrShoot,
+                                                m_intake, sbwfrpaths.SubwfrShootToWing3, sbwfrpaths.Wing3ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot);
 
                         case 4:
                                 return new AutoSbwfrShootThenSequence(m_cf, m_pf, m_sac, m_swerve,
-                                                sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot,
+                                                m_intake, sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing1, sbwfrpaths.Wing1ToSubwfrShoot);
 
                         case 5:

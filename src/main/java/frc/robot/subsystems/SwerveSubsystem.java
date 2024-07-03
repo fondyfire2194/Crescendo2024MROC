@@ -524,6 +524,7 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     SmartDashboard.putNumber("Drive/GyroAngle", getAngle());
     SmartDashboard.putNumber("Drive/GyroYawRads", getR2dRads());
     SmartDashboard.putNumber("Drive/XMPS", getChassisSpeeds().vxMetersPerSecond);
+    distanceToPickup = Math.abs(pickupTargetX - getX());// for note at intake sim
 
     m_field.setRobotPose(getPose());
 
@@ -813,8 +814,8 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   public Pose2d stagePose = new Pose2d();
   @Log.NT(key = "shootingpose")
   public Pose2d poseWhenShooting = new Pose2d();
-  @Log.NT(key = "remainingdistance")
-  public double remainingdistance = 0;
+  @Log.NT(key = "distancetopickup")
+  public double distanceToPickup = 0;
 
   public boolean sourceActive;
 

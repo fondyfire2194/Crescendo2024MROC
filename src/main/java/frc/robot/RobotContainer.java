@@ -150,7 +150,7 @@ public class RobotContainer implements Logged {
 
                 registerNamedCommands();
 
-                m_sac = new SubwooferAutoCommands(m_swerve, m_cf);
+                m_sac = new SubwooferAutoCommands(m_swerve, m_cf, m_intake);
                 m_srcac = new SourceAutoCommands(m_swerve, m_cf);
                 m_ampac = new AmpAutoCommands(m_swerve, m_transfer, m_intake, m_cf);
 
@@ -178,23 +178,23 @@ public class RobotContainer implements Logged {
                 SmartDashboard.putData("PD", m_pd);
 
                 // SmartDashboard.putData("ViewArmShooterData",
-                //                 new ViewArmShooterByDistance(m_cf, m_sd, m_arm).ignoringDisable(true));
+                // new ViewArmShooterByDistance(m_cf, m_sd, m_arm).ignoringDisable(true));
                 // SmartDashboard.putData("RotateToNote",
-                //                 new RotateToFindNote(m_swerve, 45));
+                // new RotateToFindNote(m_swerve, 45));
                 // SmartDashboard.putData("AlignToNote",
-                //                 new AutoAlignNote(m_swerve, 1, false));
+                // new AutoAlignNote(m_swerve, 1, false));
 
                 SmartDashboard.putData("PP 5metersX",
                                 m_cf.autopathfind(new Pose2d(), 0, 0));
 
                 // SmartDashboard.putData("RunTestPickupAndShoot",
-                //                 new MovePickupShootTest(m_cf, m_swerve, m_arm, m_transfer, m_intake, m_shooter, m_sd,
-                //                                 CameraConstants.rearCamera.camname,
-                //                                 4));
+                // new MovePickupShootTest(m_cf, m_swerve, m_arm, m_transfer, m_intake,
+                // m_shooter, m_sd,
+                // CameraConstants.rearCamera.camname,
+                // 4));
 
                 // SmartDashboard.putData("TrapTuneTo Pref",
-                //                 new TrapTune(m_swerve));
-               
+                // new TrapTune(m_swerve));
 
                 SmartDashboard.putData("Set Robot At 0",
                                 Commands.runOnce(() -> m_swerve.resetPoseEstimator(new Pose2d())));
@@ -261,21 +261,24 @@ public class RobotContainer implements Logged {
                 // Commands.runOnce(() -> m_transfer.logShot = false)));
 
                 simNoteIntakenTrigger1 = new Trigger(
-                                () -> RobotBase.isSimulation() && m_intake.isIntaking1 && !m_transfer.skipFirstNoteInSim
-                                                && Math.abs(m_swerve.remainingdistance) < .3);
+                                () -> RobotBase.isSimulation() &&
+                                                m_intake.isIntaking1 && !m_intake.isIntaking2 && !m_intake.isIntaking3
+                                                && !m_transfer.skipFirstNoteInSim
+                                                && Math.abs(m_swerve.distanceToPickup) < .3);
 
                 simNoteIntakenTrigger1.onTrue(Commands.runOnce(() -> m_transfer.simnoteatintake = true));
 
                 simNoteIntakenTrigger2 = new Trigger(
-                                () -> RobotBase.isSimulation() && m_intake.isIntaking2
+                                () -> RobotBase.isSimulation()
+                                                && m_intake.isIntaking2 && !m_intake.isIntaking3
                                                 && !m_transfer.skipSecondNoteInSim
-                                                && Math.abs(m_swerve.remainingdistance) < .4);
+                                                && Math.abs(m_swerve.distanceToPickup) < .3);
 
                 simNoteIntakenTrigger2.onTrue(Commands.runOnce(() -> m_transfer.simnoteatintake = true));
 
                 simNoteIntakenTrigger3 = new Trigger(
                                 () -> RobotBase.isSimulation() && m_intake.isIntaking3 && !m_transfer.skipThirdNoteInSim
-                                                && Math.abs(m_swerve.remainingdistance) < .3);
+                                                && Math.abs(m_swerve.distanceToPickup) < .3);
 
                 simNoteIntakenTrigger3.onTrue(Commands.runOnce(() -> m_transfer.simnoteatintake = true));
 
@@ -297,7 +300,7 @@ public class RobotContainer implements Logged {
                         canivoreCheck.onTrue(Commands.runOnce(() -> logCanivore()));
                 }
 
-               //ela portForwardCameras();
+                // ela portForwardCameras();
 
         }
 

@@ -17,17 +17,17 @@ public class TransferIntakeToSensor extends Command {
   private final TransferSubsystem m_transfer;
   private final IntakeSubsystem m_intake;
   private final SwerveSubsystem m_swerve;
-  private final double m_noNoteTime;
+  private final double m_noteMissedTime;
   private Timer endTimer = new Timer();
 
   /** Creates a new TransferIntakeToSensor. */
   public TransferIntakeToSensor(TransferSubsystem transfer, IntakeSubsystem intake, SwerveSubsystem swerve,
-      double noNotetime) {
+      double noteMissedTime) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_transfer = transfer;
     m_swerve = swerve;
     m_intake = intake;
-    m_noNoteTime = noNotetime;
+    m_noteMissedTime = noteMissedTime;
   };
 
   // Called when the command is initially scheduled.
@@ -37,7 +37,7 @@ public class TransferIntakeToSensor extends Command {
     endTimer.start();
     m_intake.noteMissed = false;
     if (RobotBase.isSimulation())
-      m_swerve.remainingdistance = 10;// sim
+      m_swerve.distanceToPickup = 10;// sim
     m_intake.isIntaking3 = m_intake.isIntaking2;
     m_intake.isIntaking2 = m_intake.isIntaking1;
     m_intake.isIntaking1 = true;
@@ -48,12 +48,10 @@ public class TransferIntakeToSensor extends Command {
   public void execute() {
     if (!m_swerve.isStopped())
       endTimer.restart();
-    SmartDashboard.putNumber("Transfer/NoNotTime", endTimer.get());
+    SmartDashboard.putNumber("Transfer/NoteMissedTime", endTimer.get());
     m_transfer.runToSensor();
     m_intake.noteMissed = DriverStation.isAutonomousEnabled() && m_swerve.isStopped()
-        && endTimer.hasElapsed(m_noNoteTime);
-
-    m_swerve.remainingdistance = Math.abs(m_swerve.pickupTargetX - m_swerve.getX());// for note at intake sim
+        && endTimer.hasElapsed(m_noteMissedTime);
 
   }
 

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /** Add your docs here. */
@@ -18,6 +19,7 @@ public class AutoSbwfrShootThenSequence extends SequentialCommandGroup {
                         PathFactory pf,
                         SubwooferAutoCommands sac,
                         SwerveSubsystem swerve,
+                        IntakeSubsystem intake,
                         sbwfrpaths path1,
                         sbwfrpaths path2,
                         sbwfrpaths path3,
@@ -25,7 +27,7 @@ public class AutoSbwfrShootThenSequence extends SequentialCommandGroup {
 
                 addCommands(
 
-                                sac.setsbwrstart(swerve, cf),
+                                sac.setsbwrstart(swerve, cf,intake),
 
                                 sac.sbwfrShoot(cf),
 
@@ -46,6 +48,7 @@ public class AutoSbwfrShootThenSequence extends SequentialCommandGroup {
                         PathFactory pf,
                         SubwooferAutoCommands sac,
                         SwerveSubsystem swerve, 
+                        IntakeSubsystem intake,
                         sbwfrpaths path1,
                         sbwfrpaths path2,
                         sbwfrpaths path3,
@@ -54,7 +57,7 @@ public class AutoSbwfrShootThenSequence extends SequentialCommandGroup {
                         sbwfrpaths path6) {
 
                 addCommands(
-                                sac.setsbwrstart(swerve, cf),
+                                sac.setsbwrstart(swerve, cf,intake),
 
                                 sac.sbwfrShoot(cf),
 

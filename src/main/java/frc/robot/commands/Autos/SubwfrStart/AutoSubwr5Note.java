@@ -31,7 +31,7 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                         ArmSubsystem arm) {
 
                 addCommands( // note
-                                sac.setsbwrstart(swerve, cf),
+                                sac.setsbwrstart(swerve, cf, intake),
                                 Commands.race(
                                                 Commands.waitSeconds(.75),
                                                 cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
@@ -64,6 +64,5 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                                                                 .name()),
                                                 swerve, true));
         }
-
 
 }

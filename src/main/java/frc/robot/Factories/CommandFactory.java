@@ -168,7 +168,7 @@ public class CommandFactory {
                 return Commands.sequence(
                                 armToIntake(),
                                 m_intake.startIntakeCommand(),
-                                new TransferIntakeToSensor(m_transfer, m_intake, m_swerve, IntakeConstants.noNoteTime));
+                                new TransferIntakeToSensor(m_transfer, m_intake, m_swerve, IntakeConstants.notemissestime));
         }
 
         public Command doIntakeDelayed(double delaysecs) {

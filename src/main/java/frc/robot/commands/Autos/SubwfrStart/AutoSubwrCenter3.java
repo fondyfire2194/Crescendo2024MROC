@@ -6,6 +6,7 @@ package frc.robot.commands.Autos.SubwfrStart;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
@@ -16,6 +17,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
+import frc.robot.utils.AllianceUtil;
 import frc.robot.commands.Pathplanner.RunPPath;
 
 /** Add your docs here. */
@@ -34,11 +36,17 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
                 addCommands( // note
 
                                 Commands.sequence(
-                                                sac.setsbwrstart(swerve, cf),
+                                                sac.setsbwrstart(swerve, cf, intake),
                                                 sac.sbwfrShoot(cf),
                                                 sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing2, swerve, cf,
                                                                 pf),
-                                                sac.shootbydistance(cf),
+                                                Commands.either(
+                                                                sac.shootbydistance(cf),
+                                                                Commands.none(),
+                                                                () -> transfer.noteAtIntake()),
+                                                Commands.runOnce(
+                                                                () -> swerve.pickupTargetX = FieldConstants.FIELD_LENGTH
+                                                                                / 2),
                                                 sac.moveAndPickup(sbwfrpaths.Wing2ToCenter3, swerve, cf, pf),
                                                 Commands.either(
                                                                 sac.sbwfrmoveandshoot(sbwfrpaths.Center3ToSubwfrShoot,
@@ -48,6 +56,8 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
                                                                                 .get(sbwfrpaths.Center3ToSubwfrShoot
                                                                                                 .name())),
                                                                 () -> transfer.noteAtIntake()),
+                                                Commands.runOnce(() -> swerve.pickupTargetX = AllianceUtil
+                                                                .getWingNoteX()),
                                                 Commands.either(
                                                                 sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing3Shoot,
                                                                                 swerve, cf,

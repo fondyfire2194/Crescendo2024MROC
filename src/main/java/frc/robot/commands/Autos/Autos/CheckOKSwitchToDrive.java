@@ -56,15 +56,15 @@ public class CheckOKSwitchToDrive extends Command {
     m_cf.doIntake();
 
     if (AllianceUtil.isRedAlliance())
-      m_swerve.remainingdistance = m_swerve.getX() - FieldConstants.FIELD_LENGTH / 2;
+      m_swerve.distanceToPickup = m_swerve.getX() - FieldConstants.FIELD_LENGTH / 2;
     else
-      m_swerve.remainingdistance = FieldConstants.FIELD_LENGTH / 2 - m_swerve.getX();
+      m_swerve.distanceToPickup = FieldConstants.FIELD_LENGTH / 2 - m_swerve.getX();
 
-    SmartDashboard.putNumber("RMGDST", m_swerve.remainingdistance);
+    SmartDashboard.putNumber("RMGDST", m_swerve.distanceToPickup);
 
     m_swerve.noteSeen = RobotBase.isReal() && LimelightHelpers.getTV(CameraConstants.rearCamera.camname)
         && Math.abs(LimelightHelpers.getTX(CameraConstants.rearCamera.camname)) < m_txtol
-        && m_swerve.remainingdistance <= m_switchoverDistance;
+        && m_swerve.distanceToPickup <= m_switchoverDistance;
     // || RobotBase.isSimulation() && m_swerve.remainingdistance <
     // m_switchoverDistance / 3;
 
