@@ -38,7 +38,7 @@ public class GetAnotherNoteSource extends SequentialCommandGroup {
                                                 new RotateToAngle(swerve, -90),
                                                 Commands.deadline(
                                                                 new LookForAnotherNote(swerve, transfer, intake),
-                                                                cf.doIntake(10)),
+                                                                cf.doIntake()),
                                                 Commands.waitSeconds(.25),
                                                 cf.autopathfind(AllianceUtil.getSourceClearStagePose(),
                                                                 SwerveConstants.pfConstraints, 0, 0),

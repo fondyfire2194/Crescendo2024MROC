@@ -16,6 +16,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
+import frc.robot.commands.Pathplanner.RunPPath;
 
 /** Add your docs here. */
 public class AutoSubwrCenter3 extends SequentialCommandGroup {
@@ -28,8 +29,7 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
                         IntakeSubsystem intake,
                         TransferSubsystem transfer,
                         ArmSubsystem arm,
-                        boolean wing3,
-                        boolean usesourceside) {
+                        boolean wing3) {
 
                 addCommands( // note
 
@@ -44,14 +44,9 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
                                                                 sac.sbwfrmoveandshoot(sbwfrpaths.Center3ToSubwfrShoot,
                                                                                 swerve, cf,
                                                                                 pf),
-                                                                Commands.either(
-                                                                                new GetAnotherNoteSource(swerve,
-                                                                                                transfer, intake,
-                                                                                                cf, pf),
-                                                                                new GetAnotherNoteAmp(swerve, transfer,
-                                                                                                intake,
-                                                                                                cf, pf),
-                                                                                () -> usesourceside),
+                                                                new RunPPath(swerve, pf.pathMaps
+                                                                                .get(sbwfrpaths.Center3ToSubwfrShoot
+                                                                                                .name())),
                                                                 () -> transfer.noteAtIntake()),
                                                 Commands.either(
                                                                 sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing3Shoot,

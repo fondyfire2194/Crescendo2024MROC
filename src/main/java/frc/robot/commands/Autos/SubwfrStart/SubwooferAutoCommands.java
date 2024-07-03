@@ -58,7 +58,8 @@ public class SubwooferAutoCommands {
         public Command shootbydistance(CommandFactory cf) {
                 return Commands.sequence(
                                 cf.positionArmRunShooterByDistance(false, true),
-                                shoot(cf));        }
+                                shoot(cf));
+        }
 
         public Command move(sbwfrpaths path, SwerveSubsystem swerve, PathFactory pf) {
                 return new RunPPath(swerve, pf.pathMaps.get(path.name()));
@@ -89,7 +90,7 @@ public class SubwooferAutoCommands {
                                 move(path, swerve, pf),
                                 Commands.sequence(
                                                 Commands.waitSeconds(.25),
-                                                cf.doIntake(10)));
+                                                cf.doIntake()));
         }
 
         public Command moveAndPickupUsingVision(sbwfrpaths path, SwerveSubsystem swerve, CommandFactory cf,
@@ -98,15 +99,15 @@ public class SubwooferAutoCommands {
                                 move(path, swerve, pf),
                                 Commands.sequence(
                                                 Commands.waitSeconds(.25),
-                                                cf.doIntake(10)));
+                                                cf.doIntake()));
         }
 
-         Command runPathPickupAndShoot(PathPlannerPath path, SwerveSubsystem swerve, ArmSubsystem arm, CommandFactory cf,
+        Command runPathPickupAndShoot(PathPlannerPath path, SwerveSubsystem swerve, ArmSubsystem arm, CommandFactory cf,
                         PathFactory pf) {
                 return Commands.sequence(
                                 Commands.parallel(
-                                                new RunPPath(swerve, path), 
-                                                cf.doIntake(5)),
+                                                new RunPPath(swerve, path),
+                                                cf.doIntake()),
 
                                 cf.positionArmRunShooterByDistance(false, true), // might need delay
                                 cf.transferNoteToShooterCommand());

@@ -101,11 +101,9 @@ public class AutoFactory {
                 m_subwfrStartChooser.addOption("W2-W1", 4);
                 m_subwfrStartChooser.addOption("W2-C3-SBWFR-W3 SRC", 5);
                 m_subwfrStartChooser.addOption("W2-C3-SBWFR-W1 SRC", 6);
-                m_subwfrStartChooser.addOption("W2-C3-SBWFR-W3 AMP", 7);
-                m_subwfrStartChooser.addOption("W2-C3-SBWFR-W1 AMP", 8);
-                m_subwfrStartChooser.addOption("W3-W2-W1-C1", 9);
+                m_subwfrStartChooser.addOption("W3-W2-W1-C1", 7);
 
-                maxsbwfrauto = 8;
+                maxsbwfrauto = 7;
 
                 minsourceauto = 11;
                 m_sourceStartChooser.setDefaultOption("Not Used", 10);
@@ -201,19 +199,11 @@ public class AutoFactory {
 
                         case 5:
                                 return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
-                                                true, true);
+                                                true);
 
                         case 6:
                                 return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
-                                                false, true);
-
-                        case 7:
-                                return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
-                                                true, false);
-
-                        case 8:
-                                return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
-                                                false, false);
+                                                false);
 
                         case 9:
                                 return new AutoSubwr5Note(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer,
@@ -234,20 +224,20 @@ public class AutoFactory {
                                 return Commands.sequence(
                                                 m_ampac.setAmpStart(m_swerve, m_transfer, m_intake, m_cf),
                                                 m_ampac.pickupNote(m_cf, m_pf.pathMaps.get(
-                                                                amppaths.AmpToWing1.name()), m_swerve, 3),
+                                                                amppaths.AmpToWing1.name()), m_swerve),
                                                 m_ampac.shootbydistance(m_cf),
                                                 m_ampac.pickupNote(m_cf, m_pf.pathMaps.get(
-                                                                amppaths.Wing1ToCenter1.name()), m_swerve, 3),
+                                                                amppaths.Wing1ToCenter1.name()), m_swerve),
                                                 new CenterToShoot(m_cf, m_pf.pathMaps.get(amppaths.Center1ToAmpShoot
                                                                 .name()), m_swerve, false));
                         case 24:
                                 return Commands.sequence(
                                                 m_ampac.setAmpStart(m_swerve, m_transfer, m_intake, m_cf),
                                                 m_ampac.pickupNote(m_cf, m_pf.pathMaps.get(
-                                                                amppaths.AmpToWing1.name()), m_swerve, 3),
+                                                                amppaths.AmpToWing1.name()), m_swerve),
                                                 m_ampac.shootbydistance(m_cf),
                                                 m_ampac.pickupNote(m_cf, m_pf.pathMaps.get(
-                                                                amppaths.Wing1ToCenter2.name()), m_swerve, 3),
+                                                                amppaths.Wing1ToCenter2.name()), m_swerve),
                                                 new CenterToShoot(m_cf, m_pf.pathMaps.get(amppaths.Center2ToAmpShoot
                                                                 .name()), m_swerve, false));
                         default:
@@ -279,7 +269,7 @@ public class AutoFactory {
                                                 pf.pathMaps.get(path.name())),
                                 Commands.sequence(
                                                 Commands.waitSeconds(.25),
-                                                cf.doIntake(10)));
+                                                cf.doIntake()));
         }
 
         public Command getAutonomousCommand() {

@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Pref;
 import frc.robot.commands.Transfer.TransferIntakeToSensor;
@@ -109,7 +110,7 @@ public class CommandFactory {
                                                 SwerveConstants.pickUpConstraints,
                                                 0,
                                                 0),
-                                doIntake(4));
+                                doIntake());
         }
 
         public Command positionArmRunShooterByDistance(boolean lob, boolean endAtTargets) {
@@ -163,17 +164,17 @@ public class CommandFactory {
 
         }
 
-        public Command doIntake(double noNotetime) {
+        public Command doIntake() {
                 return Commands.sequence(
                                 armToIntake(),
                                 m_intake.startIntakeCommand(),
-                                new TransferIntakeToSensor(m_transfer, m_intake, m_swerve, noNotetime));
+                                new TransferIntakeToSensor(m_transfer, m_intake, m_swerve, IntakeConstants.noNoteTime));
         }
 
-        public Command doIntakeDelayed(double delaysecs, double noNoteTime) {
+        public Command doIntakeDelayed(double delaysecs) {
                 return Commands.sequence(
                                 Commands.waitSeconds(delaysecs),
-                                doIntake(noNoteTime));
+                                doIntake());
         }
 
         public Command armToIntake() {

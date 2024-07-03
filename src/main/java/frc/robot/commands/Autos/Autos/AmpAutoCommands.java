@@ -39,11 +39,11 @@ public class AmpAutoCommands {
                                 cf.setStartPosebyAlliance(FieldConstants.ampStartPose));
         }
 
-        public Command pickupNote(CommandFactory cf, PathPlannerPath path, SwerveSubsystem swerve, double nonotetime) {
+        public Command pickupNote(CommandFactory cf, PathPlannerPath path, SwerveSubsystem swerve) {
 
                 return Commands.parallel(
                                 new RunPPath(swerve, path),
-                                cf.doIntake(nonotetime));
+                                cf.doIntake());
         }
 
         public Command prepandshoot(CommandFactory cf, double armAngle, double shooterpm, double rpmtol) {
@@ -84,7 +84,7 @@ public class AmpAutoCommands {
                                                                 amppaths.AmpToCenter1.name())),
                                                 () -> innerNoteFirst),
 
-                                cf.doIntake(2));
+                                cf.doIntake());
         }
 
         public Command moveShootCenter1_2(CommandFactory cf, PathFactory pf, SwerveSubsystem swerve,
@@ -111,7 +111,7 @@ public class AmpAutoCommands {
                                                                 pf.pathMaps.get(amppaths.AmpShootToCenter2
                                                                                 .name())),
                                                 () -> innerNoteFirst),
-                                cf.doIntake(2));
+                                cf.doIntake());
         }
 
         public Command pickUpNoteAfterShootVision(PathFactory pf, CommandFactory cf, SwerveSubsystem swerve,
@@ -130,7 +130,7 @@ public class AmpAutoCommands {
                                                                 transfer, intake, swerve, 1.5,10,
                                                                 LLPipelines.pipelines.NOTEDET1.ordinal()),
                                                 () -> innerNoteFirst),
-                                cf.doIntake(2));
+                                cf.doIntake());
         }
 
         public Command tryOtherNote(PathFactory pf, CommandFactory cf, SwerveSubsystem swerve,
@@ -145,7 +145,7 @@ public class AmpAutoCommands {
                                                                                 pf.pathMaps.get(sourcepaths.Center4ToCenter5
                                                                                                 .name())),
                                                                 () -> innerNoteFirst),
-                                                cf.doIntake(2)));
+                                                cf.doIntake()));
         }
 
 }

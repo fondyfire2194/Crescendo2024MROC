@@ -57,7 +57,7 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                                                                 transfer, intake, swerve, 2.0, 10,
                                                                 LLPipelines.pipelines.NOTEDET1.ordinal()),
 
-                                                cf.doIntake(5)),
+                                                cf.doIntake()),
 
                                 new CenterToShoot(cf,
                                                 pf.pathMaps.get(sbwfrpaths.Center1ToShootFast

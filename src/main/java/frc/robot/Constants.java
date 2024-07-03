@@ -573,7 +573,7 @@ public final class Constants {
         public static double autoShootArmAngle = 60;// degrees
         public static double autoShootRPM = 3000;// rpm
 
-        public static double sourceShootAngle = 27; 
+        public static double sourceShootAngle = 27;
         public static double sourceShootSpeed = 3650; // 4000
 
         public static double ampShootAngle = 20; // 26
@@ -708,7 +708,7 @@ public final class Constants {
                 public static final double intakeKi = 0.0;
                 public static final double intakeKd = 0.0;
                 public static final double intakeKFF = .95 / maxIntakeMotorRPM;
-
+                public static final double notemissestime = 1.25;
         }
 
         public static final class ClimberConstants {

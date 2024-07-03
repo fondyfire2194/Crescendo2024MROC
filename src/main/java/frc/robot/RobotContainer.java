@@ -454,7 +454,7 @@ public class RobotContainer implements Logged {
                 codriver.povLeft().onTrue(
                                 Commands.parallel(
                                                 new DriveToPickupNote(m_swerve, m_transfer, m_intake),
-                                                m_cf.doIntake(5)));
+                                                m_cf.doIntake()));
 
                 codriver.povRight().onTrue(
                                 Commands.sequence(
