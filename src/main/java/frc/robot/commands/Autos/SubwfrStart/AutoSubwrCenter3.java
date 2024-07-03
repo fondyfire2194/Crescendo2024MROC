@@ -10,8 +10,6 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
-import frc.robot.commands.Autos.Autos.GetAnotherNoteAmp;
-import frc.robot.commands.Autos.Autos.GetAnotherNoteSource;
 import frc.robot.commands.Drive.AutoAlignSpeaker;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -33,41 +31,36 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
                         ArmSubsystem arm,
                         boolean wing3) {
 
-                addCommands( // note
-
-                                Commands.sequence(
-                                                sac.setsbwrstart(swerve, cf, intake),
-                                                sac.sbwfrShoot(cf),
-                                                sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing2, swerve, cf,
+                addCommands(
+                                sac.setsbwrstart(swerve, cf, intake),
+                                sac.sbwfrShoot(cf),
+                                sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.SubwfrShootToWing2.name()),
+                                                swerve, transfer, arm,
+                                                cf, pf, 1),
+                                Commands.runOnce(
+                                                () -> swerve.pickupTargetX = FieldConstants.FIELD_LENGTH
+                                                                / 2),
+                                sac.moveAndPickup(sbwfrpaths.Wing2ToCenter3, swerve, cf, pf),
+                                Commands.either(
+                                                sac.sbwfrmoveandshoot(sbwfrpaths.Center3ToSubwfrShoot,
+                                                                swerve, cf,
                                                                 pf),
-                                                Commands.either(
-                                                                sac.shootbydistance(cf),
-                                                                Commands.none(),
-                                                                () -> transfer.noteAtIntake()),
-                                                Commands.runOnce(
-                                                                () -> swerve.pickupTargetX = FieldConstants.FIELD_LENGTH
-                                                                                / 2),
-                                                sac.moveAndPickup(sbwfrpaths.Wing2ToCenter3, swerve, cf, pf),
-                                                Commands.either(
-                                                                sac.sbwfrmoveandshoot(sbwfrpaths.Center3ToSubwfrShoot,
-                                                                                swerve, cf,
-                                                                                pf),
-                                                                new RunPPath(swerve, pf.pathMaps
-                                                                                .get(sbwfrpaths.Center3ToSubwfrShoot
-                                                                                                .name())),
-                                                                () -> transfer.noteAtIntake()),
-                                                Commands.runOnce(() -> swerve.pickupTargetX = AllianceUtil
-                                                                .getWingNoteX()),
-                                                Commands.either(
-                                                                sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing3Shoot,
-                                                                                swerve, cf,
-                                                                                pf),
-                                                                sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing1Shoot,
-                                                                                swerve, cf,
-                                                                                pf),
-                                                                () -> wing3),
-                                                new AutoAlignSpeaker(swerve, 1, true),
-                                                sac.shootbydistance(cf)));
+                                                new RunPPath(swerve, pf.pathMaps
+                                                                .get(sbwfrpaths.Center3ToSubwfrShoot
+                                                                                .name())),
+                                                () -> transfer.noteAtIntake()),
+                                Commands.runOnce(() -> swerve.pickupTargetX = AllianceUtil
+                                                .getWingNoteX()),
+                                Commands.either(
+                                                sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing3Shoot,
+                                                                swerve, cf,
+                                                                pf),
+                                                sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing1Shoot,
+                                                                swerve, cf,
+                                                                pf),
+                                                () -> wing3),
+                                new AutoAlignSpeaker(swerve, 1, true),
+                                sac.shootbydistance(cf));
         }
 
 }

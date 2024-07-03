@@ -13,17 +13,20 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
+import frc.robot.commands.Drive.AutoAlignSpeaker;
 import frc.robot.commands.Pathplanner.RunPPath;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.TransferSubsystem;
 import frc.robot.utils.AllianceUtil;
 
 /** Add your docs here. */
 public class SubwooferAutoCommands {
 
-        public SubwooferAutoCommands(SwerveSubsystem swerve, CommandFactory cf,IntakeSubsystem intake) {
+        public SubwooferAutoCommands(SwerveSubsystem swerve, CommandFactory cf, IntakeSubsystem intake,
+                        TransferSubsystem transfer) {
         }
 
         public Command setsbwrstart(SwerveSubsystem swerve, CommandFactory cf, IntakeSubsystem intake) {
@@ -104,15 +107,22 @@ public class SubwooferAutoCommands {
                                                 cf.doIntake()));
         }
 
-        Command runPathPickupAndShoot(PathPlannerPath path, SwerveSubsystem swerve, ArmSubsystem arm, CommandFactory cf,
-                        PathFactory pf) {
+        Command runPathPickupAndShootIfNote(PathPlannerPath path, SwerveSubsystem swerve, TransferSubsystem transfer,
+                        ArmSubsystem arm, CommandFactory cf,
+                        PathFactory pf, double aligntolerance) {
                 return Commands.sequence(
                                 Commands.parallel(
                                                 new RunPPath(swerve, path),
                                                 cf.doIntake()),
-
-                                cf.positionArmRunShooterByDistance(false, true), // might need delay
-                                cf.transferNoteToShooterCommand());
+                                Commands.either(
+                                                Commands.sequence(
+                                                                Commands.parallel(
+                                                                                cf.positionArmRunShooterByDistance(
+                                                                                                false, true), // might
+                                                                                new AutoAlignSpeaker(swerve, aligntolerance, true)),
+                                                                cf.transferNoteToShooterCommand()),
+                                                Commands.none(),
+                                                () -> transfer.noteAtIntake()));
         }
 
 }

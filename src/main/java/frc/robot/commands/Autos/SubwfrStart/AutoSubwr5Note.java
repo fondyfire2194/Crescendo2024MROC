@@ -38,17 +38,17 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                                                                 Constants.subwfrShooterSpeed, 20)),
                                 cf.transferNoteToShooterCommand(),
 
-                                sac.runPathPickupAndShoot(pf.pathMaps.get(sbwfrpaths.SubToNote3Fast.name()), swerve,
-                                                arm,
-                                                cf, pf),
+                                sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.SubToNote3Fast.name()),
+                                                swerve, transfer, arm,
+                                                cf, pf, 1),
 
-                                sac.runPathPickupAndShoot(pf.pathMaps.get(sbwfrpaths.Note3ToNote2Fast.name()), swerve,
-                                                arm,
-                                                cf, pf),
+                                sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.Note3ToNote2Fast.name()),
+                                                swerve, transfer, arm,
+                                                cf, pf, 1),
 
-                                sac.runPathPickupAndShoot(pf.pathMaps.get(sbwfrpaths.Note2ToNote1Fast.name()), swerve,
-                                                arm,
-                                                cf, pf),
+                                sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.Note2ToNote1Fast.name()),
+                                                swerve, transfer, arm,
+                                                cf, pf, 1),
 
                                 Commands.parallel(
                                                 new PickupUsingVision(cf,
