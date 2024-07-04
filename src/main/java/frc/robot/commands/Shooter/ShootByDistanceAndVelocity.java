@@ -38,7 +38,6 @@ public class ShootByDistanceAndVelocity extends Command {
   private LinearFilter accelYFilter = LinearFilter.movingAverage(2);
 
   private final double setpointDebounceTime = 0.20;
-  private final double accCompFactor = .5;
   private boolean firstPass;
   private Debouncer setpointDebouncer = new Debouncer(setpointDebounceTime);
   private double shotTime;

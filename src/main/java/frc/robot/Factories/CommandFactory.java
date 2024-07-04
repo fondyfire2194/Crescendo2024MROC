@@ -54,9 +54,7 @@ public class CommandFactory {
         Pose2d tempPose2d = new Pose2d();
 
         public int testNotesRun;
-
-        private int tst;
-
+        
         public CommandFactory(SwerveSubsystem swerve, ShooterSubsystem shooter, ArmSubsystem arm,
                         IntakeSubsystem intake, TransferSubsystem transfer,
                         ShootingData sd) {

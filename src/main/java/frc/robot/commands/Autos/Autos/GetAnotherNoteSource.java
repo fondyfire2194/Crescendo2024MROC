@@ -4,22 +4,19 @@
 
 package frc.robot.commands.Autos.Autos;
 
-import org.ejml.dense.row.decomposition.eig.EigenPowerMethod_DDRM;
-
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
-import frc.robot.Factories.PathFactory.amppaths;
 import frc.robot.Factories.PathFactory.sourcepaths;
+import frc.robot.commands.Drive.AutoAlignSpeaker;
+import frc.robot.commands.Drive.RotateToAngle;
+import frc.robot.commands.Pathplanner.RunPPath;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 import frc.robot.utils.AllianceUtil;
-import frc.robot.commands.Drive.AutoAlignSpeaker;
-import frc.robot.commands.Drive.RotateToAngle;
-import frc.robot.commands.Pathplanner.RunPPath;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:

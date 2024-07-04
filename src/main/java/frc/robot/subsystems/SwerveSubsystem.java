@@ -91,9 +91,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   double ylim = Units.inchesToMeters(12);
   double deglim = Units.degreesToRadians(5);
 
-  @Log.NT(key = "autostep")
-  public int autostep;
-
   private boolean pathRunning;
   private boolean pathStarted;
   public PathPlannerPath currentPlannerPath;
@@ -518,13 +515,7 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Drive/AUSEp", autostep);
-    SmartDashboard.putNumber("Drive/GyroAngle", getAngle());
-    SmartDashboard.putNumber("Drive/GyroYawRads", getR2dRads());
-    SmartDashboard.putNumber("Drive/XMPS", getChassisSpeeds().vxMetersPerSecond);
-
-    m_field.setRobotPose(getPose());
-
+  
     if (!mod0connected) {
       mod0connected = checkMod0CansOK();
       SmartDashboard.putBoolean("Drive//Ok0ModCan", mod0connected);
@@ -692,6 +683,8 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
 
   @Override
   public void simulationPeriodic() {
+
+    m_field.setRobotPose(getPose());
 
     SwerveModuleState[] measuredStates
 

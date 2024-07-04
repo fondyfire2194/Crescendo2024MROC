@@ -4,11 +4,9 @@
 
 package frc.robot.commands.Autos.AutoStarts;
 
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Factories.AutoFactory;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
@@ -18,7 +16,6 @@ import frc.robot.commands.Autos.Autos.GetAnotherNoteAmp;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
-import frc.robot.utils.AllianceUtil;
 
 /** Add your docs here. */
 public class AutoAmpWingThenCenter extends SequentialCommandGroup {

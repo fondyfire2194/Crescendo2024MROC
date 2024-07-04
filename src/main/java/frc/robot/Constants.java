@@ -692,7 +692,7 @@ public final class Constants {
                 public static final double voltageComp = 12;
                 public static final IdleMode transferIdleMode = IdleMode.kBrake;
                 public static final int transferContinuousCurrentLimit = 40;
-                public static double clearShooterTime = .25;
+                public static double clearShooterTime = .75;
                 public static double noNoteStopTime = 20;
                 public static double jogSpeed = 1;
                 public static double intakingSpeed = 5500;

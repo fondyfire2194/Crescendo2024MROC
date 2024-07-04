@@ -13,6 +13,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,7 +43,7 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
   public boolean skipSecondNoteInSim;
   public boolean skipThirdNoteInSim;
   public boolean skipFourthNoteInSim;
-  
+
   @Log.NT(key = "lobbing")
   public boolean lobbing;
   @Log.NT(key = "shootmoving")
@@ -51,6 +52,7 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
   @Log.NT(key = "okshootmoving")
   public boolean OKShootMoving;
   public boolean logShot;
+  Debouncer noteDetector = new Debouncer(0.25, Debouncer.DebounceType.kFalling);
 
   /** Creates a new transfer. */
   public TransferSubsystem() {
@@ -93,10 +95,9 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command transferToShooterCommand() {
-    return Commands.run(() -> transferToShooter())
+    return Commands.run(() -> transferToShooter()).until(() -> !noteAtIntake())
         .withTimeout(TransferConstants.clearShooterTime)
         .andThen(stopTransferCommand());
-
   }
 
   public Command transferToShooterCommandAmp() {
@@ -138,13 +139,12 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
   }
 
   @Log.NT(key = "transfernoteatintake")
-  public boolean noteAtIntake() { // we can get rid of the TimeOfFlight
-    return m_limitSwitch.isPressed();
+  public boolean noteAtIntake() {
+    return noteDetector.calculate(m_limitSwitch.isPressed());
   }
 
   @Override
   public void periodic() {
-
     // This method will be called once per scheduler run
 
     if (!transferMotorConnected) {

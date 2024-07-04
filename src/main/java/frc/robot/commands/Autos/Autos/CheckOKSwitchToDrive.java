@@ -5,14 +5,12 @@
 package frc.robot.commands.Autos.Autos;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CameraConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.utils.AllianceUtil;
 
 public class CheckOKSwitchToDrive extends Command {
   /**
@@ -55,26 +53,17 @@ public class CheckOKSwitchToDrive extends Command {
 
     m_cf.doIntake();
 
-    if (AllianceUtil.isRedAlliance())
-      m_swerve.distanceToPickup = m_swerve.getX() - FieldConstants.FIELD_LENGTH / 2;
-    else
-      m_swerve.distanceToPickup = FieldConstants.FIELD_LENGTH / 2 - m_swerve.getX();
-
-    SmartDashboard.putNumber("RMGDST", m_swerve.distanceToPickup);
-
-    m_swerve.noteSeen = RobotBase.isReal() && LimelightHelpers.getTV(CameraConstants.rearCamera.camname)
+    m_swerve.distanceToPickup = Math.abs(FieldConstants.FIELD_LENGTH / 2 - m_swerve.getX());
+    m_swerve.noteSeen = RobotBase.isReal()
+     && LimelightHelpers.getTV(CameraConstants.rearCamera.camname)
         && Math.abs(LimelightHelpers.getTX(CameraConstants.rearCamera.camname)) < m_txtol
         && m_swerve.distanceToPickup <= m_switchoverDistance;
-    // || RobotBase.isSimulation() && m_swerve.remainingdistance <
-    // m_switchoverDistance / 3;
-
-    SmartDashboard.putBoolean("RMGns", m_swerve.noteSeen);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putNumber("OKCHECK", 1739);
+  
   }
 
   // Returns true when the command should end.

@@ -41,7 +41,6 @@ import frc.robot.commands.Autos.Autos.SourceAutoCommands;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.commands.Drive.AlignTargetOdometry;
 import frc.robot.commands.Drive.AlignToNote;
-import frc.robot.commands.Drive.AutoAlignNote;
 import frc.robot.commands.Drive.AutoAlignSpeaker;
 import frc.robot.commands.Drive.DriveToPickupNote;
 import frc.robot.commands.Drive.RotateToAngle;
@@ -263,12 +262,10 @@ public class RobotContainer implements Logged {
                         canivoreCheck = new Trigger(
                                         () -> !canInfo.Status.isOK() || canInfo.Status.isError()
                                                         || canInfo.Status.isWarning());
-
                         canivoreCheck.onTrue(Commands.runOnce(() -> logCanivore()));
                 }
 
                 // ela portForwardCameras();
-
         }
 
         public void logCanivore() {
@@ -418,8 +415,8 @@ public class RobotContainer implements Logged {
 
                 // codriver.povUp().onTrue(
 
-                codriver.povDown().onTrue(
-                                new AutoAlignNote(m_swerve, 2, true));
+               // codriver.povDown().onTrue(
+                              
 
                 codriver.povLeft().onTrue(
                                 Commands.parallel(

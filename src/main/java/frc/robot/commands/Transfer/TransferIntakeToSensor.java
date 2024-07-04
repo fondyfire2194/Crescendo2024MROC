@@ -36,12 +36,12 @@ public class TransferIntakeToSensor extends Command {
     endTimer.reset();
     endTimer.start();
     m_intake.noteMissed = false;
-    if (RobotBase.isSimulation())
-      m_swerve.distanceToPickup = 10;// sim
-    m_intake.isIntaking4 = m_intake.isIntaking3;
-    m_intake.isIntaking3 = m_intake.isIntaking2;
-    m_intake.isIntaking2 = m_intake.isIntaking1;
-    m_intake.isIntaking1 = true;
+    if (RobotBase.isSimulation()) {
+      m_intake.isIntaking4 = m_intake.isIntaking3;
+      m_intake.isIntaking3 = m_intake.isIntaking2;
+      m_intake.isIntaking2 = m_intake.isIntaking1;
+      m_intake.isIntaking1 = true;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,27 +55,22 @@ public class TransferIntakeToSensor extends Command {
         && endTimer.hasElapsed(m_noteMissedTime);
 
     if (RobotBase.isSimulation() && m_swerve.isStopped()) {
-
       if (m_intake.isIntaking1 && !m_intake.isIntaking2 && !m_intake.isIntaking3 && !m_intake.isIntaking4
           && !m_transfer.skipFirstNoteInSim) {
         m_transfer.simnoteatintake = true;
       }
-
       if (m_intake.isIntaking2 && !m_intake.isIntaking3 && !m_intake.isIntaking4
           && !m_transfer.skipSecondNoteInSim) {
         m_transfer.simnoteatintake = true;
       }
-
       if (m_intake.isIntaking3 && !m_intake.isIntaking4
           && !m_transfer.skipThirdNoteInSim) {
         m_transfer.simnoteatintake = true;
       }
-
       if (m_intake.isIntaking4
           && !m_transfer.skipFourthNoteInSim) {
         m_transfer.simnoteatintake = true;
       }
-
     }
 
   }
