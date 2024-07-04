@@ -41,7 +41,6 @@ public class LimelightVision extends SubsystemBase implements Logged {
   @Log.NT(key = "rexists")
   public boolean limelightExistsr;
   private int loopctr;
- 
 
   public String flname = CameraConstants.frontLeftCamera.camname;
   public String frname = CameraConstants.frontRightCamera.camname;
@@ -182,6 +181,21 @@ public class LimelightVision extends SubsystemBase implements Logged {
 
   public double getBoundingHorizontalPixels() {
     return LimelightHelpers.getLimelightNTDouble(rname, "thor");
+  }
+
+  @Log.NT(key = "rearCameraTX")
+  public double rearCameraTX() {
+    return LimelightHelpers.getTX(rname);
+  }
+
+  @Log.NT(key = "rearCameraTY")
+  public double rearCameraTY() {
+    return LimelightHelpers.getTY(rname);
+  }
+
+  @Log.NT(key = "rearCameraTA")
+  public double rearCameraTA() {
+    return LimelightHelpers.getTA(rname);
   }
 
 }
