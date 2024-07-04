@@ -4,15 +4,18 @@
 
 package frc.robot.commands.Autos.Autos;
 
+import java.security.AllPermission;
+
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
 import frc.robot.Factories.PathFactory.amppaths;
-import frc.robot.Factories.PathFactory.sourcepaths;
+import frc.robot.commands.Drive.AutoAlignSpeaker;
 import frc.robot.commands.Pathplanner.RunPPath;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -26,43 +29,28 @@ public class AmpAutoCommands {
                         CommandFactory cf) {
         }
 
-        public Command setAmpStart(SwerveSubsystem swerve, TransferSubsystem transfer,
-                        IntakeSubsystem intake, CommandFactory cf) {
+        public Command setAmpStart(SwerveSubsystem swerve, TransferSubsystem transfer, IntakeSubsystem intake,
+                        CommandFactory cf) {
                 return Commands.sequence(
                                 Commands.runOnce(() -> transfer.simnoteatintake = false),
                                 Commands.runOnce(() -> intake.resetIsIntakingSim()),
                                 Commands.runOnce(() -> swerve.targetPose = AllianceUtil.getSpeakerPose()),
                                 Commands.runOnce(() -> swerve.ampActive = true),
                                 Commands.runOnce(() -> swerve.sourceActive = false),
-                                Commands.runOnce(() -> swerve.pickupTargetX = AllianceUtil.getWingNoteX()),
+                                Commands.runOnce(() -> swerve.currentpathstartTime = Timer.getFPGATimestamp()),
+                                Commands.runOnce(() -> swerve.pickupTargetX = FieldConstants.FIELD_LENGTH / 2),
                                 cf.setStartPosebyAlliance(FieldConstants.ampStartPose));
+
         }
 
         public Command pickupNote(CommandFactory cf, PathPlannerPath path, SwerveSubsystem swerve) {
-
                 return Commands.parallel(
                                 new RunPPath(swerve, path),
                                 cf.doIntake());
         }
 
-        public Command prepandshoot(CommandFactory cf, double armAngle, double shooterpm, double rpmtol) {
-                return Commands.sequence(
-                                cf.positionArmRunShooterSpecialCase(armAngle, shooterpm, rpmtol),
-                                cf.checkAtTargets(20),
-                                cf.transferNoteToShooterCommand());
-        }
-
-        public Command shootbydistance(CommandFactory cf) {
-                return Commands.sequence(
-                                cf.positionArmRunShooterByDistance(
-                                                false, true),
-
-                                cf.transferNoteToShooterCommand());
-        }
-
         public Command moveShoot(CommandFactory cf, PathPlannerPath path, SwerveSubsystem swerve, double armAngle,
                         double shooterpm, double rpmtol) {
-
                 return Commands.sequence(
                                 Commands.parallel(
                                                 new RunPPath(swerve, path),
@@ -70,37 +58,53 @@ public class AmpAutoCommands {
                                 cf.transferNoteToShooterCommand());
         }
 
-        public Command pickupCenter1_2(CommandFactory cf, PathFactory pf, SwerveSubsystem swerve,
+        public Command moveShootCenter1_2(CommandFactory cf, PathFactory pf, SwerveSubsystem swerve,
+                        boolean innerNoteFirst) {
+                return Commands.either(
+                                new CenterToShoot(cf, pf.pathMaps.get(
+                                                amppaths.Center2ToAmpShoot
+                                                                .name()),
+                                                swerve, true),
+                                new CenterToShoot(cf, pf.pathMaps.get(amppaths.Center1ToAmpShoot
+                                                .name()),
+                                                swerve, true),
+                                () -> innerNoteFirst);
+        }
+
+        public Command pickupCenter2_1(CommandFactory cf, PathFactory pf, SwerveSubsystem swerve,
                         TransferSubsystem transfer, IntakeSubsystem intake,
                         boolean innerNoteFirst) {
 
                 return Commands.parallel(
                                 Commands.either(
                                                 new RunPPath(swerve,
-                                                                pf.pathMaps.get(amppaths.AmpToCenter2.name())),
-
-                                                new RunPPath(swerve, pf.pathMaps.get(
-                                                                amppaths.AmpToCenter1.name())),
+                                                                pf.pathMaps.get(amppaths.AmpToCenter2
+                                                                                .name())),
+                                                new RunPPath(swerve,
+                                                                pf.pathMaps.get(amppaths.AmpToCenter1
+                                                                                .name())),
                                                 () -> innerNoteFirst),
-
-                                cf.doIntake());
+                                cf.doIntakeDelayed(2));
         }
 
-        public Command moveShootCenter1_2(CommandFactory cf, PathFactory pf, SwerveSubsystem swerve,
+         public Command pickupCenter2_1FromWing1(CommandFactory cf, PathFactory pf, SwerveSubsystem swerve,
+                        TransferSubsystem transfer, IntakeSubsystem intake,
                         boolean innerNoteFirst) {
-                return Commands.either(
-                                new CenterToShoot(cf, pf.pathMaps.get(amppaths.Center2ToAmpShoot
-                                                .name()),
-                                                swerve, false),
-                                new CenterToShoot(cf, pf.pathMaps.get(amppaths.Center1ToAmpShoot
-                                                .name()),
-                                                swerve, false),
-                                () -> innerNoteFirst);
+
+                return Commands.parallel(
+                                Commands.either(
+                                                new RunPPath(swerve,
+                                                                pf.pathMaps.get(amppaths.Wing1ToCenter2
+                                                                                .name())),
+                                                new RunPPath(swerve,
+                                                                pf.pathMaps.get(amppaths.Wing1ToCenter1
+                                                                                .name())),
+                                                () -> innerNoteFirst),
+                                cf.doIntakeDelayed(2));
         }
 
         public Command pickUpNoteAfterShoot(PathFactory pf, CommandFactory cf, SwerveSubsystem swerve,
                         TransferSubsystem transfer, IntakeSubsystem intake, boolean innerNoteFirst) {
-
                 return Commands.parallel(
                                 Commands.either(
                                                 new RunPPath(swerve,
@@ -130,19 +134,32 @@ public class AmpAutoCommands {
                                 cf.doIntake());
         }
 
-        public Command tryOtherNote(PathFactory pf, CommandFactory cf, SwerveSubsystem swerve,
-                        TransferSubsystem transfer, boolean innerNoteFirst) {
+        public Command shootbydistance(CommandFactory cf) {
+                return Commands.sequence(
+                                cf.positionArmRunShooterByDistance(false, true),
+                                shoot(cf));
+        }
+
+        public Command shoot(CommandFactory cf) {
+                return cf.transferNoteToShooterCommand();
+        }
+
+        public Command runPathPickupAndShootIfNote(PathPlannerPath path, SwerveSubsystem swerve,
+                        CommandFactory cf, PathFactory pf, double aligntolerance) {
                 return Commands.sequence(
                                 Commands.parallel(
-                                                Commands.either(
-                                                                new RunPPath(swerve,
-                                                                                pf.pathMaps.get(sourcepaths.Center5ToCenter4
-                                                                                                .name())),
-                                                                new RunPPath(swerve,
-                                                                                pf.pathMaps.get(sourcepaths.Center4ToCenter5
-                                                                                                .name())),
-                                                                () -> innerNoteFirst),
-                                                cf.doIntake()));
+                                                new RunPPath(swerve, path),
+                                                cf.doIntake()),
+                                Commands.either(
+                                                Commands.sequence(
+                                                                Commands.parallel(
+                                                                                cf.positionArmRunShooterByDistance(
+                                                                                                false, true),
+                                                                                new AutoAlignSpeaker(swerve,
+                                                                                                aligntolerance, true)),
+                                                                cf.transferNoteToShooterCommand()),
+                                                Commands.none(),
+                                                () -> cf.noteAtIntake()));
         }
 
 }

@@ -8,14 +8,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Factories.PathFactory.amppaths;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
 import frc.robot.commands.Autos.AutoStarts.AutoAmpCompleteVisV2;
+import frc.robot.commands.Autos.AutoStarts.AutoAmpWingThenCenter;
 import frc.robot.commands.Autos.AutoStarts.AutoSourceCompleteVisV2;
 import frc.robot.commands.Autos.AutoStarts.AutoSubwr5Note;
 import frc.robot.commands.Autos.AutoStarts.AutoSubwrCenter3;
 import frc.robot.commands.Autos.Autos.AmpAutoCommands;
-import frc.robot.commands.Autos.Autos.CenterToShoot;
 import frc.robot.commands.Autos.Autos.SourceAutoCommands;
 import frc.robot.commands.Autos.SubwfrStart.AutoSbwfrShootThenSequence;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
@@ -200,77 +199,62 @@ public class AutoFactory {
                         case 5:
                                 return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
                                                 true);
-
                         case 6:
                                 return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
                                                 false);
-
                         case 7:
                                 return new AutoSubwr5Note(m_cf, m_pf, m_sac, m_swerve, m_intake,
                                                 m_arm);
                         case 11:
                                 return new AutoSourceCompleteVisV2(m_cf, m_pf, this,
-                                                m_srcac, m_swerve, m_intake, m_transfer, m_llv, 1.75, true);
+                                                m_srcac, m_swerve, m_intake, m_transfer, true);
                         case 12:
                                 return new AutoSourceCompleteVisV2(m_cf, m_pf, this,
-                                                m_srcac, m_swerve, m_intake, m_transfer, m_llv, 1.75, false);
+                                                m_srcac, m_swerve, m_intake, m_transfer, false);
                         case 21:
                                 return new AutoAmpCompleteVisV2(m_cf, m_pf, this,
-                                                m_ampac, m_swerve, m_intake, m_transfer, m_llv, true);
+                                                m_ampac, m_swerve, m_intake, m_transfer, true);
                         case 22:
                                 return new AutoAmpCompleteVisV2(m_cf, m_pf, this,
-                                                m_ampac, m_swerve, m_intake, m_transfer, m_llv, false);
+                                                m_ampac, m_swerve, m_intake, m_transfer, false);
                         case 23:
-                                return Commands.sequence(
-                                                m_ampac.setAmpStart(m_swerve, m_transfer, m_intake, m_cf),
-                                                m_ampac.pickupNote(m_cf, m_pf.pathMaps.get(
-                                                                amppaths.AmpToWing1.name()), m_swerve),
-                                                m_ampac.shootbydistance(m_cf),
-                                                m_ampac.pickupNote(m_cf, m_pf.pathMaps.get(
-                                                                amppaths.Wing1ToCenter1.name()), m_swerve),
-                                                new CenterToShoot(m_cf, m_pf.pathMaps.get(amppaths.Center1ToAmpShoot
-                                                                .name()), m_swerve, false));
+                                return new AutoAmpWingThenCenter(m_cf, m_pf, null, m_ampac, m_swerve, m_intake,
+                                                m_transfer, true);
                         case 24:
-                                return Commands.sequence(
-                                                m_ampac.setAmpStart(m_swerve, m_transfer, m_intake, m_cf),
-                                                m_ampac.pickupNote(m_cf, m_pf.pathMaps.get(
-                                                                amppaths.AmpToWing1.name()), m_swerve),
-                                                m_ampac.shootbydistance(m_cf),
-                                                m_ampac.pickupNote(m_cf, m_pf.pathMaps.get(
-                                                                amppaths.Wing1ToCenter2.name()), m_swerve),
-                                                new CenterToShoot(m_cf, m_pf.pathMaps.get(amppaths.Center2ToAmpShoot
-                                                                .name()), m_swerve, false));
+                                return new AutoAmpWingThenCenter(m_cf, m_pf, null, m_ampac, m_swerve, m_intake,
+                                                m_transfer, false);
+
                         default:
                                 return Commands.none();
-
                 }
-
         }
 
-        Command shoot(CommandFactory cf, double angle, double rpm, double rpmpct) {
-                return Commands.sequence(
-                                cf.positionArmRunShooterSpecialCase(angle, rpm, rpmpct),
-                                cf.transferNoteToShooterCommand());
-        }
+        // Command shoot(CommandFactory cf, double angle, double rpm, double rpmpct) {
+        // return Commands.sequence(
+        // cf.positionArmRunShooterSpecialCase(angle, rpm, rpmpct),
+        // cf.transferNoteToShooterCommand());
+        // }
 
-        Command moveandshoot(SwerveSubsystem swerve, sbwfrpaths path, CommandFactory cf, PathFactory pf,
-                        double angle, double rpm) {
-                return Commands.sequence(
-                                Commands.parallel(
-                                                new RunPPath(swerve, pf.pathMaps.get(path.name())),
-                                                cf.positionArmRunShooterSpecialCase(
-                                                                angle, rpm, 10)),
-                                cf.transferNoteToShooterCommand());
-        }
+        // Command moveandshoot(SwerveSubsystem swerve, sbwfrpaths path, CommandFactory
+        // cf, PathFactory pf,
+        // double angle, double rpm) {
+        // return Commands.sequence(
+        // Commands.parallel(
+        // new RunPPath(swerve, pf.pathMaps.get(path.name())),
+        // cf.positionArmRunShooterSpecialCase(
+        // angle, rpm, 10)),
+        // cf.transferNoteToShooterCommand());
+        // }
 
-        Command moveAndPickup(SwerveSubsystem swerve, sbwfrpaths path, CommandFactory cf, PathFactory pf) {
-                return Commands.parallel(
-                                new RunPPath(swerve,
-                                                pf.pathMaps.get(path.name())),
-                                Commands.sequence(
-                                                Commands.waitSeconds(.25),
-                                                cf.doIntake()));
-        }
+        // Command moveAndPickup(SwerveSubsystem swerve, sbwfrpaths path, CommandFactory
+        // cf, PathFactory pf) {
+        // return Commands.parallel(
+        // new RunPPath(swerve,
+        // pf.pathMaps.get(path.name())),
+        // Commands.sequence(
+        // Commands.waitSeconds(.25),
+        // cf.doIntake()));
+        // }
 
         public Command getAutonomousCommand() {
                 return finalCommand(finalChoice);

@@ -13,7 +13,6 @@ import frc.robot.Factories.PathFactory;
 import frc.robot.commands.Autos.Autos.AmpAutoCommands;
 import frc.robot.commands.Autos.Autos.GetAnotherNoteAmp;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LimelightVision;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 
@@ -28,10 +27,9 @@ public class AutoAmpCompleteVisV2 extends SequentialCommandGroup {
                         SwerveSubsystem swerve,
                         IntakeSubsystem intake,
                         TransferSubsystem transfer,
-                        LimelightVision llv,
                         boolean innerNoteFirst) {
 
-                addCommands( // note
+                addCommands(
                                 ampac.setAmpStart(swerve, transfer, intake, cf),
 
                                 Commands.race(
@@ -41,7 +39,7 @@ public class AutoAmpCompleteVisV2 extends SequentialCommandGroup {
 
                                 cf.transferNoteToShooterCommand(),
 
-                                ampac.pickupCenter1_2(cf, pf, swerve, transfer, intake, innerNoteFirst),
+                                ampac.pickupCenter2_1(cf, pf, swerve, transfer, intake, innerNoteFirst),
 
                                 // if note in intake go shoot it or try the adjacent one if not
                                 Commands.either(

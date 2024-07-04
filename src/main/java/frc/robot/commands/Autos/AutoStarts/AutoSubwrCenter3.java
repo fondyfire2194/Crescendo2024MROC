@@ -36,8 +36,7 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
                                 sac.setsbwrstart(swerve, cf, intake),
                                 sac.sbwfrShoot(cf),
                                 sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.SubwfrShootToWing2.name()),
-                                                swerve, arm,
-                                                cf, pf, 1),
+                                                swerve, cf, pf, 1),
                                 Commands.runOnce(
                                                 () -> swerve.pickupTargetX = FieldConstants.FIELD_LENGTH
                                                                 / 2),
