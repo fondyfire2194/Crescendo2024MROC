@@ -122,7 +122,7 @@ public class PathFactory {
         Note1ToCenter1Fast,
         Note3ToNote2Fast,
         Note2ToNote1Fast,
-        Center1ToShootFast,
+        Center1ToAmpShoot,
         TEST3,
         TEST3Curve,
         TEST0,

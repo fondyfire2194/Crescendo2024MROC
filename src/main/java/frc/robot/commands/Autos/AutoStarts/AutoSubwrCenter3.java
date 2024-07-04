@@ -37,9 +37,6 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
                                 sac.sbwfrShoot(cf),
                                 sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.SubwfrShootToWing2.name()),
                                                 swerve, cf, pf, 1),
-                                Commands.runOnce(
-                                                () -> swerve.pickupTargetX = FieldConstants.FIELD_LENGTH
-                                                                / 2),
                                 sac.moveAndPickup(sbwfrpaths.Wing2ToCenter3, swerve, cf, pf),
                                 Commands.either(
                                                 sac.sbwfrmoveandshoot(sbwfrpaths.Center3ToSubwfrShoot,
@@ -48,9 +45,7 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
                                                 new RunPPath(swerve, pf.pathMaps
                                                                 .get(sbwfrpaths.Center3ToSubwfrShoot
                                                                                 .name())),
-                                                () -> transfer.noteAtIntake()),
-                                Commands.runOnce(() -> swerve.pickupTargetX = AllianceUtil
-                                                .getWingNoteX()),
+                                                () -> cf.noteAtIntake()),
                                 Commands.either(
                                                 sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing3Shoot,
                                                                 swerve, cf,

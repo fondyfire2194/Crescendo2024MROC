@@ -60,8 +60,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   private Pose2d simOdometryPose = new Pose2d();
 
   private boolean lookForNote;
-  @Log.NT(key = "pickuptargetX")
-  public double pickupTargetX;
   private double keepAngle = 0.0;
   private double timeSinceRot = 0.0;
   private double lastRotTime = 0.0;
@@ -524,7 +522,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     SmartDashboard.putNumber("Drive/GyroAngle", getAngle());
     SmartDashboard.putNumber("Drive/GyroYawRads", getR2dRads());
     SmartDashboard.putNumber("Drive/XMPS", getChassisSpeeds().vxMetersPerSecond);
-    distanceToPickup = Math.abs(pickupTargetX - getX());// for note at intake sim
 
     m_field.setRobotPose(getPose());
 
@@ -576,7 +573,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     targetPose = pose;
   }
 
-  @Log.NT(key = "stagepose")
   public Pose2d getStagePose() {
     return AllianceUtil.getStagePose();
   }
@@ -603,9 +599,9 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
         .getDistance(getPose().getTranslation())), 2);
   }
 
-  public double getDistanceFromVirtual() {    
-      return round2dp(virtualPose.getTranslation()
-          .getDistance(getPose().getTranslation()), 2);
+  public double getDistanceFromVirtual() {
+    return round2dp(virtualPose.getTranslation()
+        .getDistance(getPose().getTranslation()), 2);
   }
 
   public double getDistanceFromNote(int number) {

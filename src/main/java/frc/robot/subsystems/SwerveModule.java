@@ -76,10 +76,6 @@ public class SwerveModule extends SubsystemBase {
     this.m_simRotatePosition = 0.0;
     m_turnCancoder = new CANcoder(moduleConstants.canCoderID, "CV1");
 
-    // var can_config = new CANcoderConfiguration();
-    // can_config.MagnetSensor.AbsoluteSensorRange =
-    // AbsoluteSensorRangeValue.Unsigned_0To1;
-    // m_turnCancoder.getConfigurator().apply(can_config);
 
     /* Drive Motor Config */
     driveMotor = new CANSparkMax(moduleConstants.driveMotorID, MotorType.kBrushless);
@@ -330,7 +326,6 @@ public class SwerveModule extends SubsystemBase {
           characterizing);
       SmartDashboard.putNumber(a + " Characterization Volts", characterizationVolts);
     }
-
   }
 
   public double getCancoderDeg() {

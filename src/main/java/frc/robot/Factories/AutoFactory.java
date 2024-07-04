@@ -18,10 +18,8 @@ import frc.robot.commands.Autos.Autos.AmpAutoCommands;
 import frc.robot.commands.Autos.Autos.SourceAutoCommands;
 import frc.robot.commands.Autos.SubwfrStart.AutoSbwfrShootThenSequence;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
-import frc.robot.commands.Pathplanner.RunPPath;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LimelightVision;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
@@ -30,8 +28,6 @@ import frc.robot.subsystems.TransferSubsystem;
 public class AutoFactory {
 
         private final PathFactory m_pf;
-
-        private final LimelightVision m_llv;
 
         private final SubwooferAutoCommands m_sac;
 
@@ -80,7 +76,8 @@ public class AutoFactory {
                         SwerveSubsystem swerve,
                         ShooterSubsystem shooter,
                         ArmSubsystem arm,
-                        IntakeSubsystem intake, TransferSubsystem transfer, LimelightVision llv) {
+                        IntakeSubsystem intake,
+                        TransferSubsystem transfer) {
                 m_pf = pf;
                 m_cf = cf;
                 m_sac = sac;
@@ -90,7 +87,6 @@ public class AutoFactory {
                 m_swerve = swerve;
                 m_transfer = transfer;
                 m_intake = intake;
-                m_llv = llv;
 
                 minsbwfrauto = 1;
                 m_subwfrStartChooser.setDefaultOption("Not Used", 0);
@@ -115,8 +111,8 @@ public class AutoFactory {
                 m_ampStartChooser.setDefaultOption("Not Used", 20);
                 m_ampStartChooser.addOption("C2 then C1", 21);
                 m_ampStartChooser.addOption("C1 then C2", 22);
-                m_ampStartChooser.addOption("W1 then C1", 23);
-                m_ampStartChooser.addOption("W1 then C2", 24);
+                m_ampStartChooser.addOption("W1 then C1 C2", 23);
+                m_ampStartChooser.addOption("W1 then C2 C1", 24);
 
                 maxampauto = 24;
 

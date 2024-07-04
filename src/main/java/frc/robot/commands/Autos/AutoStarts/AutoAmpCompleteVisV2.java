@@ -45,7 +45,7 @@ public class AutoAmpCompleteVisV2 extends SequentialCommandGroup {
                                 Commands.either(
                                                 ampac.moveShootCenter1_2(cf, pf, swerve, innerNoteFirst),
                                                 new GetAnotherNoteAmp(swerve, transfer, intake, cf, pf),
-                                                () -> transfer.noteAtIntake()),
+                                                () -> cf.noteAtIntake()),
 
                                 ampac.pickUpNoteAfterShootVision(pf, cf, swerve, transfer, intake,
                                                 innerNoteFirst),
@@ -53,7 +53,7 @@ public class AutoAmpCompleteVisV2 extends SequentialCommandGroup {
                                 Commands.either(
                                                 ampac.moveShootCenter1_2(cf, pf, swerve, !innerNoteFirst),
                                                 new GetAnotherNoteAmp(swerve, transfer, intake, cf, pf),
-                                                () -> transfer.noteAtIntake()));
+                                                () -> cf.noteAtIntake()));
 
         }
 

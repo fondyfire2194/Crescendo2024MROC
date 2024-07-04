@@ -6,6 +6,7 @@ package frc.robot.commands.Autos.Autos;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -16,9 +17,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 /** Add your docs here. */
 public class CenterToShoot extends SequentialCommandGroup {
-        double activeArmAngle = 0;
-        double activeShooterRPM = 0;
-
+       
         public CenterToShoot(
                         CommandFactory cf,
                         PathPlannerPath path,
@@ -27,24 +26,15 @@ public class CenterToShoot extends SequentialCommandGroup {
 
                 addCommands(
                                 Commands.sequence(
-                                                Commands.either(
-                                                                Commands.parallel(
-                                                                                Commands.runOnce(
-                                                                                                () -> activeArmAngle = Constants.sourceShootAngle),
-                                                                                Commands.runOnce(
-                                                                                                () -> activeShooterRPM = Constants.sourceShootSpeed)),
-
-                                                                Commands.parallel(
-                                                                                Commands.runOnce(
-                                                                                                () -> activeArmAngle = Constants.ampShootAngle),
-                                                                                Commands.runOnce(
-                                                                                                () -> activeShooterRPM = Constants.ampShootSpeed)),
-
-                                                                () -> source),
+                                                Commands.runOnce(() -> SmartDashboard.putBoolean("GI+OT", true)),
                                                 Commands.parallel(
                                                                 new RunPPath(swerve, path),
-                                                                cf.positionArmRunShooterSpecialCase(activeArmAngle, activeShooterRPM, 15)),
+                                                                cf.positionArmRunShooterSpecialCase(
+                                                                                Constants.source_ampShootAngle,
+                                                                                Constants.source_ampShootSpeed, 15)),
                                                 Commands.parallel(
+                                                                Commands.runOnce(() -> SmartDashboard
+                                                                                .putBoolean("GI+OT3", true)),
                                                                 cf.positionArmRunShooterByDistance(false, true),
                                                                 new AutoAlignSpeaker(swerve, 1, true)),
                                                 cf.transferNoteToShooterCommand()));

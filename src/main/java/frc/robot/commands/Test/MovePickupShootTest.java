@@ -50,7 +50,7 @@ public class MovePickupShootTest extends SequentialCommandGroup {
                                                 Commands.either(
                                                                 transfer.transferToShooterCommand(),
                                                                 Commands.runOnce(() -> cf.testNotesRun = n + 1),
-                                                                () -> transfer.noteAtIntake()),
+                                                                () -> cf.noteAtIntake()),
                                                 new RotateToAngle(swerve, 180),
 
                                                 Commands.runOnce(() -> cf.testNotesRun++))

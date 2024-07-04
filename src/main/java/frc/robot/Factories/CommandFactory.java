@@ -12,7 +12,9 @@ import com.pathplanner.lib.util.GeometryUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
@@ -52,6 +54,8 @@ public class CommandFactory {
         Pose2d tempPose2d = new Pose2d();
 
         public int testNotesRun;
+
+        private int tst;
 
         public CommandFactory(SwerveSubsystem swerve, ShooterSubsystem shooter, ArmSubsystem arm,
                         IntakeSubsystem intake, TransferSubsystem transfer,
@@ -117,6 +121,7 @@ public class CommandFactory {
                 return new FunctionalCommand(
 
                                 () -> Commands.runOnce(() -> m_transfer.lobbing = lob),
+
                                 () -> {
                                         if (lob) {
                                                 double stageDistance = m_swerve.getDistanceFromStage();
@@ -128,22 +133,29 @@ public class CommandFactory {
                                                 m_arm.setTarget(getLobArmAngleFromTarget(
                                                                 stageDistance));
                                         } else {
+                                                m_arm.setTarget(m_sd.armAngleMap
+                                                                .get(m_swerve.getDistanceFromSpeaker()));
+                                                m_arm.setTolerance(m_sd.armToleranceMap
+                                                                .get(m_swerve.getDistanceFromSpeaker()));
                                                 m_shooter.startShooter(
                                                                 m_sd.shooterRPMMap
                                                                                 .get(m_swerve.getDistanceFromSpeaker()));
-                                                m_arm.setTolerance(ArmConstants.angleTolerance);
-                                                m_arm.setTarget(m_sd.armAngleMap
-                                                                .get(m_swerve.getDistanceFromSpeaker()));
                                         }
                                 },
 
                                 (interrupted) -> Commands.none(),
 
-                                () -> endAtTargets && m_arm.getAtSetpoint() && m_shooter.bothAtSpeed(5));
+                                () -> endAtTargets && m_arm.getAtSetpoint()
+                                                && m_shooter.bothAtSpeed(
+                                                                m_sd.shooterRPMToleranceMap.get(
+                                                                                m_swerve.getDistanceFromSpeaker())));
         }
 
         public Command positionArmRunShooterSpecialCase(double armAngleDeg, double shooterSpeed, double rpmpct) {
-                return Commands.parallel(
+                return Commands.parallel(Commands.runOnce(() -> SmartDashboard
+                                .putNumber("GI+OTAAA", armAngleDeg)),
+                                Commands.runOnce(() -> SmartDashboard.putNumber(
+                                                "GI+OTAAS", shooterSpeed)),
                                 m_arm.setGoalCommand(Units.degreesToRadians(armAngleDeg)),
                                 m_shooter.startShooterCommand(shooterSpeed, rpmpct));
 
@@ -164,7 +176,7 @@ public class CommandFactory {
         }
 
         public boolean noteAtIntake() {
-                return m_transfer.noteAtIntake();
+                return m_transfer.noteAtIntake() || RobotBase.isSimulation() && m_transfer.simnoteatintake;
         }
 
         public Command armToIntake() {
@@ -201,7 +213,7 @@ public class CommandFactory {
                         else
                                 controller.getHID().setRumble(RumbleType.kLeftRumble, 0.0);
 
-                        if (m_transfer.noteAtIntake() || m_intake.getAmps() > ArmConstants.noteAtIntakeAmps)
+                        if (noteAtIntake() || m_intake.getAmps() > ArmConstants.noteAtIntakeAmps)
                                 controller.getHID().setRumble(RumbleType.kRightRumble, 1.0);
                         else
                                 controller.getHID().setRumble(RumbleType.kRightRumble, 0.0);

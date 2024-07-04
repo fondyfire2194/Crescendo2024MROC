@@ -38,7 +38,6 @@ public class AmpAutoCommands {
                                 Commands.runOnce(() -> swerve.ampActive = true),
                                 Commands.runOnce(() -> swerve.sourceActive = false),
                                 Commands.runOnce(() -> swerve.currentpathstartTime = Timer.getFPGATimestamp()),
-                                Commands.runOnce(() -> swerve.pickupTargetX = FieldConstants.FIELD_LENGTH / 2),
                                 cf.setStartPosebyAlliance(FieldConstants.ampStartPose));
 
         }
@@ -48,6 +47,7 @@ public class AmpAutoCommands {
                                 new RunPPath(swerve, path),
                                 cf.doIntake());
         }
+        
 
         public Command moveShoot(CommandFactory cf, PathPlannerPath path, SwerveSubsystem swerve, double armAngle,
                         double shooterpm, double rpmtol) {

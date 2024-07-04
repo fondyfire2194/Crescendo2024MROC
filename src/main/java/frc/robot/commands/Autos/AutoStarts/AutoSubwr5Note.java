@@ -54,7 +54,7 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                                                 cf.doIntake()),
 
                                 new CenterToShoot(cf,
-                                                pf.pathMaps.get(sbwfrpaths.Center1ToShootFast
+                                                pf.pathMaps.get(sbwfrpaths.Center1ToAmpShoot
                                                                 .name()),
                                                 swerve, true));
         }

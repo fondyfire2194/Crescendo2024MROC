@@ -172,11 +172,21 @@ public final class Constants {
                 public static final double driveKD = 0.0;
                 public static final double driveKFF = .95 / kmaxTheoreticalSpeed;
 
-                /* Drive Motor Characterization Values */
-                public static final double driveKS = 0.60;// .4;
-                public static final double driveKV = 2.70;// 2.4;// 2.5636; //2.59 //2.55 2.8
-                public static final double driveKA = 0.59;// 0.2;// 0.12; /// 0.4 0.59
-                public static final double driveKP1 = 0.01;// 0.12; /// 0.4 0.59
+                /* Drive Motor Feedforward Characterization Values 
+                 * FIELD CARPET
+                */
+                public static final double driveKS = 0.60;// 
+                public static final double driveKV = 2.70;// 
+                public static final double driveKA = 0.59;// 
+                public static final double driveKP1 = 0.01;//
+
+    /* Drive Motor Feedforward Characterization Values 
+                 * SCHOOL LIBRARY CARPET
+                */
+                // public static final double driveKS = 0.60;// 
+                // public static final double driveKV = 2.70;// 
+                // public static final double driveKA = 0.59;// 
+                // public static final double driveKP1 = 0.01;//
 
                 // team 5907 driveKs = 0.22542;driveKv = 2.4829; driveKa = 0.120; driveP =
                 // 0.08;
@@ -573,11 +583,8 @@ public final class Constants {
         public static double autoShootArmAngle = 60;// degrees
         public static double autoShootRPM = 3000;// rpm
 
-        public static double sourceShootAngle = 27;
-        public static double sourceShootSpeed = 3650; // 4000
-
-        public static double ampShootAngle = 20; // 26
-        public static double ampShootSpeed = 3800; // 4000
+        public static double source_ampShootAngle = 27;
+        public static double source_ampShootSpeed = 3650;
 
         public static double wing1ArmAngle = 34;// degrees
         public static double wing1ShooterSpeed = 3500;// rpm

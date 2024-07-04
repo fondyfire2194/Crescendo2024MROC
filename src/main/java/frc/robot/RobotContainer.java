@@ -45,13 +45,10 @@ import frc.robot.commands.Drive.AutoAlignNote;
 import frc.robot.commands.Drive.AutoAlignSpeaker;
 import frc.robot.commands.Drive.DriveToPickupNote;
 import frc.robot.commands.Drive.RotateToAngle;
-import frc.robot.commands.Drive.RotateToFindNote;
 import frc.robot.commands.Drive.TeleopSwerve;
 import frc.robot.commands.Drive.WheelRadiusCharacterization;
 import frc.robot.commands.Intake.JogIntake;
 import frc.robot.commands.Pathplanner.RunPPath;
-import frc.robot.commands.Test.MovePickupShootTest;
-import frc.robot.commands.Test.TrapTune;
 import frc.robot.commands.Transfer.TransferIntakeToSensor;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -61,7 +58,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 import frc.robot.utils.ShootingData;
-import frc.robot.utils.ViewArmShooterByDistance;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -116,14 +112,6 @@ public class RobotContainer implements Logged {
 
         // private Trigger logShotTrigger;
 
-        private Trigger simNoteIntakenTrigger1;
-
-        private Trigger simNoteIntakenTrigger2;
-
-        private Trigger simNoteIntakenTrigger3;
-
-        private Trigger simNoteIntakenTrigger4;
-
         EventLoop checkAutoSelectLoop;
 
         private BooleanEvent doAutoSetup;
@@ -157,8 +145,7 @@ public class RobotContainer implements Logged {
                 m_ampac = new AmpAutoCommands(m_swerve, m_transfer, m_intake, m_cf);
 
                 m_af = new AutoFactory(m_pf, m_cf, m_sac, m_srcac, m_ampac, m_swerve, m_shooter, m_arm, m_intake,
-                                m_transfer,
-                                m_llv);
+                                m_transfer);
 
                 if (RobotBase.isReal()) {
                         Pref.deleteUnused();
@@ -261,40 +248,6 @@ public class RobotContainer implements Logged {
                 // Commands.runOnce(() -> m_arm.angleDegWhenShooting = m_arm
                 // .getAngleDegrees()),
                 // Commands.runOnce(() -> m_transfer.logShot = false)));
-
-double simintakedistancetopickup = .2;
-
-                simNoteIntakenTrigger1 = new Trigger(
-                                () -> RobotBase.isSimulation() &&
-                                                m_intake.isIntaking1 && !m_intake.isIntaking2 && !m_intake.isIntaking3
-                                                && !m_intake.isIntaking4
-                                                && !m_transfer.skipFirstNoteInSim
-                                                && Math.abs(m_swerve.distanceToPickup) < simintakedistancetopickup);
-
-                simNoteIntakenTrigger1.onTrue(Commands.runOnce(() -> m_transfer.simnoteatintake = true));
-
-                simNoteIntakenTrigger2 = new Trigger(
-                                () -> RobotBase.isSimulation()
-                                                && m_intake.isIntaking2 && !m_intake.isIntaking3
-                                                && !m_intake.isIntaking4
-                                                && !m_transfer.skipSecondNoteInSim
-                                                && Math.abs(m_swerve.distanceToPickup) < simintakedistancetopickup);
-
-                simNoteIntakenTrigger2.onTrue(Commands.runOnce(() -> m_transfer.simnoteatintake = true));
-
-                simNoteIntakenTrigger3 = new Trigger(
-                                () -> RobotBase.isSimulation() && m_intake.isIntaking3 && !m_intake.isIntaking4
-                                                && !m_transfer.skipThirdNoteInSim
-                                                && Math.abs(m_swerve.distanceToPickup) < simintakedistancetopickup);
-
-                simNoteIntakenTrigger3.onTrue(Commands.runOnce(() -> m_transfer.simnoteatintake = true));
-
-                simNoteIntakenTrigger4 = new Trigger(
-                                () -> RobotBase.isSimulation() && m_intake.isIntaking4
-                                                && !m_transfer.skipFourthNoteInSim
-                                                && Math.abs(m_swerve.distanceToPickup) < .3);
-
-                simNoteIntakenTrigger4.onTrue(Commands.runOnce(() -> m_transfer.simnoteatintake = true));
 
                 checkAutoSelectLoop = new EventLoop();
 

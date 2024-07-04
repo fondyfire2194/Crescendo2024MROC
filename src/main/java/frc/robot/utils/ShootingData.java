@@ -21,13 +21,14 @@ public class ShootingData {
     public InterpolatingDoubleTreeMap shotTimeMap = new InterpolatingDoubleTreeMap();
 
     public InterpolatingDoubleTreeMap shooterRPMMap = new InterpolatingDoubleTreeMap();
+    public InterpolatingDoubleTreeMap shooterRPMToleranceMap = new InterpolatingDoubleTreeMap();
 
     public ShootingData() {
         {
             si.clear();
             // distance feet, angle degrees, speed rpm, time ms, tolerance deg
             // returns meters, radians, rpm, seconds, radians
-            si.add(new ShotInfo(4, 55, 3100, 300, 2));
+            //
 
             // si.add(new ShotInfo(5, 50, 3100, 300, 2));
 
@@ -60,24 +61,24 @@ public class ShootingData {
             // si.add(new ShotInfo(19, 17, 4000, 300, 2));
 
             // si.add(new ShotInfo(20, 17, 4500, 300, 2));
-                //=======old data===========================
-            si.add(new ShotInfo(4.25, 60, 3000, 300, 2));
-            si.add(new ShotInfo(5.25, 51, 3000, 300, 2));
-            si.add(new ShotInfo(6.25, 46, 3000, 300, 2));
-            si.add(new ShotInfo(7.25, 42, 3000, 300, 2));
-            si.add(new ShotInfo(8.25, 39, 3000, 300, 2));
-            si.add(new ShotInfo(9.25, 36, 3250, 300, 2));
-            si.add(new ShotInfo(10.25, 34, 3500, 300, 2));
-            si.add(new ShotInfo(11.25, 32, 3500, 300, 2));
-            si.add(new ShotInfo(12.25, 30, 3500, 300, 2));
-            si.add(new ShotInfo(13.25, 28, 3500, 300, 2));
-            si.add(new ShotInfo(14.25, 27, 3750, 300, 2));
-            si.add(new ShotInfo(15.25, 26, 4000, 300, 2));
-            si.add(new ShotInfo(16.25, 25, 4000, 300, 2));
-            si.add(new ShotInfo(17.25, 24, 4250, 300, 2));
-            si.add(new ShotInfo(18.25, 23.5, 4500, 300, 2));
-            si.add(new ShotInfo(19.25, 22, 4600, 300, 2));
-
+            // =======old data===========================
+            si.add(new ShotInfo(4, 55, 3100, 300, 2, 10));
+            si.add(new ShotInfo(4.25, 60, 3000, 300, 2, 10));
+            si.add(new ShotInfo(5.25, 51, 3000, 300, 2, 10));
+            si.add(new ShotInfo(6.25, 46, 3000, 300, 2, 10));
+            si.add(new ShotInfo(7.25, 42, 3000, 300, 2, 10));
+            si.add(new ShotInfo(8.25, 39, 3000, 300, 2, 10));
+            si.add(new ShotInfo(9.25, 36, 3250, 300, 2, 10));
+            si.add(new ShotInfo(10.25, 34, 3500, 300, 2, 10));
+            si.add(new ShotInfo(11.25, 32, 3500, 300, 2, 10));
+            si.add(new ShotInfo(12.25, 30, 3500, 300, 2, 10));
+            si.add(new ShotInfo(13.25, 28, 3500, 300, 2, 10));
+            si.add(new ShotInfo(14.25, 27, 3750, 300, 2, 10));
+            si.add(new ShotInfo(15.25, 26, 4000, 300, 2, 10));
+            si.add(new ShotInfo(16.25, 25, 4000, 300, 2, 10));
+            si.add(new ShotInfo(17.25, 24, 4250, 300, 2, 10));
+            si.add(new ShotInfo(18.25, 23.5, 4500, 300, 2, 10));
+            si.add(new ShotInfo(19.25, 22, 4600, 300, 2, 10));
 
         }
 
@@ -91,8 +92,13 @@ public class ShootingData {
             armToleranceMap.put(si.get(i).getDistanceMeters(),
                     si.get(i).getToleranceRads());
         }
+        
         for (int i = 0; i < si.size(); i++) {
             shooterRPMMap.put(si.get(i).getDistanceMeters(), si.get(i).getSpeedRPM());
+        }
+
+        for (int i = 0; i < si.size(); i++) {
+            shooterRPMToleranceMap.put(si.get(i).getDistanceMeters(), si.get(i).getToleranceRPMPCT());
         }
         for (int i = 0; i < si.size(); i++) {
             shotTimeMap.put(si.get(i).getDistanceMeters(), si.get(i).getTimeSec());
@@ -106,6 +112,7 @@ public class ShootingData {
         private final double armDegrees;
         private final double timeMs;
         private final double toleranceDegrees;
+        private final double toleranceRPMPCT;
 
         /**
          * Constructs a new ShotInfo.
@@ -117,12 +124,13 @@ public class ShootingData {
          * @param tolerance Arm tolerance in degrees
          */
         public ShotInfo(double distanceFeet, double armDegrees, double speedRPM, double timeMs,
-                double toleranceDegrees) {
+                double toleranceDegrees, double toleranceRPMPCT) {
             this.distanceFeet = distanceFeet;
             this.armDegrees = armDegrees;
             this.speedRPM = speedRPM;
             this.timeMs = timeMs;
             this.toleranceDegrees = toleranceDegrees;
+            this.toleranceRPMPCT = toleranceRPMPCT;
         }
 
         public double getDistanceMeters() {
@@ -139,6 +147,10 @@ public class ShootingData {
 
         public double getToleranceRads() {
             return Units.degreesToRadians(toleranceDegrees);
+        }
+
+        public double getToleranceRPMPCT() {
+            return this.toleranceRPMPCT;
         }
 
         public double getTimeSec() {

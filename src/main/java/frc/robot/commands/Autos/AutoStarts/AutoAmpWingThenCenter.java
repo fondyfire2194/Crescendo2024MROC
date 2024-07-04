@@ -4,9 +4,11 @@
 
 package frc.robot.commands.Autos.AutoStarts;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Factories.AutoFactory;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
@@ -16,6 +18,7 @@ import frc.robot.commands.Autos.Autos.GetAnotherNoteAmp;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
+import frc.robot.utils.AllianceUtil;
 
 /** Add your docs here. */
 public class AutoAmpWingThenCenter extends SequentialCommandGroup {
@@ -32,7 +35,6 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
 
                 addCommands(
                                 ampac.setAmpStart(swerve, transfer, intake, cf),
-
                                 Commands.race(
                                                 Commands.waitSeconds(.75),
                                                 cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
@@ -41,13 +43,15 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
                                 cf.transferNoteToShooterCommand(),
 
                                 ampac.runPathPickupAndShootIfNote(pf.pathMaps.get(amppaths.AmpToWing1.name()),
-                                 swerve, cf, pf, 1),
+                                                swerve, cf, pf, 1),
 
-                                // if note in intake go shoot it or try the adjacent one if not
+                                ampac.pickupCenter2_1FromWing1(cf, pf, swerve, transfer, intake,
+                                                innerNoteFirst),
+
                                 Commands.either(
-                                                ampac.pickupCenter2_1FromWing1(cf, pf, swerve, transfer, intake, innerNoteFirst),
+                                                ampac.moveShootCenter1_2(cf, pf, swerve, innerNoteFirst),
                                                 new GetAnotherNoteAmp(swerve, transfer, intake, cf, pf),
-                                                () -> transfer.noteAtIntake()),
+                                                () -> cf.noteAtIntake()),
 
                                 ampac.pickUpNoteAfterShootVision(pf, cf, swerve, transfer, intake,
                                                 innerNoteFirst),
@@ -55,7 +59,7 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
                                 Commands.either(
                                                 ampac.moveShootCenter1_2(cf, pf, swerve, !innerNoteFirst),
                                                 new GetAnotherNoteAmp(swerve, transfer, intake, cf, pf),
-                                                () -> transfer.noteAtIntake()));
+                                                () -> cf.noteAtIntake()));
 
         }
 

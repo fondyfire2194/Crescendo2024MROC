@@ -94,7 +94,7 @@ public class LookForAnotherNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_transfer.noteAtIntake() || trylimit;
+    return m_transfer.noteAtIntake() || trylimit || RobotBase.isSimulation() && m_transfer.simnoteatintake;
 
   }
 }

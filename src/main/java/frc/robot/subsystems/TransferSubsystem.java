@@ -139,7 +139,7 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
 
   @Log.NT(key = "transfernoteatintake")
   public boolean noteAtIntake() { // we can get rid of the TimeOfFlight
-    return m_limitSwitch.isPressed() || RobotBase.isSimulation() && simnoteatintake;
+    return m_limitSwitch.isPressed();
   }
 
   @Override

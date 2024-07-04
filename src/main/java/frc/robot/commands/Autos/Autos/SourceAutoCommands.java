@@ -34,7 +34,6 @@ public class SourceAutoCommands {
                                 Commands.runOnce(() -> swerve.ampActive = false),
                                 Commands.runOnce(() -> swerve.sourceActive = true),
                                 Commands.runOnce(() -> swerve.currentpathstartTime = Timer.getFPGATimestamp()),
-                                Commands.runOnce(() -> swerve.pickupTargetX = FieldConstants.FIELD_LENGTH / 2),
                                 cf.setStartPosebyAlliance(FieldConstants.sourceStartPose));
 
         }

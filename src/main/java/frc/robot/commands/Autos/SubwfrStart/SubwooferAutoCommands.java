@@ -31,8 +31,7 @@ public class SubwooferAutoCommands {
 
         public Command setsbwrstart(SwerveSubsystem swerve, CommandFactory cf, IntakeSubsystem intake) {
                 return Commands.sequence(
-                                Commands.runOnce(() -> swerve.pickupTargetX = AllianceUtil.getWingNoteX()),
-                                Commands.runOnce(() -> swerve.targetPose = AllianceUtil.getSpeakerPose()),
+                                 Commands.runOnce(() -> swerve.targetPose = AllianceUtil.getSpeakerPose()),
                                 Commands.runOnce(() -> swerve.inhibitVision = true),
                                 Commands.runOnce(() -> intake.resetIsIntakingSim()),
                                 cf.setStartPosebyAlliance(FieldConstants.sbwfrStartPose));

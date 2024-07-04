@@ -13,7 +13,6 @@ import frc.robot.Factories.PathFactory;
 import frc.robot.commands.Autos.Autos.GetAnotherNoteSource;
 import frc.robot.commands.Autos.Autos.SourceAutoCommands;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LimelightVision;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 
@@ -43,7 +42,7 @@ public class AutoSourceCompleteVisV2 extends SequentialCommandGroup {
                                 Commands.either(
                                                 srcac.moveShootCenter4_5(cf, pf, swerve, innerNoteFirst),
                                                 new GetAnotherNoteSource(swerve, transfer, intake, cf, pf),
-                                                () -> transfer.noteAtIntake()),
+                                                () -> cf.noteAtIntake()),
 
                                 srcac.pickUpNoteAfterShootVision(pf, cf, swerve, transfer, intake,
                                                 innerNoteFirst),
@@ -51,7 +50,7 @@ public class AutoSourceCompleteVisV2 extends SequentialCommandGroup {
                                 Commands.either(
                                                 srcac.moveShootCenter4_5(cf, pf, swerve, !innerNoteFirst),
                                                 new GetAnotherNoteSource(swerve, transfer, intake, cf, pf),
-                                                () -> transfer.noteAtIntake()));
+                                                () -> cf.noteAtIntake()));
         }
 
 }

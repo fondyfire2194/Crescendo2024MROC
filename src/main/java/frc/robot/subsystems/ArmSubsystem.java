@@ -390,7 +390,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     @Log.NT(key = "armatsetpoint")
     public boolean getAtSetpoint() {
-        return Math.abs(getAngleErrorRadians()) < angleToleranceRads;
+        return Math.abs(getCurrentGoalRads() - getAngleRadians()) < angleToleranceRads;
     }
 
     public double getVoltsPerRadPerSec() {
@@ -492,14 +492,14 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
         double temp = armCancoder.getAbsolutePosition().getValueAsDouble();
         if (temp > 1)
             temp -= 1;
-        temp *= (Math.PI) + ArmConstants.cancoderOffsetRadiansAtCalibration;
+        temp *= (Math.PI);
+        temp += ArmConstants.cancoderOffsetRadiansAtCalibration;
         return temp;
     }
 
     @Log.NT(key = "cancodervelocity")
     public double getCanCoderRadPerSec() {
         return armCancoder.getVelocity().getValueAsDouble() * Math.PI;
-
     }
 
     @Log.NT(key = "isstopped")

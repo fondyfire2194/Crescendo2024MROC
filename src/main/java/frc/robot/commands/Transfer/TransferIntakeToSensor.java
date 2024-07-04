@@ -54,6 +54,30 @@ public class TransferIntakeToSensor extends Command {
     m_intake.noteMissed = DriverStation.isAutonomousEnabled() && m_swerve.isStopped()
         && endTimer.hasElapsed(m_noteMissedTime);
 
+    if (RobotBase.isSimulation() && m_swerve.isStopped()) {
+
+      if (m_intake.isIntaking1 && !m_intake.isIntaking2 && !m_intake.isIntaking3 && !m_intake.isIntaking4
+          && !m_transfer.skipFirstNoteInSim) {
+        m_transfer.simnoteatintake = true;
+      }
+
+      if (m_intake.isIntaking2 && !m_intake.isIntaking3 && !m_intake.isIntaking4
+          && !m_transfer.skipSecondNoteInSim) {
+        m_transfer.simnoteatintake = true;
+      }
+
+      if (m_intake.isIntaking3 && !m_intake.isIntaking4
+          && !m_transfer.skipThirdNoteInSim) {
+        m_transfer.simnoteatintake = true;
+      }
+
+      if (m_intake.isIntaking4
+          && !m_transfer.skipFourthNoteInSim) {
+        m_transfer.simnoteatintake = true;
+      }
+
+    }
+
   }
 
   // Called once the command ends or is interrupted.
