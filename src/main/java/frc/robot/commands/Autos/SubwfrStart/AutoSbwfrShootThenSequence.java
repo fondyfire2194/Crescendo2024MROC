@@ -39,8 +39,9 @@ public class AutoSbwfrShootThenSequence extends SequentialCommandGroup {
                                                 sac.sbwfrmoveandshoot(path2, swerve, cf, pf),
                                                 new RunPPath(swerve, pf.pathMaps.get(path2.name())),
                                                 () -> cf.noteAtIntake()),
-                                sac.moveAndPickup(path3, swerve, cf, pf),
 
+                                sac.moveAndPickup(path3, swerve, cf, pf),
+                                
                                 Commands.either(
                                                 sac.sbwfrmoveandshoot(path4, swerve, cf, pf),
                                                 Commands.none(),

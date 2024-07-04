@@ -707,7 +707,6 @@ public final class Constants {
         }
 
         public static final class IntakeConstants {
-
                 public static final double maxIntakeMotorRPM = 5700;
                 public static final double intakeConversionVelocityFactor = 1;
                 public static final double intakeConversionPositionFactor = 1;
@@ -723,7 +722,7 @@ public final class Constants {
                 public static final double intakeKi = 0.0;
                 public static final double intakeKd = 0.0;
                 public static final double intakeKFF = .95 / maxIntakeMotorRPM;
-                public static final double notemissestime = 1.25;
+                public static final double notemissedtime = 1.25;
         }
 
         public static final class ClimberConstants {

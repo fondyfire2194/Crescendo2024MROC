@@ -8,7 +8,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
-
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Servo;
@@ -32,9 +31,10 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
   RelativeEncoder climberEncoderLeft;
   RelativeEncoder climberEncoderRight;
 
-
   public boolean leftMotorConnected;
   public boolean rightMotorConnected;
+  @Log.NT(key = "leftamps")
+  private double leftAmps;
 
   public ClimberSubsystem() {
     climberMotorLeft = new CANSparkMax(CANIDConstants.climberIDLeft, MotorType.kBrushless);
@@ -58,7 +58,7 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
     encoder.setVelocityConversionFactor(Constants.ClimberConstants.climberConversionVelocityFactor);
     encoder.setPositionConversionFactor(Constants.ClimberConstants.climberConversionPositionFactor);
     motor.enableVoltageCompensation(Constants.ClimberConstants.voltageComp);
-    // motor.setOpenLoopRampRate(3);
+    motor.setOpenLoopRampRate(1);
     motor.burnFlash();
     encoder.setPosition(0.0);
   }
@@ -76,15 +76,6 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
       rightMotorConnected = checkMotorCanOK(climberMotorRight);
       SmartDashboard.putBoolean("Climber//OKRClimber", rightMotorConnected);
     }
-
-    SmartDashboard.putNumber("Climber// Left RPM", getRPMLeft());
-    SmartDashboard.putNumber("Climber// Right RPM", getRPMRight());
-
-    SmartDashboard.putNumber("Climber// Left Amps", climberMotorLeft.getOutputCurrent());
-    SmartDashboard.putNumber("Climber// Left Position", climberEncoderLeft.getPosition());
-    SmartDashboard.putNumber("Climber// Right Amps", climberMotorRight.getOutputCurrent());
-    SmartDashboard.putNumber("Climber// Right Position", climberEncoderRight.getPosition());
-
   }
 
   private boolean checkMotorCanOK(CANSparkMax motor) {
@@ -118,11 +109,6 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
   }
 
   public void lowerClimber(double speed) {
-    // if (climberEncoder.getPosition() > 60) {
-    // runClimberMotor(speed);
-    // } else {
-    // runClimberMotor(speed * .5);
-    // }
     if (getPositionLeft() < 10) {
       runClimberMotor(speed * 0.2);
     } else {
@@ -138,18 +124,22 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
     return Commands.run(() -> runClimberMotor(speed));
   }
 
+  @Log.NT(key = "leftRPM")
   public double getRPMLeft() {
     return climberEncoderLeft.getVelocity();
   }
 
+  @Log.NT(key = "rightRPM")
   public double getRPMRight() {
     return climberEncoderRight.getVelocity();
   }
 
+  @Log.NT(key = "leftposition")
   public double getPositionLeft() {
     return climberEncoderLeft.getPosition();
   }
 
+  @Log.NT(key = "rightposition")
   public double getPositionRight() {
     return climberEncoderRight.getPosition();
   }
