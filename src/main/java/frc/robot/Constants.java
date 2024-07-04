@@ -172,26 +172,38 @@ public final class Constants {
                 public static final double driveKD = 0.0;
                 public static final double driveKFF = .95 / kmaxTheoreticalSpeed;
 
-                /* Drive Motor Feedforward Characterization Values 
+                /*
+                 * Drive Motor Feedforward and PP Values
                  * FIELD CARPET
-                */
-                public static final double driveKS = 0.60;// 
-                public static final double driveKV = 2.70;// 
-                public static final double driveKA = 0.59;// 
+                 */
+                public static final double driveKS = 0.60;//
+                public static final double driveKV = 2.70;//
+                public static final double driveKA = 0.59;//
                 public static final double driveKP1 = 0.01;//
 
-    /* Drive Motor Feedforward Characterization Values 
+                public static PIDConstants PPTransConstants = new PIDConstants(2.0, 0, 0); // 2.0 Translation constants
+                                                                                           // // 3
+                public static PIDConstants PPRotConstants = new PIDConstants(1.5, 0, 0); // 2.0 Translation constants 3
+
+                /*
+                 * Drive Motor Feedforward and PP Values
                  * SCHOOL LIBRARY CARPET
-                */
-                // public static final double driveKS = 0.60;// 
-                // public static final double driveKV = 2.70;// 
-                // public static final double driveKA = 0.59;// 
-                // public static final double driveKP1 = 0.01;//
-
-                // team 5907 driveKs = 0.22542;driveKv = 2.4829; driveKa = 0.120; driveP =
-                // 0.08;
-
-                /* Drive Motor Conversion Factors */
+                 * 
+                 * public static final double driveKS = 0.60;//
+                 * public static final double driveKV = 2.70;//
+                 * public static final double driveKA = 0.59;//
+                 * public static final double driveKP1 = 0.01;//
+                 * 
+                 * public static PIDConstants PPTransConstants = new PIDConstants(.5, 0, 0); //
+                 * 2.0 Translation constants 3
+                 * public static PIDConstants PPRotConstants = new PIDConstants(.5, 0, 0); //
+                 * 2.0 Translation constants 3
+                 * ^/
+                 * // team 5907 driveKs = 0.22542;driveKv = 2.4829; driveKa = 0.120; driveP =
+                 * // 0.08;
+                 * 
+                 * /* Drive Motor Conversion Factors
+                 */
                 public static final double driveConversionPositionFactor = (wheelDiameter.magnitude() * Math.PI)
                                 / driveGearRatio;
                 public static final double driveConversionVelocityFactor = driveConversionPositionFactor / 60.0;
@@ -259,9 +271,6 @@ public final class Constants {
                                         angleMotorID,
                                         cancoderID, angleOffset, true);
                 }
-
-                public static PIDConstants PPTransConstants = new PIDConstants(.5, 0, 0); // 2.0 Translation constants 3
-                public static PIDConstants PPRotConstants = new PIDConstants(.5, 0, 0); // 2.0 Translation constants 3
 
                 public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
                                 PPTransConstants,
