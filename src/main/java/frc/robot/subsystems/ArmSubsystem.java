@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkBase.FaultID;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -8,10 +10,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
-
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -21,7 +20,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -39,10 +37,8 @@ import frc.lib.util.CANSparkMaxUtil.Usage;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.CANIDConstants;
 import frc.robot.Pref;
-import monologue.Logged;
 import monologue.Annotations.Log;
-
-import static edu.wpi.first.units.Units.Volts;
+import monologue.Logged;
 
 public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
@@ -73,7 +69,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     public double armAngleRads;
     @Log.NT(key = "armpidout")
     private double pidout;
-    private PIDController pid = new PIDController(ArmConstants.armKp, 0.0, 0);
+    
     public double angleToleranceRads = ArmConstants.angleTolerance;
     @Log.NT(key = "enablearm")
     public boolean enableArm;
@@ -85,19 +81,8 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     public double angleDegWhenShooting;
     private boolean cancoderconnected;
     private int checkCancoderCounter;
-    private final DCMotor m_armGearbox = DCMotor.getNEO(1);
 
-    private final SingleJointedArmSim m_armSim = new SingleJointedArmSim(
-            m_armGearbox,
-            ArmConstants.NET_GEAR_RATIO,
-            SingleJointedArmSim.estimateMOI(ArmConstants.armLength, ArmConstants.armMass),
-            ArmConstants.armLength,
-            ArmConstants.reverseMovementLimitAngle,
-            ArmConstants.forwardMovementLimitAngle,
-            true,
-            0,
-            VecBuilder.fill(ArmConstants.RADIANS_PER_ENCODER_REV) // Add noise with a std-dev of 1 tick
-    );
+
 
     private final Mechanism2d m_mech2d = new Mechanism2d(60, 60);
     private final MechanismRoot2d m_armPivot = m_mech2d.getRoot("ArmPivot", 30, 30);
@@ -240,14 +225,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     @Override
     protected void useOutput(double output, State goalState) {
-        if (isEnabled() && enableArm) {
-            pidout = pid.calculate(getAngleRadians(), getController().getSetpoint().position);
-            acceleration = (getController().getSetpoint().velocity - lastSpeed)
-                    / (Timer.getFPGATimestamp() - lastTime);
-        } else {
-            pid.reset();
-            pidout = 0;
-        }
+       
         boolean tuning = false;
         if (!tuning) {
 
@@ -271,7 +249,9 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
         lastTime = Timer.getFPGATimestamp();
 
-        double out = pidout + feedforward;
+        pidout=output;
+
+        double out = output + feedforward;
 
         armMotor.setVoltage(out);
     }
@@ -384,7 +364,6 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
             simAngleRads = ArmConstants.armMinRadians;
         }
         resetController();
-        pid.reset();
         setKp();
     }
 
@@ -514,15 +493,15 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     }
 
     public void setKp() {
-        pid.setP(ArmConstants.armKp);// (Pref.getPref("armKp"));
+        getController().setP(ArmConstants.armKp);// (Pref.getPref("armKp"));
     }
 
     public void setKd() {
-        pid.setD(0);// (Pref.getPref("armKd"));
+        getController().setD(0);// (Pref.getPref("armKd"));
     }
 
     public void setKi() {
-        pid.setI(.5);// (Pref.getPref("armKi"));
+        getController().setI(.5);// (Pref.getPref("armKi"));
     }
 
     public Command setPIDGainsCommand() {

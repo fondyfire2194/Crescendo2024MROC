@@ -637,6 +637,8 @@ public final class Constants {
                 public static final double MAX_DEGREES_PER_SEC = DEGREES_PER_ENCODER_REV * maxUsableRPM / 60;// 288
 
                 public static final double MAX_RADS_PER_SEC = Units.degreesToRadians(MAX_DEGREES_PER_SEC);// 5 approx
+                public static final double MAX_RADS_PER_SEC_PER_SEC = Units.degreesToRadians(MAX_DEGREES_PER_SEC);// 5
+                                                                                                                  // approx
 
                 public static final double voltageComp = 12;
                 public static final IdleMode armIdleMode = IdleMode.kBrake;
@@ -647,7 +649,6 @@ public final class Constants {
                 public static double midRange = Units.degreesToRadians(35);
 
                 public static double kTrapVelocityRadPerSecond = Units.degreesToRadians(180);
-
                 public static final double kTrapAccelerationRadPerSecSquared = Units.degreesToRadians(240);
 
                 public static final double armKg = 0.2;
