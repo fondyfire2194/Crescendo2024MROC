@@ -36,8 +36,7 @@ import frc.robot.Factories.PathFactory;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
 import frc.robot.Factories.PathFactory.sourcepaths;
 import frc.robot.commands.JogClimber;
-import frc.robot.commands.Autos.Autos.AmpAutoCommands;
-import frc.robot.commands.Autos.Autos.SourceAutoCommands;
+import frc.robot.commands.Autos.Autos.SourceAmpAutoCommands;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.commands.Drive.AlignTargetOdometry;
 import frc.robot.commands.Drive.AlignToNote;
@@ -98,8 +97,7 @@ public class RobotContainer implements Logged {
         public final AutoFactory m_af;
 
         private SubwooferAutoCommands m_sac;
-        private SourceAutoCommands m_srcac;
-        private AmpAutoCommands m_ampac;
+        private SourceAmpAutoCommands m_srcac;
 
         BooleanSupplier keepAngle;
 
@@ -140,10 +138,9 @@ public class RobotContainer implements Logged {
                 registerNamedCommands();
 
                 m_sac = new SubwooferAutoCommands(m_swerve, m_cf, m_intake, m_transfer);
-                m_srcac = new SourceAutoCommands(m_swerve, m_cf);
-                m_ampac = new AmpAutoCommands(m_swerve, m_transfer, m_intake, m_cf);
+                m_srcac = new SourceAmpAutoCommands(m_swerve, m_cf);
 
-                m_af = new AutoFactory(m_pf, m_cf, m_sac, m_srcac, m_ampac, m_swerve, m_shooter, m_arm, m_intake,
+                m_af = new AutoFactory(m_pf, m_cf, m_sac, m_srcac, m_swerve, m_shooter, m_arm, m_intake,
                                 m_transfer);
 
                 if (RobotBase.isReal()) {
@@ -203,13 +200,13 @@ public class RobotContainer implements Logged {
 
                 configureSetupBindings();
 
-             //   m_shooter.setTopKpKdKi();
+                // m_shooter.setTopKpKdKi();
 
                 configureCommandScheduler();
 
                 setDefaultCommands();
 
-              //  m_shooter.setBottomKpKdKi();
+                // m_shooter.setBottomKpKdKi();
 
                 // doLobShot = new Trigger(() -> m_transfer.lobbing
                 // && m_transfer.noteAtIntake()
@@ -411,8 +408,7 @@ public class RobotContainer implements Logged {
 
                 // codriver.povUp().onTrue(
 
-               // codriver.povDown().onTrue(
-                              
+                // codriver.povDown().onTrue(
 
                 codriver.povLeft().onTrue(
                                 Commands.parallel(

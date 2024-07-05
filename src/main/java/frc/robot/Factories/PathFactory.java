@@ -83,7 +83,7 @@ public class PathFactory {
         Center5ToCenter4,
         Center4ToSourceShoot,
         Center5ToSourceShoot,
-        StageClearToSourceShoot;
+        StageClearToSourceShoot,;
     }
 
     public boolean checkSourceFilesExist() {

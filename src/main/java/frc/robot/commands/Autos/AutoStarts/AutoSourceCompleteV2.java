@@ -11,18 +11,18 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Factories.AutoFactory;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
-import frc.robot.Factories.PathFactory.amppaths;
+import frc.robot.Factories.PathFactory.sourcepaths;
+import frc.robot.commands.Autos.Autos.GetAnotherNoteSource;
 import frc.robot.commands.Autos.Autos.SourceAmpAutoCommands;
 import frc.robot.commands.Pathplanner.RunPPath;
-import frc.robot.commands.Autos.Autos.GetAnotherNoteAmp;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 
 /** Add your docs here. */
-public class AutoAmpWingThenCenter extends SequentialCommandGroup {
+public class AutoSourceCompleteV2 extends SequentialCommandGroup {
 
-        public AutoAmpWingThenCenter(
+        public AutoSourceCompleteV2(
                         CommandFactory cf,
                         PathFactory pf,
                         AutoFactory af,
@@ -32,33 +32,32 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
                         TransferSubsystem transfer,
                         boolean innerNoteFirst) {
 
-                addCommands(
-                                srcac.setAmpStart(swerve, transfer, intake, cf),
+                addCommands( 
+                                srcac.setSourceStart(swerve, transfer, intake, cf),
                                 Commands.race(
                                                 Commands.waitSeconds(.75),
                                                 cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
                                                                 Constants.subwfrShooterSpeed, 20)),
-
                                 cf.transferNoteToShooterCommand(),
 
-                                srcac.runPathPickupAndShootIfNote(pf.pathMaps.get(amppaths.AmpToWing1.name()),
-                                                swerve, cf, pf, 1),
-
-                                srcac.pickupCenter2_1FromWing1(cf, pf, swerve, transfer, intake,
+                                srcac.pickupCenter(cf, swerve,
+                                                pf.pathMaps.get(sourcepaths.SourceToCenter4.name()),
+                                                pf.pathMaps.get(sourcepaths.SourceToCenter5.name()),
                                                 innerNoteFirst),
+                                // if note in intake go shoot it or try adjacent one
 
                                 Commands.either(
                                                 srcac.moveShootCenter(cf, swerve,
-                                                                pf.pathMaps.get(amppaths.Center2ToAmpShoot
+                                                                pf.pathMaps.get(sourcepaths.Center4ToSourceShoot
                                                                                 .name()),
-                                                                pf.pathMaps.get(amppaths.Center1ToAmpShoot
+                                                                pf.pathMaps.get(sourcepaths.Center5ToSourceShoot
                                                                                 .name()),
                                                                 innerNoteFirst),
 
                                                 srcac.pickUpAdjacentNote(cf, swerve,
-                                                                pf.pathMaps.get(amppaths.Center2ToCenter1
+                                                                pf.pathMaps.get(sourcepaths.Center4ToCenter5
                                                                                 .name()),
-                                                                pf.pathMaps.get(amppaths.Center1ToCenter2
+                                                                pf.pathMaps.get(sourcepaths.Center5ToCenter4
                                                                                 .name()),
                                                                 innerNoteFirst),
                                                 () -> cf.noteAtIntake()),
@@ -71,11 +70,10 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
                                                 srcac.pickUpNoteAfterShootVision(pf, cf,
                                                                 swerve, transfer,
                                                                 intake,
-                                                                pf.pathMaps.get(amppaths.Center2ToCenter1
+                                                                pf.pathMaps.get(sourcepaths.SourceShootToCenter5
                                                                                 .name()),
-                                                                pf.pathMaps.get(amppaths.Center1ToCenter2
+                                                                pf.pathMaps.get(sourcepaths.SourceShootToCenter4
                                                                                 .name()),
-
                                                                 innerNoteFirst),
                                                 Commands.none(),
                                                 () -> !cf.noteAtIntake()
@@ -86,15 +84,16 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
                                 Commands.either(
                                                 srcac.moveShootCenter(
                                                                 cf, swerve,
-                                                                pf.pathMaps.get(amppaths.Center1ToAmpShoot.name()),
-                                                                pf.pathMaps.get(amppaths.Center2ToAmpShoot
+                                                                pf.pathMaps.get(sourcepaths.Center5ToSourceShoot
+                                                                                .name()),
+                                                                pf.pathMaps.get(sourcepaths.Center4ToSourceShoot
                                                                                 .name()),
                                                                 innerNoteFirst),
-                                                new GetAnotherNoteAmp(swerve,
+                                                new GetAnotherNoteSource(swerve,
                                                                 transfer, intake, cf,
                                                                 pf),
                                                 () -> cf.noteAtIntake()),
-                                new RunPPath(swerve, pf.pathMaps.get(amppaths.AmpShootToCenter2.name())));
+                                new RunPPath(swerve, pf.pathMaps.get(sourcepaths.SourceShootToCenter4.name())));
         }
 
 }

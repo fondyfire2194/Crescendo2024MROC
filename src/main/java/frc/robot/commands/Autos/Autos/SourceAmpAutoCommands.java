@@ -21,10 +21,22 @@ import frc.robot.subsystems.TransferSubsystem;
 import frc.robot.utils.AllianceUtil;
 
 /** Add your docs here. */
-public class AmpAutoCommands {
+public class SourceAmpAutoCommands {
 
-        public AmpAutoCommands(SwerveSubsystem swerve, TransferSubsystem transfer, IntakeSubsystem intake,
+        public SourceAmpAutoCommands(SwerveSubsystem swerve, CommandFactory cf) {
+        }
+
+        public Command setSourceStart(SwerveSubsystem swerve, TransferSubsystem transfer, IntakeSubsystem intake,
                         CommandFactory cf) {
+                return Commands.sequence(
+                                Commands.runOnce(() -> transfer.simnoteatintake = false),
+                                Commands.runOnce(() -> intake.resetIsIntakingSim()),
+                                Commands.runOnce(() -> swerve.targetPose = AllianceUtil.getSpeakerPose()),
+                                Commands.runOnce(() -> swerve.ampActive = false),
+                                Commands.runOnce(() -> swerve.sourceActive = true),
+                                Commands.runOnce(() -> swerve.currentpathstartTime = Timer.getFPGATimestamp()),
+                                cf.setStartPosebyAlliance(FieldConstants.sourceStartPose));
+
         }
 
         public Command setAmpStart(SwerveSubsystem swerve, TransferSubsystem transfer, IntakeSubsystem intake,
@@ -41,11 +53,12 @@ public class AmpAutoCommands {
         }
 
         public Command pickupNote(CommandFactory cf, PathPlannerPath path, SwerveSubsystem swerve) {
+
                 return Commands.parallel(
                                 new RunPPath(swerve, path),
                                 cf.doIntake());
+
         }
-        
 
         public Command moveShoot(CommandFactory cf, PathPlannerPath path, SwerveSubsystem swerve, double armAngle,
                         double shooterpm, double rpmtol) {
@@ -56,90 +69,73 @@ public class AmpAutoCommands {
                                 cf.transferNoteToShooterCommand());
         }
 
-        public Command moveShootCenter1_2(CommandFactory cf, PathFactory pf, SwerveSubsystem swerve,
+        public Command pickupCenter(CommandFactory cf, SwerveSubsystem swerve,
+                        PathPlannerPath path1, PathPlannerPath path2,
+                        boolean innerNoteFirst) {
+
+                return Commands.parallel(
+                                Commands.either(
+                                                new RunPPath(swerve,
+                                                                path1),
+                                                new RunPPath(swerve,
+                                                                path2),
+                                                () -> innerNoteFirst),
+                                cf.doIntakeDelayed(2));
+        }
+
+        public Command moveShootCenter(CommandFactory cf, SwerveSubsystem swerve,
+                        PathPlannerPath path1, PathPlannerPath path2,
                         boolean innerNoteFirst) {
                 return Commands.either(
-                                new CenterToShoot(cf, pf.pathMaps.get(
-                                                amppaths.Center2ToAmpShoot
-                                                                .name()),
+                                new CenterToShoot(cf, path1,
                                                 swerve, true),
-                                new CenterToShoot(cf, pf.pathMaps.get(amppaths.Center1ToAmpShoot
-                                                .name()),
+                                new CenterToShoot(cf, path2,
                                                 swerve, true),
                                 () -> innerNoteFirst);
         }
 
-        public Command pickupCenter2_1(CommandFactory cf, PathFactory pf, SwerveSubsystem swerve,
-                        TransferSubsystem transfer, IntakeSubsystem intake,
+        public Command pickUpNoteAfterShoot(CommandFactory cf, SwerveSubsystem swerve,
+                        PathPlannerPath path1, PathPlannerPath path2,
                         boolean innerNoteFirst) {
 
                 return Commands.parallel(
                                 Commands.either(
                                                 new RunPPath(swerve,
-                                                                pf.pathMaps.get(amppaths.AmpToCenter2
-                                                                                .name())),
+                                                                path1),
                                                 new RunPPath(swerve,
-                                                                pf.pathMaps.get(amppaths.AmpToCenter1
-                                                                                .name())),
+                                                                path2),
                                                 () -> innerNoteFirst),
-                                cf.doIntakeDelayed(2));
+                                cf.doIntake());
         }
 
-         public Command pickupCenter2_1FromWing1(CommandFactory cf, PathFactory pf, SwerveSubsystem swerve,
-                        TransferSubsystem transfer, IntakeSubsystem intake,
-                        boolean innerNoteFirst) {
-
+        public Command pickUpAdjacentNote(CommandFactory cf, SwerveSubsystem swerve,
+                        PathPlannerPath path1,
+                        PathPlannerPath path2, boolean innerNoteFirst) {
                 return Commands.parallel(
                                 Commands.either(
                                                 new RunPPath(swerve,
-                                                                pf.pathMaps.get(amppaths.Wing1ToCenter2
-                                                                                .name())),
+                                                                path1),
                                                 new RunPPath(swerve,
-                                                                pf.pathMaps.get(amppaths.Wing1ToCenter1
-                                                                                .name())),
-                                                () -> innerNoteFirst),
-                                cf.doIntakeDelayed(2));
-        }
-
-        public Command pickUpNoteAfterShoot(PathFactory pf, CommandFactory cf, SwerveSubsystem swerve,
-                        TransferSubsystem transfer, IntakeSubsystem intake, boolean innerNoteFirst) {
-                return Commands.parallel(
-                                Commands.either(
-                                                new RunPPath(swerve,
-                                                                pf.pathMaps.get(amppaths.AmpShootToCenter1
-                                                                                .name())),
-                                                new RunPPath(swerve,
-                                                                pf.pathMaps.get(amppaths.AmpShootToCenter2
-                                                                                .name())),
+                                                                path2),
                                                 () -> innerNoteFirst),
                                 cf.doIntake());
         }
 
         public Command pickUpNoteAfterShootVision(PathFactory pf, CommandFactory cf, SwerveSubsystem swerve,
-                        TransferSubsystem transfer, IntakeSubsystem intake, boolean innerNoteFirst) {
+                        TransferSubsystem transfer, IntakeSubsystem intake,
+                        PathPlannerPath path1, PathPlannerPath path2,
+                        boolean innerNoteFirst) {
 
                 return Commands.parallel(
                                 Commands.either(
                                                 new PickupUsingVision(cf,
-                                                                pf.pathMaps.get(amppaths.AmpToCenter1
-                                                                                .name()),
+                                                                path1,
                                                                 transfer, intake, swerve, 1.5, 10),
                                                 new PickupUsingVision(cf,
-                                                                pf.pathMaps.get(amppaths.AmpToCenter2
-                                                                                .name()),
+                                                                path2,
                                                                 transfer, intake, swerve, 1.5, 10),
                                                 () -> innerNoteFirst),
                                 cf.doIntake());
-        }
-
-        public Command shootbydistance(CommandFactory cf) {
-                return Commands.sequence(
-                                cf.positionArmRunShooterByDistance(false, true),
-                                shoot(cf));
-        }
-
-        public Command shoot(CommandFactory cf) {
-                return cf.transferNoteToShooterCommand();
         }
 
         public Command runPathPickupAndShootIfNote(PathPlannerPath path, SwerveSubsystem swerve,
@@ -158,6 +154,22 @@ public class AmpAutoCommands {
                                                                 cf.transferNoteToShooterCommand()),
                                                 Commands.none(),
                                                 () -> cf.noteAtIntake()));
+        }
+
+        public Command pickupCenter2_1FromWing1(CommandFactory cf, PathFactory pf, SwerveSubsystem swerve,
+                        TransferSubsystem transfer, IntakeSubsystem intake,
+                        boolean innerNoteFirst) {
+
+                return Commands.parallel(
+                                Commands.either(
+                                                new RunPPath(swerve,
+                                                                pf.pathMaps.get(amppaths.Wing1ToCenter2
+                                                                                .name())),
+                                                new RunPPath(swerve,
+                                                                pf.pathMaps.get(amppaths.Wing1ToCenter1
+                                                                                .name())),
+                                                () -> innerNoteFirst),
+                                cf.doIntakeDelayed(2));
         }
 
 }

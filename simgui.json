@@ -119,6 +119,9 @@
         "DtoPuN": {
           "open": true
         },
+        "SetDriveKP1": {
+          "open": true
+        },
         "Shooter": {
           "open": true
         },

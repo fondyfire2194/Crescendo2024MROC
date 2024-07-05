@@ -9,13 +9,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
-import frc.robot.commands.Autos.AutoStarts.AutoAmpCompleteVisV2;
+import frc.robot.commands.Autos.AutoStarts.AutoAmpCompleteV2;
 import frc.robot.commands.Autos.AutoStarts.AutoAmpWingThenCenter;
-import frc.robot.commands.Autos.AutoStarts.AutoSourceCompleteVisV2;
+import frc.robot.commands.Autos.AutoStarts.AutoSourceCompleteV2;
 import frc.robot.commands.Autos.AutoStarts.AutoSubwr5Note;
 import frc.robot.commands.Autos.AutoStarts.AutoSubwrCenter3;
-import frc.robot.commands.Autos.Autos.AmpAutoCommands;
-import frc.robot.commands.Autos.Autos.SourceAutoCommands;
+import frc.robot.commands.Autos.Autos.SourceAmpAutoCommands;
 import frc.robot.commands.Autos.SubwfrStart.AutoSbwfrShootThenSequence;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.subsystems.ArmSubsystem;
@@ -65,14 +64,14 @@ public class AutoFactory {
 
         private CommandFactory m_cf;
 
-        private SourceAutoCommands m_srcac;
+        private SourceAmpAutoCommands m_srcac;
 
-        private AmpAutoCommands m_ampac;
+
 
         public boolean validChoice;
 
         public AutoFactory(PathFactory pf, CommandFactory cf,
-                        SubwooferAutoCommands sac, SourceAutoCommands srcac, AmpAutoCommands ampac,
+                        SubwooferAutoCommands sac, SourceAmpAutoCommands srcac, 
                         SwerveSubsystem swerve,
                         ShooterSubsystem shooter,
                         ArmSubsystem arm,
@@ -82,7 +81,6 @@ public class AutoFactory {
                 m_cf = cf;
                 m_sac = sac;
                 m_srcac = srcac;
-                m_ampac = ampac;
                 m_arm = arm;
                 m_swerve = swerve;
                 m_transfer = transfer;
@@ -202,22 +200,22 @@ public class AutoFactory {
                                 return new AutoSubwr5Note(m_cf, m_pf, m_sac, m_swerve, m_intake,
                                                 m_arm);
                         case 11:
-                                return new AutoSourceCompleteVisV2(m_cf, m_pf, this,
+                                return new AutoSourceCompleteV2(m_cf, m_pf, this,
                                                 m_srcac, m_swerve, m_intake, m_transfer, true);
                         case 12:
-                                return new AutoSourceCompleteVisV2(m_cf, m_pf, this,
+                                return new AutoSourceCompleteV2(m_cf, m_pf, this,
                                                 m_srcac, m_swerve, m_intake, m_transfer, false);
                         case 21:
-                                return new AutoAmpCompleteVisV2(m_cf, m_pf, this,
-                                                m_ampac, m_swerve, m_intake, m_transfer, true);
+                                return new AutoAmpCompleteV2(m_cf, m_pf, this,
+                                                m_srcac, m_swerve, m_intake, m_transfer, true);
                         case 22:
-                                return new AutoAmpCompleteVisV2(m_cf, m_pf, this,
-                                                m_ampac, m_swerve, m_intake, m_transfer, false);
+                                return new AutoAmpCompleteV2(m_cf, m_pf, this,
+                                                m_srcac, m_swerve, m_intake, m_transfer, false);
                         case 23:
-                                return new AutoAmpWingThenCenter(m_cf, m_pf, null, m_ampac, m_swerve, m_intake,
+                                return new AutoAmpWingThenCenter(m_cf, m_pf, null,  m_srcac, m_swerve, m_intake,
                                                 m_transfer, true);
                         case 24:
-                                return new AutoAmpWingThenCenter(m_cf, m_pf, null, m_ampac, m_swerve, m_intake,
+                                return new AutoAmpWingThenCenter(m_cf, m_pf, null,  m_srcac, m_swerve, m_intake,
                                                 m_transfer, false);
 
                         default:

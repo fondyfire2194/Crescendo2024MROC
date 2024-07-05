@@ -12,17 +12,17 @@ import frc.robot.Factories.AutoFactory;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
 import frc.robot.Factories.PathFactory.amppaths;
+import frc.robot.commands.Autos.Autos.GetAnotherNoteAmp;
 import frc.robot.commands.Autos.Autos.SourceAmpAutoCommands;
 import frc.robot.commands.Pathplanner.RunPPath;
-import frc.robot.commands.Autos.Autos.GetAnotherNoteAmp;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 
 /** Add your docs here. */
-public class AutoAmpWingThenCenter extends SequentialCommandGroup {
+public class AutoAmpCompleteV2 extends SequentialCommandGroup {
 
-        public AutoAmpWingThenCenter(
+        public AutoAmpCompleteV2(
                         CommandFactory cf,
                         PathFactory pf,
                         AutoFactory af,
@@ -38,14 +38,13 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
                                                 Commands.waitSeconds(.75),
                                                 cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
                                                                 Constants.subwfrShooterSpeed, 20)),
-
                                 cf.transferNoteToShooterCommand(),
 
-                                srcac.runPathPickupAndShootIfNote(pf.pathMaps.get(amppaths.AmpToWing1.name()),
-                                                swerve, cf, pf, 1),
-
-                                srcac.pickupCenter2_1FromWing1(cf, pf, swerve, transfer, intake,
+                                srcac.pickupCenter(cf, swerve,
+                                                pf.pathMaps.get(amppaths.AmpToCenter2.name()),
+                                                pf.pathMaps.get(amppaths.AmpToCenter1.name()),
                                                 innerNoteFirst),
+                                // if note in intake go shoot it or try adjacent one
 
                                 Commands.either(
                                                 srcac.moveShootCenter(cf, swerve,
