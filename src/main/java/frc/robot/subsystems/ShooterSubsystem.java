@@ -64,13 +64,13 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     topController = topRoller.getPIDController();
     topEncoder = topRoller.getEncoder();
 
-    configMotor(topRoller, topEncoder, true);
+    configMotor(topRoller, topEncoder, topController, true);
 
     bottomRoller = new CANSparkMax(Constants.CANIDConstants.bottomShooterID, MotorType.kBrushless);
     bottomEncoder = bottomRoller.getEncoder();
     bottomController = bottomRoller.getPIDController();
 
-    configMotor(bottomRoller, bottomEncoder, true);
+    configMotor(bottomRoller, bottomEncoder, bottomController, true);
 
     topController.setOutputRange(0, 1);
 
@@ -78,7 +78,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   }
 
-  private void configMotor(CANSparkMax motor, RelativeEncoder encoder,
+  private void configMotor(CANSparkMax motor, RelativeEncoder encoder, SparkPIDController controller,
       boolean reverse) {
     motor.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(motor, Usage.kAll);
@@ -96,12 +96,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     while (i < loop) {
       i++;
     }
-    setTopKpKdKi();
-    i = 0;
-    while (i < loop) {
-      i++;
-    }
-    setBottomKpKdKi();
+    if (controller == topController)
+      setTopKpKdKi();
+    if (controller == bottomController)
+      setBottomKpKdKi();
     motor.burnFlash();
     encoder.setPosition(0.0);
   }
@@ -310,14 +308,6 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   private double getBottomCommandRPM() {
     return bottomCommandRPM;
-  }
-
-  public Command setTopKpKdKiCommand() {
-    return Commands.runOnce(() -> setTopKpKdKi());
-  }
-
-  public Command setBottomKpKdKiCommand() {
-    return Commands.runOnce(() -> setBottomKpKdKi());
   }
 
   public void setTopKpKdKi() {

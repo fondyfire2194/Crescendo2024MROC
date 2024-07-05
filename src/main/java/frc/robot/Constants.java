@@ -556,13 +556,13 @@ public final class Constants {
 
                 public static final double shooterConversionVelocityFactor = 1;
                 public static final double shooterConversionPositionFactor = 1;
-                public static final double topShooterKP = 4e-4;
+                public static final double topShooterKP = 3e-4;
                 public static final double topShooterKI = 0;
-                public static final double topShooterKD = 0.01;
+                public static final double topShooterKD = 0.02;
                 public static final double topShooterKFF = 1.0 / maxShooterMotorRPM;
-                public static final double bottomShooterKP = 4e-4;
+                public static final double bottomShooterKP = 3e-4;
                 public static final double bottomShooterKI = 0;
-                public static final double bottomShooterKD = 1e-4;
+                public static final double bottomShooterKD = .02;
                 public static final double bottomShooterKFF = 1.0 / maxShooterMotorRPM;
                 public static final double voltageComp = 12;
                 public static final IdleMode shooterIdleMode = IdleMode.kBrake;
@@ -703,7 +703,7 @@ public final class Constants {
 
                 public static final double transferPositionKp = .00002; // P gains caused oscilliation
                 public static final double transferKi = 0.0;
-                public static final double transferKd = 0.0;
+                public static final double transferKd = 0.001;
                 public static final double transferKFF = .95 / maxTransferMotorRPM;
         }
 
@@ -719,9 +719,9 @@ public final class Constants {
                 public static double reverseTime = 2;
                 public static double noteInIntakeAmps = 30;
                 public static final double intakeSpeed = 4500;
-                public static final double intakeKp = 3.5e-4;
+                public static final double intakeKp = 2e-4;
                 public static final double intakeKi = 0.0;
-                public static final double intakeKd = 0.0;
+                public static final double intakeKd = 0.001;
                 public static final double intakeKFF = .95 / maxIntakeMotorRPM;
                 public static final double notemissedtime = 1.25;
         }

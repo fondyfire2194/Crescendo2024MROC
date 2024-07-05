@@ -17,6 +17,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -124,6 +125,8 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   LinearFilter stageDistanceFilter = LinearFilter.movingAverage(10);// was 5
   LinearFilter lobDistanceFilter = LinearFilter.movingAverage(10);// was 5
   LinearFilter noteDistanceFilter = LinearFilter.movingAverage(10);// was 5
+  @Log.NT(key = "skidratio")
+  private double skidRatio;
 
   public SwerveSubsystem() {
 
@@ -246,6 +249,47 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(desiredStates[mod.moduleNumber], false);
     }
+  }
+
+  /**
+   * the method comes from 1690's
+   * <a href="https://youtu.be/N6ogT5DjGOk?feature=shared&t=1674">online software
+   * session</a>
+   * gets the skidding ratio from the latest , that can be used to determine how
+   * much the chassis is skidding
+   * the skidding ratio is defined as the ratio between the maximum and minimum
+   * magnitude of the "translational" part of the speed of the modules
+   * 
+   * @param swerveStatesMeasured  the swerve states measured from the modules
+   * @param swerveDriveKinematics the kinematics
+   * @return the skidding ratio, maximum/minimum, ranges from [1,INFINITY)
+   */
+  public static double getSkiddingRatio(SwerveModuleState[] swerveStatesMeasured,
+      SwerveDriveKinematics swerveDriveKinematics) {
+    final double angularVelocityOmegaMeasured = swerveDriveKinematics
+        .toChassisSpeeds(swerveStatesMeasured).omegaRadiansPerSecond;
+    final SwerveModuleState[] swerveStatesRotationalPart = swerveDriveKinematics
+        .toSwerveModuleStates(new ChassisSpeeds(0, 0, angularVelocityOmegaMeasured));
+    final double[] swerveStatesTranslationalPartMagnitudes = new double[swerveStatesMeasured.length];
+
+    for (int i = 0; i < swerveStatesMeasured.length; i++) {
+      final Translation2d swerveStateMeasuredAsVector = convertSwerveStateToVelocityVector(swerveStatesMeasured[i]),
+          swerveStatesRotationalPartAsVector = convertSwerveStateToVelocityVector(swerveStatesRotationalPart[i]),
+          swerveStatesTranslationalPartAsVector = swerveStateMeasuredAsVector.minus(swerveStatesRotationalPartAsVector);
+      swerveStatesTranslationalPartMagnitudes[i] = swerveStatesTranslationalPartAsVector.getNorm();
+    }
+
+    double maximumTranslationalSpeed = 0, minimumTranslationalSpeed = Double.POSITIVE_INFINITY;
+    for (double translationalSpeed : swerveStatesTranslationalPartMagnitudes) {
+      maximumTranslationalSpeed = Math.max(maximumTranslationalSpeed, translationalSpeed);
+      minimumTranslationalSpeed = Math.min(minimumTranslationalSpeed, translationalSpeed);
+    }
+
+    return maximumTranslationalSpeed / minimumTranslationalSpeed;
+  }
+
+  private static Translation2d convertSwerveStateToVelocityVector(SwerveModuleState swerveModuleState) {
+    return new Translation2d(swerveModuleState.speedMetersPerSecond, swerveModuleState.angle);
   }
 
   /**
@@ -515,7 +559,7 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
 
   @Override
   public void periodic() {
-  
+
     if (!mod0connected) {
       mod0connected = checkMod0CansOK();
       SmartDashboard.putBoolean("Drive//Ok0ModCan", mod0connected);
@@ -544,6 +588,10 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
       flUpdate.execute();
 
       frUpdate.execute();
+
+      if (!isStopped())
+
+        skidRatio = getSkiddingRatio(getStates(), Constants.SwerveConstants.swerveKinematics);
 
       if (getPathRunning() && isStopped())
         resetPathRunning();
