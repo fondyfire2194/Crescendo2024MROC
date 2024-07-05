@@ -56,6 +56,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 import frc.robot.utils.ShootingData;
+import frc.robot.utils.ViewArmShooterByDistance;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -158,8 +159,8 @@ public class RobotContainer implements Logged {
 
                 SmartDashboard.putData("PD", m_pd);
 
-                // SmartDashboard.putData("ViewArmShooterData",
-                // new ViewArmShooterByDistance(m_cf, m_sd, m_arm).ignoringDisable(true));
+                SmartDashboard.putData("ViewArmShooterData",
+                                new ViewArmShooterByDistance(m_cf, m_sd, m_arm).ignoringDisable(true));
                 // SmartDashboard.putData("RotateToNote",
                 // new RotateToFindNote(m_swerve, 45));
                 // SmartDashboard.putData("AlignToNote",

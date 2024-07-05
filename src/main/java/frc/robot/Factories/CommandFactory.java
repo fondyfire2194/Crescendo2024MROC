@@ -54,7 +54,7 @@ public class CommandFactory {
         Pose2d tempPose2d = new Pose2d();
 
         public int testNotesRun;
-        
+
         public CommandFactory(SwerveSubsystem swerve, ShooterSubsystem shooter, ArmSubsystem arm,
                         IntakeSubsystem intake, TransferSubsystem transfer,
                         ShootingData sd) {
@@ -130,14 +130,27 @@ public class CommandFactory {
                                                 m_arm.setTolerance(ArmConstants.angleTolerance);
                                                 m_arm.setTarget(getLobArmAngleFromTarget(
                                                                 stageDistance));
+
                                         } else {
-                                                m_arm.setTarget(m_sd.armAngleMap
-                                                                .get(m_swerve.getDistanceFromSpeaker()));
                                                 m_arm.setTolerance(m_sd.armToleranceMap
                                                                 .get(m_swerve.getDistanceFromSpeaker()));
-                                                m_shooter.startShooter(
-                                                                m_sd.shooterRPMMap
-                                                                                .get(m_swerve.getDistanceFromSpeaker()));
+
+                                                if (m_swerve.getDistanceFromSpeaker() <= 4) {
+                                                        double anglerads = Math.atan(Units.inchesToMeters(70)
+                                                                        / m_swerve.getDistanceFromSpeaker());
+
+                                                        m_arm.setTarget(anglerads);
+                                                        m_shooter.startShooter(3500);
+
+                                                } else {
+
+                                                        m_arm.setTarget(m_sd.armAngleMap
+                                                                        .get(m_swerve.getDistanceFromSpeaker()));
+
+                                                        m_shooter.startShooter(
+                                                                        m_sd.shooterRPMMap
+                                                                                        .get(m_swerve.getDistanceFromSpeaker()));
+                                                }
                                         }
                                 },
 

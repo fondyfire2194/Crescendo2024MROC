@@ -4,6 +4,8 @@
 
 package frc.robot.utils;
 
+import com.fasterxml.jackson.core.filter.TokenFilterContext;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +17,10 @@ public class ViewArmShooterByDistance extends Command {
   private final CommandFactory m_cf;
   private final ShootingData m_sd;
   private final ArmSubsystem m_arm;
+  //78 to 83 less shooter pivot height 10 
+  private double shooterspeakerheightdifference = Units.inchesToMeters(70);
+  private double speakeropeningwidth = Units.inchesToMeters(42);
+  private double notediameter = Units.inchesToMeters(14);
   double distance;
   int loopctr;
   boolean endit;
@@ -31,7 +37,7 @@ public class ViewArmShooterByDistance extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    distance = -1;
+    distance = 0;
     loopctr = 0;
     endit = false;
     deg = 60;
@@ -48,27 +54,30 @@ public class ViewArmShooterByDistance extends Command {
       double angleDeg = Units.radiansToDegrees(m_sd.armAngleMap.get(distance));
       double shotTimeMs = m_sd.shotTimeMap.get(distance) * 1000;
       double toleranceDeg = Units.radiansToDegrees(m_sd.armToleranceMap.get(distance));
-
-
+      double toleranceRPM = m_sd.shooterRPMToleranceMap.get(distance);
+      double theoreticalAngle = Units.radiansToDegrees(Math.atan(shooterspeakerheightdifference / distance));
       double stageAngle = m_cf.getLobArmAngleFromTarget(distance);
 
       double angleTan = Math.tan(Units.degreesToRadians(angleDeg));
 
       double aimHeightFromTable = angleTan * distance;
 
-      SmartDashboard.putNumber("ArmCalc/DistRPM", rpm);
+      SmartDashboard.putNumber("ArmCalc/DistRPM", rpm/100);
       SmartDashboard.putNumber("ArmCalc/DistAngle", angleDeg);
       SmartDashboard.putNumber("ArmCalc/ShotTime", shotTimeMs);
       SmartDashboard.putNumber("ArmCalc/ToleranceAngle", toleranceDeg);
-
 
       SmartDashboard.putNumber("ArmCalc/StageAngle", stageAngle);
 
       SmartDashboard.putNumber("ArmCalc/AimHeightTable", aimHeightFromTable);
 
       SmartDashboard.putNumber("ArmCalc/DistDist", distance);
+
+      SmartDashboard.putNumber("ArmCalc/ToleranceRPM", toleranceRPM);
+      SmartDashboard.putNumber("ArmCalc/TheoreticalAngle", theoreticalAngle);
+
       loopctr = 0;
-      distance += .1;
+      distance += .01;
     }
 
     endit = distance >= 7;
