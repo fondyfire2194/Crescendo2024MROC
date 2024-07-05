@@ -76,7 +76,6 @@ public class SwerveModule extends SubsystemBase {
     this.m_simRotatePosition = 0.0;
     m_turnCancoder = new CANcoder(moduleConstants.canCoderID, "CV1");
 
-
     /* Drive Motor Config */
     driveMotor = new CANSparkMax(moduleConstants.driveMotorID, MotorType.kBrushless);
 

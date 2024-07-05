@@ -91,6 +91,17 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     encoder.setMeasurementPeriod(32);
     motor.enableVoltageCompensation(Constants.ShooterConstants.voltageComp);
     motor.setClosedLoopRampRate(1);
+    int i = 0;
+    int loop = 100;
+    while (i < loop) {
+      i++;
+    }
+    setTopKpKdKi();
+    i = 0;
+    while (i < loop) {
+      i++;
+    }
+    setBottomKpKdKi();
     motor.burnFlash();
     encoder.setPosition(0.0);
   }
@@ -148,8 +159,6 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   public boolean getRunShooter() {
     return runShooterVel;
   }
-
-  // o// }
 
   @Log.NT(key = "shtrtoprpm")
   public double getRPMTop() {

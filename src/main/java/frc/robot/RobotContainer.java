@@ -153,11 +153,7 @@ public class RobotContainer implements Logged {
 
                 autoChooser = AutoBuilder.buildAutoChooser();
 
-                // m_arm.setKPKIKD();
-
                 m_pd.resetTotalEnergy();
-
-                m_transfer.setVelPID();
 
                 SmartDashboard.putData("TestCan", this.testAllCan().ignoringDisable(true));
 
@@ -207,13 +203,13 @@ public class RobotContainer implements Logged {
 
                 configureSetupBindings();
 
-                m_shooter.setTopKpKdKi();
+             //   m_shooter.setTopKpKdKi();
 
                 configureCommandScheduler();
 
                 setDefaultCommands();
 
-                m_shooter.setBottomKpKdKi();
+              //  m_shooter.setBottomKpKdKi();
 
                 // doLobShot = new Trigger(() -> m_transfer.lobbing
                 // && m_transfer.noteAtIntake()

@@ -61,14 +61,13 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
     transferEncoder = transferMotor.getEncoder();
     transferController = transferMotor.getPIDController();
 
-    configMotor(transferMotor, transferEncoder, true);
+    configMotor(transferMotor, transferEncoder, transferController, true);
 
     m_limitSwitch = transferMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
     m_limitSwitch.enableLimitSwitch(true);
-
   }
 
-  private void configMotor(CANSparkMax motor, RelativeEncoder encoder,
+  private void configMotor(CANSparkMax motor, RelativeEncoder encoder, SparkPIDController controller,
       boolean reverse) {
     motor.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(motor, Usage.kAll);
@@ -79,6 +78,15 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
     // encoder.setPositionConversionFactor(TransferConstants.transferConversionPositionFactor);
     motor.enableVoltageCompensation(TransferConstants.voltageComp);
     motor.setClosedLoopRampRate(1);
+    int i = 0;
+    int loop = 100;
+    while (i < loop) {
+      i++;
+    }
+    controller.setFF(TransferConstants.transferKFF);
+    controller.setP(TransferConstants.transferKp);
+    controller.setP(TransferConstants.transferKi);
+    controller.setP(TransferConstants.transferKd);
     motor.burnFlash();
     encoder.setPosition(0.0);
   }
@@ -181,15 +189,6 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
       return transferEncoder.getVelocity();
     else
       return commandrpm;
-  }
-
-  public void setVelPID() {
-    REVLibError ok = transferController.setFF(TransferConstants.transferKFF, 0);
-    REVLibError okp = transferController.setP(TransferConstants.transferKp, 0);
-  }
-
-  public Command setTransferPIDCommand() {
-    return Commands.runOnce(() -> setVelPID());
   }
 
   public boolean onPlusHardwareLimit() {

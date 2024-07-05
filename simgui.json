@@ -6,6 +6,7 @@
       "/SmartDashboard/AlignToNote": "Command",
       "/SmartDashboard/Amp Start": "String Chooser",
       "/SmartDashboard/Arm//Arm Sim": "Mechanism2d",
+      "/SmartDashboard/ArmPID": "ProfiledPIDController",
       "/SmartDashboard/BatteryChooser": "String Chooser",
       "/SmartDashboard/CenterMethod": "String Chooser",
       "/SmartDashboard/ClearStickyFaults": "Command",
@@ -119,6 +120,9 @@
           "open": true
         },
         "Shooter": {
+          "open": true
+        },
+        "Transfer": {
           "open": true
         },
         "open": true

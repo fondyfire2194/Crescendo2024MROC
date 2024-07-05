@@ -69,7 +69,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     public double armAngleRads;
     @Log.NT(key = "armpidout")
     private double pidout;
-    
+
     public double angleToleranceRads = ArmConstants.angleTolerance;
     @Log.NT(key = "enablearm")
     public boolean enableArm;
@@ -81,8 +81,6 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     public double angleDegWhenShooting;
     private boolean cancoderconnected;
     private int checkCancoderCounter;
-
-
 
     private final Mechanism2d m_mech2d = new Mechanism2d(60, 60);
     private final MechanismRoot2d m_armPivot = m_mech2d.getRoot("ArmPivot", 30, 30);
@@ -225,7 +223,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     @Override
     protected void useOutput(double output, State goalState) {
-       
+
         boolean tuning = false;
         if (!tuning) {
 
@@ -249,7 +247,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
         lastTime = Timer.getFPGATimestamp();
 
-        pidout=output;
+        pidout = output;
 
         double out = output + feedforward;
 
@@ -338,6 +336,11 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     @Log.NT(key = "armdegs")
     public double getAngleDegrees() {
         return round2dp(Units.radiansToDegrees(getAngleRadians()), 2);
+    }
+
+    @Log.NT(key = "cancoderencoderdifference")
+    public double getCancoderEncoderDifference() {
+        return Units.radiansToDegrees(getCanCoderRad() - armEncoder.getPosition());
     }
 
     public void setUseMotorEncoder(boolean on) {
@@ -469,8 +472,12 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     public double getCanCoderRad() {
         double temp = armCancoder.getAbsolutePosition().getValueAsDouble();
+        // cancoder returns 0 to 1
+        // if arm gets below start point cancoder will read > 1 as it rolls over
+        // need to subtract amount from the calibration position
+        // cancoder .5 = calib + .5*Math.PI = cancoder 1.05 = calib - (1-1.05)*Math.PI
         if (temp > 1)
-            temp -= 1;
+            temp = 1 - temp;
         temp *= (Math.PI);
         temp += ArmConstants.cancoderOffsetRadiansAtCalibration;
         return temp;

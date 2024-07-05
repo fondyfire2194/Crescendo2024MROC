@@ -33,8 +33,7 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
 
   public boolean leftMotorConnected;
   public boolean rightMotorConnected;
-  @Log.NT(key = "leftamps")
-  private double leftAmps;
+
 
   public ClimberSubsystem() {
     climberMotorLeft = new CANSparkMax(CANIDConstants.climberIDLeft, MotorType.kBrushless);

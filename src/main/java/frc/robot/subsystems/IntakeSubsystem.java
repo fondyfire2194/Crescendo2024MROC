@@ -19,6 +19,7 @@ import frc.lib.util.CANSparkMaxUtil;
 import frc.lib.util.CANSparkMaxUtil.Usage;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.TransferConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -50,10 +51,10 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     intakeMotor = new CANSparkMax(Constants.CANIDConstants.intakeID, MotorType.kBrushless);
     intakeController = intakeMotor.getPIDController();
     intakeEncoder = intakeMotor.getEncoder();
-    configMotor(intakeMotor, intakeEncoder, false);
+    configMotor(intakeMotor, intakeEncoder, intakeController, false);
   }
 
-  private void configMotor(CANSparkMax motor, RelativeEncoder encoder, boolean reverse) {
+  private void configMotor(CANSparkMax motor, RelativeEncoder encoder, SparkPIDController controller, boolean reverse) {
     motor.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(motor, Usage.kAll);
     motor.setSmartCurrentLimit(Constants.IntakeConstants.intakeContinuousCurrentLimit);
@@ -63,6 +64,15 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     encoder.setPositionConversionFactor(Constants.IntakeConstants.intakeConversionPositionFactor);
     motor.enableVoltageCompensation(Constants.IntakeConstants.voltageComp);
     motor.setClosedLoopRampRate(2);
+    int i = 0;
+    int loop = 100;
+    while (i < loop) {
+      i++;
+    }
+    controller.setFF(IntakeConstants.intakeKFF);
+    controller.setP(IntakeConstants.intakeKp);
+    controller.setP(IntakeConstants.intakeKi);
+    controller.setP(IntakeConstants.intakeKd);
     motor.burnFlash();
     encoder.setPosition(0.0);
   }
