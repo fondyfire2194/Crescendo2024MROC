@@ -80,6 +80,8 @@ public class PathFactory {
         SourceShootToCenter4,
         SourceShootToCenter5,
         Center4ToCenter5,
+        Center4ToCenter3,
+        Center5ToCenter3,
         Center5ToCenter4,
         Center4ToSourceShoot,
         Center5ToSourceShoot,
