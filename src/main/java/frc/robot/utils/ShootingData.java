@@ -30,7 +30,7 @@ public class ShootingData {
             // returns meters, radians, rpm, seconds, radians
             //
 
-            si.add(new ShotInfo(4.00, 55, 3100, 300, 2, 10));
+          //  si.add(new ShotInfo(4.00, 55, 3100, 300, 2, 10));
             si.add(new ShotInfo(4.25, 60, 3000, 300, 2, 10));
             si.add(new ShotInfo(5.25, 51, 3000, 300, 2, 10));
             si.add(new ShotInfo(6.25, 46, 3000, 300, 2, 10));

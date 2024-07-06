@@ -44,7 +44,6 @@ import frc.robot.commands.Drive.AutoAlignSpeaker;
 import frc.robot.commands.Drive.DriveToPickupNote;
 import frc.robot.commands.Drive.RotateToAngle;
 import frc.robot.commands.Drive.TeleopSwerve;
-import frc.robot.commands.Drive.WheelRadiusCharacterization;
 import frc.robot.commands.Intake.JogIntake;
 import frc.robot.commands.Pathplanner.RunPPath;
 import frc.robot.commands.Transfer.TransferIntakeToSensor;
@@ -294,13 +293,13 @@ public class RobotContainer implements Logged {
                                                 m_intake.startIntakeCommand(),
                                                 new TransferIntakeToSensor(m_transfer, m_intake, m_swerve, 120),
                                                 m_cf.rumbleCommand(driver),
-                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians))
+                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians,false))
                                                 .withTimeout(10));
 
                 // pick up notes with vision align
                 driver.rightBumper().and(driver.a()).onTrue(
                                 Commands.sequence(
-                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians),
+                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians,false),
                                                 Commands.waitUntil(() -> m_arm.getAtSetpoint()),
                                                 m_intake.startIntakeCommand(),
                                                 Commands.deadline(
@@ -326,7 +325,7 @@ public class RobotContainer implements Logged {
                                 .onFalse(
                                                 Commands.parallel(
                                                                 m_shooter.stopShooterCommand(),
-                                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians)));
+                                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians,false)));
 
                 // shoot
                 driver.rightTrigger().onTrue(
@@ -334,7 +333,7 @@ public class RobotContainer implements Logged {
                                                 Commands.waitUntil(() -> m_arm.getAtSetpoint()),
                                                 m_cf.transferNoteToShooterCommand(),
                                                 m_shooter.stopShooterCommand(),
-                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians),
+                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians,false),
                                                 m_intake.stopIntakeCommand()));
 
                 driver.b().onTrue(m_shooter.stopShooterCommand());
@@ -348,9 +347,9 @@ public class RobotContainer implements Logged {
 
                 driver.povDown().onTrue(m_shooter.decreaseRPMCommand(100));
 
-                driver.povRight().onTrue(Commands.runOnce(() -> m_arm.incrementArmAngle(1)));
+                driver.povRight().onTrue(Commands.runOnce(() -> m_arm.incrementArmAngle(10)));
 
-                driver.povLeft().onTrue(Commands.runOnce(() -> m_arm.decrementArmAngle(1)));
+                driver.povLeft().onTrue(Commands.runOnce(() -> m_arm.decrementArmAngle(10)));
 
                 driver.start().onTrue(Commands.runOnce(() -> m_swerve.zeroGyro()));
 
@@ -364,7 +363,7 @@ public class RobotContainer implements Logged {
                                                 .andThen(
                                                                 Commands.parallel(
                                                                                 m_arm.setGoalCommand(
-                                                                                                ArmConstants.pickupAngleRadians),
+                                                                                                ArmConstants.pickupAngleRadians,false),
                                                                                 m_shooter.stopShooterCommand())));
 
         }
@@ -377,15 +376,13 @@ public class RobotContainer implements Logged {
                 codriver.leftTrigger().whileTrue(m_climber.raiseClimberArmsCommand(0.6))
                                 .onFalse(m_climber.stopClimberCommand());
 
-                // codriver.leftBumper().onTrue(m_arm.positionToIntakeUDACommand());
                 codriver.leftBumper().whileTrue(new JogClimber(m_climber, codriver));
 
                 codriver.rightTrigger().whileTrue(m_climber.lowerClimberArmsCommand(0.6))
                                 .onFalse(m_climber.stopClimberCommand());
 
-                codriver.rightBumper().and(codriver.a())
-                                .onTrue(Commands.runOnce(() -> m_arm.useMotorEncoder = !m_arm.useMotorEncoder));
-
+              //  codriver.rightBumper().and(codriver.a())
+            
                 codriver.a().onTrue(m_cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
                                 Constants.subwfrShooterSpeed));
 
@@ -438,19 +435,19 @@ public class RobotContainer implements Logged {
 
                 setup.a().onTrue(m_climber.lockClimberCommand());
 
-                setup.leftBumper().whileTrue(m_swerve.quasistaticForward());
+                // setup.leftBumper().whileTrue(m_swerve.quasistaticForward());
 
-                setup.leftTrigger().whileTrue(m_swerve.dynamicForward());
+                // setup.leftTrigger().whileTrue(m_swerve.dynamicForward());
 
-                setup.rightBumper().whileTrue(m_swerve.quasistaticBackward());
+                // setup.rightBumper().whileTrue(m_swerve.quasistaticBackward());
 
-                setup.rightTrigger().whileTrue(m_swerve.dynamicBackward());
+                // setup.rightTrigger().whileTrue(m_swerve.dynamicBackward());
 
-                setup.a().whileTrue(new WheelRadiusCharacterization(m_swerve));
+                // setup.a().whileTrue(new WheelRadiusCharacterization(m_swerve));
 
-                setup.x().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(50)));
+                setup.x().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(50),true));
 
-                setup.y().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(70)));
+                setup.y().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(25),true));
 
                 setup.povDown().onTrue(new RotateToAngle(m_swerve, 0));
 

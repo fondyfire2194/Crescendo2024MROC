@@ -19,7 +19,6 @@ import frc.lib.util.CANSparkMaxUtil;
 import frc.lib.util.CANSparkMaxUtil.Usage;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.TransferConstants;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
@@ -71,8 +70,8 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     }
     controller.setFF(IntakeConstants.intakeKFF);
     controller.setP(IntakeConstants.intakeKp);
-    controller.setP(IntakeConstants.intakeKi);
-    controller.setP(IntakeConstants.intakeKd);
+    controller.setI(IntakeConstants.intakeKi);
+    controller.setD(IntakeConstants.intakeKd);
     motor.burnFlash();
     encoder.setPosition(0.0);
   }

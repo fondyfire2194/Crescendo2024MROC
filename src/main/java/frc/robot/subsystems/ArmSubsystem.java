@@ -12,7 +12,6 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
@@ -53,8 +52,6 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     public boolean armMotorConnected;
 
     public double appliedOutput;
-
-    private Timer presetTimer = new Timer();
 
     private boolean useSoftwareLimit;
     public boolean inIZone;
@@ -100,7 +97,6 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
                     Units.radiansToDegrees(getCurrentGoalRads()),
                     6,
                     new Color8Bit(Color.kRed)));
-    public boolean useMotorEncoder;
 
     Trigger setMotorEncoderToCancoder;
 
@@ -135,14 +131,12 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
         armfeedforward = new ArmFeedforward(ArmConstants.armKs, ArmConstants.armKg, ArmConstants.armKv,
                 ArmConstants.armKa);
 
-                setTolerance(angleToleranceRads);
+        setTolerance(angleToleranceRads);
 
-        setUseMotorEncoder(false);
+        armEncoder.setPosition(ArmConstants.cancoderOffsetRadiansAtCalibration);
 
         SmartDashboard.putData("Arm//Arm Sim", m_mech2d);
         m_armTower.setColor(new Color8Bit(Color.kBlue));
-
-        presetTimer.start();
     }
 
     private void configMotor(CANSparkMax motor, RelativeEncoder encoder, boolean reverse) {
@@ -175,19 +169,14 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
             SmartDashboard.putBoolean("Arm//OKArmMotor", armMotorConnected);
         }
 
-        if (!presetDone && presetTimer.hasElapsed(2)) {
-            presetArmEncoderToCancoder();
-            SmartDashboard.putNumber("Arm/PresetTimer", presetTimer.get());
-            SmartDashboard.putBoolean("Arm/PresetDone", presetDone);
-        }
-
-        if (!isEnabled()
-                && presetDone && (DriverStation.isTeleopEnabled() || DriverStation.isAutonomousEnabled())) {
+        if ((!isEnabled() || enableArm)
+                && (DriverStation.isTeleopEnabled() || DriverStation.isAutonomousEnabled())) {
             enableArm = true;
             enable();
         }
 
         SmartDashboard.putNumber("Arm/CanCdrRads", getCanCoderRad());
+        SmartDashboard.putNumber("Arm/Encoder", Units.radiansToDegrees(armEncoder.getPosition()));
         SmartDashboard.putBoolean("Arm/isenab", isEnabled());
     }
 
@@ -268,11 +257,11 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     public void setTolerance(double toleranceRads) {
         angleToleranceRads = toleranceRads;
         // if (angleToleranceRads < .01)
-        //     angleToleranceRads = .01;
+        // angleToleranceRads = .01;
     }
 
-    public void setTolerance(){
-        angleToleranceRads=.02;
+    public void setTolerance() {
+        angleToleranceRads = .02;
     }
 
     public void setTarget(double anglerads) {
@@ -288,13 +277,24 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
         return armEncoder.getPosition();
     }
 
-    public Command setGoalCommand(double angleRads) {
-        return Commands.sequence(
-                Commands.runOnce(() -> SmartDashboard.putNumber("ArmGoal", angleRads)),
-                Commands.runOnce(() -> setTolerance(ArmConstants.angleTolerance)),
-                Commands.runOnce(() -> resetController()),
-                Commands.runOnce(() -> setGoal(angleRads), this),
-                Commands.runOnce(() -> enable(), this));
+    public Command setGoalCommand(double angleRads, boolean UDA) {
+
+        return Commands.either(
+                Commands.sequence(
+                        Commands.runOnce(() -> SmartDashboard.putNumber("ArmGoal", angleRads)),
+                        Commands.runOnce(() -> setTolerance(ArmConstants.angleTolerance)),
+                        Commands.runOnce(() -> resetController()),
+                        Commands.runOnce(() -> setGoal(angleRads), this),
+                        Commands.runOnce(() -> enable(), this)),
+                Commands.sequence(
+                        Commands.runOnce(() -> SmartDashboard.putNumber("ArmGoal", angleRads)),
+                        Commands.runOnce(() -> setTolerance(ArmConstants.angleTolerance)),
+                        Commands.runOnce(() -> resetController()),
+                        Commands.runOnce(() -> setGoal(angleRads + .1), this),
+                        Commands.runOnce(() -> enable(), this),
+                        Commands.waitUntil(() -> getAngleRadians() > angleRads),
+                        Commands.runOnce(() -> setGoal(angleRads), this)),
+                () -> !UDA);
     }
 
     public void incrementArmAngle(double valdeg) {
@@ -324,10 +324,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     public double getAngleRadians() {
         if (RobotBase.isReal()) {
-            if (!useMotorEncoder)
-                return getCanCoderRad();
-            else
-                return armEncoder.getPosition();
+            return armEncoder.getPosition();
         } else
             return simAngleRads;
     }
@@ -349,33 +346,6 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     @Log.NT(key = "cancoderencoderdifference")
     public double getCancoderEncoderDifference() {
         return Units.radiansToDegrees(getCanCoderRad() - armEncoder.getPosition());
-    }
-
-    public void setUseMotorEncoder(boolean on) {
-        useMotorEncoder = on;
-    }
-
-    public boolean getUseMotorEncoder() {
-        return useMotorEncoder;
-    }
-
-    public void presetArmEncoderToCancoder() {
-        cancoderAtPreset = getCanCoderRad();
-        armEncoder.setPosition(cancoderAtPreset);
-        startup();
-        presetDone = true;
-    }
-
-    public void startup() {
-        if (RobotBase.isReal()) {
-            setGoalCommand(cancoderAtPreset);
-        } else {
-            armEncoder.setPosition(ArmConstants.armMinRadians);
-            setGoal(ArmConstants.armMinRadians);
-            simAngleRads = ArmConstants.armMinRadians;
-        }
-        resetController();
-        setKp();
     }
 
     @Log.NT(key = "armatsetpoint")

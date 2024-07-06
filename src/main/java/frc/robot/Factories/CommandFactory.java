@@ -152,7 +152,8 @@ public class CommandFactory {
                                                 anglerads = Math.atan(Units
                                                                 .inchesToMeters(Pref.getPref("spkrarmzdiff"))
                                                                 / distance);
-                                                rpm = Pref.getPref("shtrrpmbase") + (Pref.getPref("shtrrpminc") * distance / 4);
+                                                rpm = Pref.getPref("shtrrpmbase")
+                                                                + (Pref.getPref("shtrrpminc") * distance / 4);
                                                 maprads = m_sd.armAngleMap.get(distance);
                                                 maprpm = m_sd.shooterRPMMap.get(distance);
                                         }
@@ -176,13 +177,9 @@ public class CommandFactory {
         }
 
         public Command positionArmRunShooterSpecialCase(double armAngleDeg, double shooterSpeed) {
-                return Commands.parallel(Commands.runOnce(() -> SmartDashboard
-                                .putNumber("GI+OTAAA", armAngleDeg)),
-                                Commands.runOnce(() -> SmartDashboard.putNumber(
-                                                "GI+OTAAS", shooterSpeed)),
-                                m_arm.setGoalCommand(Units.degreesToRadians(armAngleDeg)),
+                return Commands.parallel(
+                                m_arm.setGoalCommand(Units.degreesToRadians(armAngleDeg), false),
                                 m_shooter.startShooterCommand(shooterSpeed));
-
         }
 
         public Command doIntake() {
@@ -204,7 +201,7 @@ public class CommandFactory {
         }
 
         public Command armToIntake() {
-                return m_arm.setGoalCommand(ArmConstants.pickupAngleRadians);
+                return m_arm.setGoalCommand(ArmConstants.pickupAngleRadians, false);
         }
 
         public Command transferNoteToShooterCommand() {
@@ -217,7 +214,7 @@ public class CommandFactory {
 
         public Command setArmShooterValues(double armAngle, double shooterRPM) {
                 return Commands.parallel(
-                                m_arm.setGoalCommand(Units.degreesToRadians(armAngle)),
+                                m_arm.setGoalCommand(Units.degreesToRadians(armAngle), false),
                                 m_shooter.startShooterCommand(shooterRPM, 10));
         }
 
@@ -258,18 +255,18 @@ public class CommandFactory {
                                 m_shooter.stopShooterCommand(),
                                 m_intake.stopIntakeCommand(),
                                 m_transfer.stopTransferCommand(),
-                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians)
+                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians, false)
                                                 .withName("Reset All"))
                                 .asProxy();
         }
 
         public Command doAmpShot() {
                 return Commands.sequence(
-                                m_arm.setGoalCommand(Units.degreesToRadians(90)),
+                                m_arm.setGoalCommand(Units.degreesToRadians(90), false),
                                 m_shooter.startShooterCommand(
                                                 Pref.getPref("AmpTopRPM"), Pref.getPref("AmpBottomRPM")),
                                 Commands.waitUntil(() -> m_arm.getAtSetpoint()),
-                                m_arm.setGoalCommand(Units.degreesToRadians(Pref.getPref("AmpArmDegrees"))),
+                                m_arm.setGoalCommand(Units.degreesToRadians(Pref.getPref("AmpArmDegrees")), false),
                                 Commands.waitUntil(() -> m_arm.getAtSetpoint()),
                                 Commands.parallel(
                                                 m_transfer.transferToShooterCommandAmp(),
@@ -279,12 +276,13 @@ public class CommandFactory {
                                                                                 Units.degreesToRadians(Pref.getPref(
                                                                                                 "AmpArmDegrees"))
                                                                                                 + Units.degreesToRadians(
-                                                                                                                Pref.getPref("AmpDegreeIncrement"))),
+                                                                                                                Pref.getPref("AmpDegreeIncrement")),
+                                                                                false),
                                                                 new WaitCommand(2))),
 
                                 Commands.parallel(
                                                 m_shooter.stopShooterCommand(),
-                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians)));
+                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians, false)));
 
         }
 }

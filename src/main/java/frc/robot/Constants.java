@@ -618,7 +618,7 @@ public final class Constants {
 
         public static final class ArmConstants {
 
-                public static final double cancoderOffsetRadiansAtCalibration = Units.degreesToRadians(15);
+                public static final double cancoderOffsetRadiansAtCalibration = Units.degreesToRadians(20);
 
                 public static final double maxarmMotorRPM = 5700;
 
@@ -699,11 +699,11 @@ public final class Constants {
                 public static double intakingSpeed = 5500;
                 public static double transferToShootSpeed = 7000;
 
-                public static final double transferKp = .0002; // P gains caused oscilliation
+                public static final double transferKp = .00001; // P gains caused oscilliation
 
                 public static final double transferPositionKp = .00002; // P gains caused oscilliation
                 public static final double transferKi = 0.0;
-                public static final double transferKd = 0.001;
+                public static final double transferKd = 0.00;
                 public static final double transferKFF = .95 / maxTransferMotorRPM;
         }
 
@@ -721,7 +721,7 @@ public final class Constants {
                 public static final double intakeSpeed = 4500;
                 public static final double intakeKp = 2e-4;
                 public static final double intakeKi = 0.0;
-                public static final double intakeKd = 0.001;
+                public static final double intakeKd = 0.00;
                 public static final double intakeKFF = .95 / maxIntakeMotorRPM;
                 public static final double notemissedtime = 1.25;
         }

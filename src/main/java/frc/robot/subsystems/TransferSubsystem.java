@@ -85,8 +85,8 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
     }
     controller.setFF(TransferConstants.transferKFF);
     controller.setP(TransferConstants.transferKp);
-    controller.setP(TransferConstants.transferKi);
-    controller.setP(TransferConstants.transferKd);
+    controller.setI(TransferConstants.transferKi);
+    controller.setD(TransferConstants.transferKd);
     motor.burnFlash();
     encoder.setPosition(0.0);
   }
