@@ -124,38 +124,25 @@ public class CommandFactory {
                                 doIntake());
         }
 
-        public Command positionArmRunShooterByDistance(boolean lob, boolean endAtTargets) {
+        public Command positionArmRunShooterByDistance(boolean endAtTargets) {
 
                 return new FunctionalCommand(
 
-                                () -> Commands.runOnce(() -> m_transfer.lobbing = lob),
+                                () -> Commands.none(),
 
                                 () -> {
-                                        if (lob) {
-                                                double stageDistance = m_swerve.getDistanceFromStage();
-                                                double lobDistance = m_swerve.getDistanceFromLobTarget();
-                                                m_shooter.startShooter(
-                                                                Constants.shooterLobRPMMap.get(
-                                                                                lobDistance));
-                                                m_arm.setTolerance(ArmConstants.angleTolerance);
-                                                m_arm.setTarget(getLobArmAngleFromTarget(
-                                                                stageDistance));
-
-                                        } else {
-
-                                                double distance = m_swerve.getDistanceFromSpeaker();
-                                                m_arm.setTolerance(m_sd.armToleranceMap
-                                                                .get(distance));
-                                                m_shooter.setRPMTolerancePCT(m_sd.shooterRPMToleranceMap
-                                                                .get(distance));
-                                                anglerads = Math.atan(Units
-                                                                .inchesToMeters(Pref.getPref("spkrarmzdiff"))
-                                                                / distance);
-                                                rpm = Pref.getPref("shtrrpmbase")
-                                                                + (Pref.getPref("shtrrpminc") * distance / 4);
-                                                maprads = m_sd.armAngleMap.get(distance);
-                                                maprpm = m_sd.shooterRPMMap.get(distance);
-                                        }
+                                        double distance = m_swerve.getDistanceFromSpeaker();
+                                        m_arm.setTolerance(m_sd.armToleranceMap
+                                                        .get(distance));
+                                        m_shooter.setRPMTolerancePCT(m_sd.shooterRPMToleranceMap
+                                                        .get(distance));
+                                        anglerads = Math.atan(Units
+                                                        .inchesToMeters(Pref.getPref("spkrarmzdiff"))
+                                                        / distance);
+                                        rpm = Pref.getPref("shtrrpmbase")
+                                                        + (Pref.getPref("shtrrpminc") * distance / 4);
+                                        maprads = m_sd.armAngleMap.get(distance);
+                                        maprpm = m_sd.shooterRPMMap.get(distance);
 
                                         if (changeZone.calculate(m_swerve.getDistanceFromSpeaker() >= .1
                                                         && m_swerve.getDistanceFromSpeaker() <= Pref
@@ -219,11 +206,6 @@ public class CommandFactory {
 
         public Command checkAtTargets(double pct) {
                 return Commands.waitUntil(() -> m_shooter.bothAtSpeed() && m_arm.getAtSetpoint());
-        }
-
-        public double getLobArmAngleFromTarget(double distance) {
-                double opp = FieldConstants.stageHeight - ArmConstants.armPivotZ;
-                return Math.atan(opp / distance);
         }
 
         public Command rumbleCommand(CommandXboxController controller) {

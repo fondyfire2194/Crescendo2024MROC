@@ -155,7 +155,7 @@ public class SourceAmpAutoCommands {
                                                 Commands.sequence(
                                                                 Commands.parallel(
                                                                                 m_cf.positionArmRunShooterByDistance(
-                                                                                                false, true),
+                                                                                                 true),
                                                                                 new AutoAlignSpeaker(m_swerve,
                                                                                                 aligntolerance, true)),
                                                                 m_cf.transferNoteToShooterCommand()),

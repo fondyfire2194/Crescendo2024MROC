@@ -17,7 +17,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 /** Add your docs here. */
 public class CenterToShoot extends SequentialCommandGroup {
-       
+
         public CenterToShoot(
                         CommandFactory cf,
                         PathPlannerPath path,
@@ -35,7 +35,7 @@ public class CenterToShoot extends SequentialCommandGroup {
                                                 Commands.parallel(
                                                                 Commands.runOnce(() -> SmartDashboard
                                                                                 .putBoolean("GI+OT3", true)),
-                                                                cf.positionArmRunShooterByDistance(false, true),
+                                                                cf.positionArmRunShooterByDistance(true),
                                                                 new AutoAlignSpeaker(swerve, 1, true)),
                                                 cf.transferNoteToShooterCommand()));
         }

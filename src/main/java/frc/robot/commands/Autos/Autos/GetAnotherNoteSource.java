@@ -44,7 +44,7 @@ public class GetAnotherNoteSource extends SequentialCommandGroup {
                                                                                 .name())),
                                                 Commands.parallel(
                                                                 cf.positionArmRunShooterByDistance(
-                                                                                false, true),
+                                                                                 true),
                                                                 new AutoAlignSpeaker(swerve, 1, true)),
                                                 cf.transferNoteToShooterCommand()));
 

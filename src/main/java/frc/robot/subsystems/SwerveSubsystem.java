@@ -613,7 +613,7 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   }
 
   public Pose2d getStagePose() {
-    return AllianceUtil.getStagePose();
+    return AllianceUtil.getAlliancePose(FieldConstants.stageBlueAlliance);
   }
 
   @Log.NT(key = "spkrDistMtrs")
@@ -634,8 +634,10 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
 
   @Log.NT(key = "stageDistMtrs")
   public double getDistanceFromStage() {
-    return round2dp(stageDistanceFilter.calculate(AllianceUtil.getStagePose().getTranslation()
-        .getDistance(getPose().getTranslation())), 2);
+    return round2dp(
+        stageDistanceFilter.calculate(AllianceUtil.getAlliancePose(FieldConstants.stageBlueAlliance).getTranslation()
+            .getDistance(getPose().getTranslation())),
+        2);
   }
 
   public double getDistanceFromVirtual() {

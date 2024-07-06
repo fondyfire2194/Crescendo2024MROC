@@ -58,10 +58,6 @@ public class AllianceUtil {
     return isRedAlliance() ? FieldConstants.lobRedAlliance : FieldConstants.lobBlueAlliance;
   }
 
-  public static Pose2d getStagePose() {
-    return isRedAlliance() ? FieldConstants.stageRedAlliance : FieldConstants.stageBlueAlliance;
-  }
-
   public static Pose2d getSourceShootPose() {
     return isRedAlliance() ? GeometryUtil
         .flipFieldPose(FieldConstants.sourceShootBlue) : FieldConstants.sourceShootBlue;

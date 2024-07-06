@@ -53,7 +53,7 @@ public class ViewArmShooterByDistance extends Command {
       double toleranceDeg = Units.radiansToDegrees(m_sd.armToleranceMap.get(distance));
       double toleranceRPM = m_sd.shooterRPMToleranceMap.get(distance);
       double theoreticalAngle = Units.radiansToDegrees(Math.atan(shooterspeakerheightdifference / distance));
-      double stageAngle = m_cf.getLobArmAngleFromTarget(distance);
+      
       if (distance > 1 && distance < 4)
         rpm = 3000 + (500 * distance / 4);
 
@@ -66,7 +66,6 @@ public class ViewArmShooterByDistance extends Command {
       SmartDashboard.putNumber("ArmCalc/ShotTime", shotTimeMs);
       SmartDashboard.putNumber("ArmCalc/ToleranceAngle", toleranceDeg);
 
-      SmartDashboard.putNumber("ArmCalc/StageAngle", stageAngle);
 
       SmartDashboard.putNumber("ArmCalc/AimHeightTable", aimHeightFromTable);
 

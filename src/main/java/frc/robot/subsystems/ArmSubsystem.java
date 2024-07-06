@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import java.lang.reflect.Field;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkBase.FaultID;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -35,6 +37,7 @@ import frc.lib.util.CANSparkMaxUtil;
 import frc.lib.util.CANSparkMaxUtil.Usage;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.CANIDConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Pref;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -134,7 +137,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
         setTolerance(angleToleranceRads);
 
         armEncoder.setPosition(ArmConstants.cancoderOffsetRadiansAtCalibration);
-
+        simAngleRads = ArmConstants.cancoderOffsetRadiansAtCalibration;
         SmartDashboard.putData("Arm//Arm Sim", m_mech2d);
         m_armTower.setColor(new Color8Bit(Color.kBlue));
     }
@@ -269,6 +272,8 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
             anglerads = ArmConstants.armMaxRadians;
         if (anglerads < ArmConstants.armMinRadians)
             anglerads = ArmConstants.armMinRadians;
+            SmartDashboard.putNumber("LOBBBB", FieldConstants.lobAngleRads);
+
         setGoal(anglerads);
     }
 

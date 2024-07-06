@@ -330,9 +330,11 @@ public final class Constants {
 
                 public static final double noteDiameter = Units.inchesToMeters(14);
 
-                public static final double stageHeight = Units.inchesToMeters(96);
+                public static final double stageHeight = Units.inchesToMeters(106);
                 public static final double speakerSlotHeight = Units.inchesToMeters(80.4375);
 
+                public static final double lobAngleRads = Units.degreesToRadians(55);
+                public static final double lobRPM = 2800;
                 private static double speakerAimXOffset = Units.inchesToMeters(0);
                 private static Transform2d speakerAimAdjustBlue = new Transform2d(speakerAimXOffset, 0.,
                                 new Rotation2d());
@@ -345,8 +347,10 @@ public final class Constants {
 
                 public static final Pose2d stageBlueAlliance = new Pose2d(Units.inchesToMeters(190), FIELD_WIDTH / 2,
                                 Rotation2d.fromDegrees(0.0));// 8 ft high
-                public static final Pose2d stageRedAlliance = new Pose2d(FIELD_LENGTH - Units.inchesToMeters(190),
-                                FIELD_WIDTH / 2, Rotation2d.fromDegrees(180.0));
+
+                // public static final Pose2d stageRedAlliance = new Pose2d(FIELD_LENGTH -
+                // Units.inchesToMeters(190),
+                // FIELD_WIDTH / 2, Rotation2d.fromDegrees(180.0));
 
                 public static final Pose2d lobBlueAlliance = new Pose2d(0.0, 7.1, Rotation2d.fromDegrees(0.0));
                 public static final Pose2d lobRedAlliance = new Pose2d(16.54, 7.1, Rotation2d.fromDegrees(180.0));

@@ -284,7 +284,7 @@ public class RobotContainer implements Logged {
                                                                 () -> -driver.getLeftY(),
                                                                 () -> driver.getLeftX(),
                                                                 () -> driver.getRightX(), false),
-                                                m_cf.positionArmRunShooterByDistance(false, false)));
+                                                m_cf.positionArmRunShooterByDistance(false)));
                 // new ShootByDistanceAndVelocity(m_arm, m_transfer, m_shooter, m_swerve,
                 // m_sd)));
 
@@ -293,13 +293,13 @@ public class RobotContainer implements Logged {
                                                 m_intake.startIntakeCommand(),
                                                 new TransferIntakeToSensor(m_transfer, m_intake, m_swerve, 120),
                                                 m_cf.rumbleCommand(driver),
-                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians,false))
+                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians, false))
                                                 .withTimeout(10));
 
                 // pick up notes with vision align
                 driver.rightBumper().and(driver.a()).onTrue(
                                 Commands.sequence(
-                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians,false),
+                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians, false),
                                                 Commands.waitUntil(() -> m_arm.getAtSetpoint()),
                                                 m_intake.startIntakeCommand(),
                                                 Commands.deadline(
@@ -321,11 +321,13 @@ public class RobotContainer implements Logged {
                                                                 () -> -driver.getLeftY(),
                                                                 () -> driver.getLeftX(),
                                                                 () -> driver.getRightX(), true),
-                                                m_cf.positionArmRunShooterByDistance(true, false)))
+                                                m_shooter.startShooterCommand(FieldConstants.lobRPM),
+                                                m_arm.setGoalCommand(FieldConstants.lobAngleRads, false)))
                                 .onFalse(
                                                 Commands.parallel(
                                                                 m_shooter.stopShooterCommand(),
-                                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians,false)));
+                                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians,
+                                                                                false)));
 
                 // shoot
                 driver.rightTrigger().onTrue(
@@ -333,7 +335,7 @@ public class RobotContainer implements Logged {
                                                 Commands.waitUntil(() -> m_arm.getAtSetpoint()),
                                                 m_cf.transferNoteToShooterCommand(),
                                                 m_shooter.stopShooterCommand(),
-                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians,false),
+                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians, false),
                                                 m_intake.stopIntakeCommand()));
 
                 driver.b().onTrue(m_shooter.stopShooterCommand());
@@ -363,7 +365,8 @@ public class RobotContainer implements Logged {
                                                 .andThen(
                                                                 Commands.parallel(
                                                                                 m_arm.setGoalCommand(
-                                                                                                ArmConstants.pickupAngleRadians,false),
+                                                                                                ArmConstants.pickupAngleRadians,
+                                                                                                false),
                                                                                 m_shooter.stopShooterCommand())));
 
         }
@@ -381,8 +384,8 @@ public class RobotContainer implements Logged {
                 codriver.rightTrigger().whileTrue(m_climber.lowerClimberArmsCommand(0.6))
                                 .onFalse(m_climber.stopClimberCommand());
 
-              //  codriver.rightBumper().and(codriver.a())
-            
+                // codriver.rightBumper().and(codriver.a())
+
                 codriver.a().onTrue(m_cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
                                 Constants.subwfrShooterSpeed));
 
@@ -445,9 +448,9 @@ public class RobotContainer implements Logged {
 
                 // setup.a().whileTrue(new WheelRadiusCharacterization(m_swerve));
 
-                setup.x().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(50),true));
+                setup.x().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(50), true));
 
-                setup.y().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(25),true));
+                setup.y().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(25), true));
 
                 setup.povDown().onTrue(new RotateToAngle(m_swerve, 0));
 

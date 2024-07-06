@@ -44,8 +44,8 @@ public class MovePickupShootTest extends SequentialCommandGroup {
                                                                 new DriveToPickupNote(swerve, transfer, intake)),
 
                                                 Commands.deadline(
-                                                                cf.positionArmRunShooterByDistance(false, true),
-                                                                new AutoAlignSpeaker(swerve,1, false)),
+                                                                cf.positionArmRunShooterByDistance(true),
+                                                                new AutoAlignSpeaker(swerve, 1, false)),
 
                                                 Commands.either(
                                                                 transfer.transferToShooterCommand(),
