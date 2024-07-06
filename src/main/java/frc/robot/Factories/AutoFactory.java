@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
 import frc.robot.commands.Autos.AutoStarts.AutoAmpCompleteV2;
 import frc.robot.commands.Autos.AutoStarts.AutoAmpWingThenCenter;
+import frc.robot.commands.Autos.AutoStarts.AutoSbwfrShootThenSequence;
 import frc.robot.commands.Autos.AutoStarts.AutoSourceCompleteV2;
 import frc.robot.commands.Autos.AutoStarts.AutoSubwr5Note;
 import frc.robot.commands.Autos.AutoStarts.AutoSubwrCenter3;
 import frc.robot.commands.Autos.Autos.SourceAmpAutoCommands;
-import frc.robot.commands.Autos.SubwfrStart.AutoSbwfrShootThenSequence;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -62,16 +62,16 @@ public class AutoFactory {
 
         private final ArmSubsystem m_arm;
 
+        private final ShooterSubsystem m_shooter;
+
         private CommandFactory m_cf;
 
         private SourceAmpAutoCommands m_srcac;
 
-
-
         public boolean validChoice;
 
         public AutoFactory(PathFactory pf, CommandFactory cf,
-                        SubwooferAutoCommands sac, SourceAmpAutoCommands srcac, 
+                        SubwooferAutoCommands sac, SourceAmpAutoCommands srcac,
                         SwerveSubsystem swerve,
                         ShooterSubsystem shooter,
                         ArmSubsystem arm,
@@ -85,6 +85,7 @@ public class AutoFactory {
                 m_swerve = swerve;
                 m_transfer = transfer;
                 m_intake = intake;
+                m_shooter = shooter;
 
                 minsbwfrauto = 1;
                 m_subwfrStartChooser.setDefaultOption("Not Used", 0);
@@ -171,34 +172,38 @@ public class AutoFactory {
 
                         case 1:
                                 return new AutoSbwfrShootThenSequence(m_cf, m_pf, m_sac, m_swerve,
-                                                m_intake, sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot,
+                                                m_intake, m_shooter, m_arm, sbwfrpaths.SubwfrShootToWing2,
+                                                sbwfrpaths.Wing2ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing1, sbwfrpaths.Wing1ShootToSubwfr,
                                                 sbwfrpaths.SubwfrShootToWing3, sbwfrpaths.Wing3ToSubwfrShoot);
                         case 2:
                                 return new AutoSbwfrShootThenSequence(m_cf, m_pf, m_sac, m_swerve,
-                                                m_intake, sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot,
+                                                m_intake, m_shooter, m_arm, sbwfrpaths.SubwfrShootToWing2,
+                                                sbwfrpaths.Wing2ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing3, sbwfrpaths.Wing3ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing1, sbwfrpaths.Wing1ShootToSubwfr);
 
                         case 3:
                                 return new AutoSbwfrShootThenSequence(m_cf, m_pf, m_sac, m_swerve,
-                                                m_intake, sbwfrpaths.SubwfrShootToWing3, sbwfrpaths.Wing3ToSubwfrShoot,
+                                                m_intake, m_shooter, m_arm, sbwfrpaths.SubwfrShootToWing3,
+                                                sbwfrpaths.Wing3ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot);
 
                         case 4:
                                 return new AutoSbwfrShootThenSequence(m_cf, m_pf, m_sac, m_swerve,
-                                                m_intake, sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot,
+                                                m_intake, m_shooter, m_arm, sbwfrpaths.SubwfrShootToWing2,
+                                                sbwfrpaths.Wing2ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing1, sbwfrpaths.Wing1ToSubwfrShoot);
 
                         case 5:
                                 return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
-                                                true);
+                                                m_shooter, true);
                         case 6:
                                 return new AutoSubwrCenter3(m_cf, m_pf, m_sac, m_swerve, m_intake, m_transfer, m_arm,
-                                                false);
+                                                m_shooter, false);
                         case 7:
                                 return new AutoSubwr5Note(m_cf, m_pf, m_sac, m_swerve, m_intake,
-                                                m_arm);
+                                                m_shooter, m_arm);
                         case 11:
                                 return new AutoSourceCompleteV2(m_cf, m_pf, this,
                                                 m_srcac, m_swerve, m_intake, m_transfer, true);
@@ -212,10 +217,10 @@ public class AutoFactory {
                                 return new AutoAmpCompleteV2(m_cf, m_pf, this,
                                                 m_srcac, m_swerve, m_intake, m_transfer, false);
                         case 23:
-                                return new AutoAmpWingThenCenter(m_cf, m_pf, null,  m_srcac, m_swerve, m_intake,
+                                return new AutoAmpWingThenCenter(m_cf, m_pf, m_srcac, m_swerve, m_intake,
                                                 m_transfer, true);
                         case 24:
-                                return new AutoAmpWingThenCenter(m_cf, m_pf, null,  m_srcac, m_swerve, m_intake,
+                                return new AutoAmpWingThenCenter(m_cf, m_pf, m_srcac, m_swerve, m_intake,
                                                 m_transfer, false);
 
                         default:
@@ -223,9 +228,9 @@ public class AutoFactory {
                 }
         }
 
-        // Command shoot(CommandFactory cf, double angle, double rpm, double rpmpct) {
+        // Command shoot(CommandFactory cf, double angle, double rpm) {
         // return Commands.sequence(
-        // cf.positionArmRunShooterSpecialCase(angle, rpm, rpmpct),
+        // cf.positionArmRunShooterSpecialCase(angle, rpm),
         // cf.transferNoteToShooterCommand());
         // }
 
@@ -236,7 +241,7 @@ public class AutoFactory {
         // Commands.parallel(
         // new RunPPath(swerve, pf.pathMaps.get(path.name())),
         // cf.positionArmRunShooterSpecialCase(
-        // angle, rpm, 10)),
+        // angle, rpm)),
         // cf.transferNoteToShooterCommand());
         // }
 

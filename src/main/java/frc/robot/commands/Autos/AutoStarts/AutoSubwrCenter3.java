@@ -14,6 +14,7 @@ import frc.robot.commands.Drive.AutoAlignSpeaker;
 import frc.robot.commands.Pathplanner.RunPPath;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 
@@ -28,10 +29,11 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
                         IntakeSubsystem intake,
                         TransferSubsystem transfer,
                         ArmSubsystem arm,
+                        ShooterSubsystem shooter,
                         boolean wing3) {
 
                 addCommands(
-                                sac.setsbwrstart(swerve, cf, intake),
+                                sac.setsbwrstart(swerve, cf, intake,shooter, arm),
                                 sac.sbwfrShoot(cf),
                                 sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.SubwfrShootToWing2.name()),
                                                 swerve, cf, pf, 1),

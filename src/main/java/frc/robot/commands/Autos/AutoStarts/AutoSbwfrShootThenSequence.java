@@ -2,15 +2,18 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Autos.SubwfrStart;
+package frc.robot.commands.Autos.AutoStarts;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
+import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.commands.Pathplanner.RunPPath;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /** Add your docs here. */
@@ -22,6 +25,8 @@ public class AutoSbwfrShootThenSequence extends SequentialCommandGroup {
                         SubwooferAutoCommands sac,
                         SwerveSubsystem swerve,
                         IntakeSubsystem intake,
+                        ShooterSubsystem shooter,
+                        ArmSubsystem arm,
                         sbwfrpaths path1,
                         sbwfrpaths path2,
                         sbwfrpaths path3,
@@ -29,7 +34,7 @@ public class AutoSbwfrShootThenSequence extends SequentialCommandGroup {
 
                 addCommands(
 
-                                sac.setsbwrstart(swerve, cf, intake),
+                                sac.setsbwrstart(swerve, cf, intake, shooter, null),
 
                                 sac.sbwfrShoot(cf),
 
@@ -41,7 +46,7 @@ public class AutoSbwfrShootThenSequence extends SequentialCommandGroup {
                                                 () -> cf.noteAtIntake()),
 
                                 sac.moveAndPickup(path3, swerve, cf, pf),
-                                
+
                                 Commands.either(
                                                 sac.sbwfrmoveandshoot(path4, swerve, cf, pf),
                                                 Commands.none(),
@@ -57,6 +62,8 @@ public class AutoSbwfrShootThenSequence extends SequentialCommandGroup {
                         SubwooferAutoCommands sac,
                         SwerveSubsystem swerve,
                         IntakeSubsystem intake,
+                        ShooterSubsystem shooter,
+                        ArmSubsystem arm,
                         sbwfrpaths path1,
                         sbwfrpaths path2,
                         sbwfrpaths path3,
@@ -65,7 +72,7 @@ public class AutoSbwfrShootThenSequence extends SequentialCommandGroup {
                         sbwfrpaths path6) {
 
                 addCommands(
-                                sac.setsbwrstart(swerve, cf, intake),
+                                sac.setsbwrstart(swerve, cf, intake, shooter, arm),
 
                                 sac.sbwfrShoot(cf),
 

@@ -15,8 +15,8 @@ import frc.robot.commands.Autos.Autos.PickupUsingVision;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.utils.LLPipelines;
 
 /** Add your docs here. */
 public class AutoSubwr5Note extends SequentialCommandGroup {
@@ -27,14 +27,15 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                         SubwooferAutoCommands sac,
                         SwerveSubsystem swerve,
                         IntakeSubsystem intake,
+                        ShooterSubsystem shooter,
                         ArmSubsystem arm) {
 
                 addCommands( // note
-                                sac.setsbwrstart(swerve, cf, intake),
+                                sac.setsbwrstart(swerve, cf, intake, shooter, arm),
                                 Commands.race(
                                                 Commands.waitSeconds(.75),
                                                 cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
-                                                                Constants.subwfrShooterSpeed, 20)),
+                                                                Constants.subwfrShooterSpeed)),
                                 cf.transferNoteToShooterCommand(),
 
                                 sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.SubToNote3Fast.name()),

@@ -48,7 +48,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private double bottomSimRPM = 0;
   @Log.NT(key = "shtratspeed;")
   private boolean shootersatspeed;
-
+  @Log.NT(key = "shtrtolpct;")
+  public double shootertolerancepct = 10;
   @Log.NT(key = "shtrrunatvel")
   private boolean runShooterVel;
 
@@ -124,14 +125,24 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   }
 
-  public Command startShooterCommand(double rpm, double pct) {
-    return Commands.run(() -> startShooter(rpm))
-        .until(() -> bothAtSpeed(pct));
+  public void setRPMTolerancePCT(double pct) {
+    if (pct < 10 || pct > 25)
+      pct = 10;
+    shootertolerancepct = pct;
   }
 
-  public Command startShooterCommand(double toprpm, double bottomrpm, double pct) {
+  public void setRPMTolerancePCT() {
+    shootertolerancepct = 10;
+  }
+
+  public Command startShooterCommand(double rpm) {
+    return Commands.run(() -> startShooter(rpm))
+        .until(() -> bothAtSpeed());
+  }
+
+  public Command startShooterCommand(double toprpm, double bottomrpm) {
     return Commands.run(() -> startShooter(toprpm, bottomrpm))
-        .until(() -> bothAtSpeed(pct));
+        .until(() -> bothAtSpeed());
   }
 
   public void startShooter(double rpm) {
@@ -200,12 +211,13 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     return Commands.runOnce(() -> decreaseShooterRPM(val));
   }
 
-  public boolean topAtSpeed(double pct) {
-    return topCommandRPM != 0 && Math.abs(topCommandRPM - getRPMTop()) < topCommandRPM * pct / 100;
+  public boolean topAtSpeed() {
+    return topCommandRPM != 0 && Math.abs(topCommandRPM - getRPMTop()) < topCommandRPM * shootertolerancepct / 100;
   }
 
-  public boolean bottomAtSpeed(double pct) {
-    return bottomCommandRPM != 0 && Math.abs(bottomCommandRPM - getRPMBottom()) < bottomCommandRPM * pct / 100;
+  public boolean bottomAtSpeed() {
+    return bottomCommandRPM != 0
+        && Math.abs(bottomCommandRPM - getRPMBottom()) < bottomCommandRPM * shootertolerancepct / 100;
   }
 
   public double getTopRPMError() {
@@ -216,8 +228,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     return bottomCommandRPM - getRPMBottom();
   }
 
-  public boolean bothAtSpeed(double pct) {
-    shootersatspeed = topAtSpeed(pct) && bottomAtSpeed(pct);
+  public boolean bothAtSpeed() {
+    shootersatspeed = topAtSpeed() && bottomAtSpeed();
     return shootersatspeed;
   }
 

@@ -31,7 +31,7 @@ public class CenterToShoot extends SequentialCommandGroup {
                                                                 new RunPPath(swerve, path),
                                                                 cf.positionArmRunShooterSpecialCase(
                                                                                 Constants.source_ampShootAngle,
-                                                                                Constants.source_ampShootSpeed, 15)),
+                                                                                Constants.source_ampShootSpeed)),
                                                 Commands.parallel(
                                                                 Commands.runOnce(() -> SmartDashboard
                                                                                 .putBoolean("GI+OT3", true)),

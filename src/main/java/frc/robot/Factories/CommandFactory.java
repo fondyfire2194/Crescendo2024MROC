@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.GeometryUtil;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -54,6 +55,16 @@ public class CommandFactory {
         Pose2d tempPose2d = new Pose2d();
 
         public int testNotesRun;
+
+        Debouncer changeZone = new Debouncer(1);
+
+        private double anglerads;
+
+        private double rpm;
+
+        private double maprads;
+
+        private double maprpm;
 
         public CommandFactory(SwerveSubsystem swerve, ShooterSubsystem shooter, ArmSubsystem arm,
                         IntakeSubsystem intake, TransferSubsystem transfer,
@@ -132,43 +143,45 @@ public class CommandFactory {
                                                                 stageDistance));
 
                                         } else {
+
+                                                double distance = m_swerve.getDistanceFromSpeaker();
                                                 m_arm.setTolerance(m_sd.armToleranceMap
-                                                                .get(m_swerve.getDistanceFromSpeaker()));
+                                                                .get(distance));
+                                                m_shooter.setRPMTolerancePCT(m_sd.shooterRPMToleranceMap
+                                                                .get(distance));
+                                                anglerads = Math.atan(Units
+                                                                .inchesToMeters(Pref.getPref("spkrarmzdiff"))
+                                                                / distance);
+                                                rpm = Pref.getPref("shtrrpmbase") + (Pref.getPref("shtrrpminc") * distance / 4);
+                                                maprads = m_sd.armAngleMap.get(distance);
+                                                maprpm = m_sd.shooterRPMMap.get(distance);
+                                        }
 
-                                                if (m_swerve.getDistanceFromSpeaker() <= 4) {
-                                                        double anglerads = Math.atan(Units.inchesToMeters(70)
-                                                                        / m_swerve.getDistanceFromSpeaker());
+                                        if (changeZone.calculate(m_swerve.getDistanceFromSpeaker() >= .1
+                                                        && m_swerve.getDistanceFromSpeaker() <= Pref
+                                                                        .getPref("shootcalcmaxdist"))) {
+                                                m_arm.setTarget(anglerads);
+                                                m_shooter.startShooter(rpm);
+                                        } else {
+                                                m_arm.setTarget(maprads);
+                                                m_shooter.startShooter(maprpm);
 
-                                                        m_arm.setTarget(anglerads);
-                                                        m_shooter.startShooter(3500);
-
-                                                } else {
-
-                                                        m_arm.setTarget(m_sd.armAngleMap
-                                                                        .get(m_swerve.getDistanceFromSpeaker()));
-
-                                                        m_shooter.startShooter(
-                                                                        m_sd.shooterRPMMap
-                                                                                        .get(m_swerve.getDistanceFromSpeaker()));
-                                                }
                                         }
                                 },
 
                                 (interrupted) -> Commands.none(),
 
                                 () -> endAtTargets && m_arm.getAtSetpoint()
-                                                && m_shooter.bothAtSpeed(
-                                                                m_sd.shooterRPMToleranceMap.get(
-                                                                                m_swerve.getDistanceFromSpeaker())));
+                                                && m_shooter.bothAtSpeed());
         }
 
-        public Command positionArmRunShooterSpecialCase(double armAngleDeg, double shooterSpeed, double rpmpct) {
+        public Command positionArmRunShooterSpecialCase(double armAngleDeg, double shooterSpeed) {
                 return Commands.parallel(Commands.runOnce(() -> SmartDashboard
                                 .putNumber("GI+OTAAA", armAngleDeg)),
                                 Commands.runOnce(() -> SmartDashboard.putNumber(
                                                 "GI+OTAAS", shooterSpeed)),
                                 m_arm.setGoalCommand(Units.degreesToRadians(armAngleDeg)),
-                                m_shooter.startShooterCommand(shooterSpeed, rpmpct));
+                                m_shooter.startShooterCommand(shooterSpeed));
 
         }
 
@@ -209,7 +222,7 @@ public class CommandFactory {
         }
 
         public Command checkAtTargets(double pct) {
-                return Commands.waitUntil(() -> m_shooter.bothAtSpeed(pct) && m_arm.getAtSetpoint());
+                return Commands.waitUntil(() -> m_shooter.bothAtSpeed() && m_arm.getAtSetpoint());
         }
 
         public double getLobArmAngleFromTarget(double distance) {
@@ -219,7 +232,7 @@ public class CommandFactory {
 
         public Command rumbleCommand(CommandXboxController controller) {
                 return Commands.run(() -> {
-                        if (m_swerve.alignedToTarget && m_arm.getAtSetpoint() && m_shooter.bothAtSpeed(10))
+                        if (m_swerve.alignedToTarget && m_arm.getAtSetpoint() && m_shooter.bothAtSpeed())
                                 controller.getHID().setRumble(RumbleType.kLeftRumble, 1.0);
                         else
                                 controller.getHID().setRumble(RumbleType.kLeftRumble, 0.0);

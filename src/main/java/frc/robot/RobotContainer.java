@@ -138,8 +138,8 @@ public class RobotContainer implements Logged {
 
                 registerNamedCommands();
 
-                m_sac = new SubwooferAutoCommands(m_swerve, m_cf, m_intake, m_transfer);
-                m_srcac = new SourceAmpAutoCommands(m_swerve, m_cf);
+                m_sac = new SubwooferAutoCommands(m_shooter, m_arm);
+                m_srcac = new SourceAmpAutoCommands();
 
                 m_af = new AutoFactory(m_pf, m_cf, m_sac, m_srcac, m_swerve, m_shooter, m_arm, m_intake,
                                 m_transfer);
@@ -357,7 +357,7 @@ public class RobotContainer implements Logged {
                 driver.back().onTrue(
                                 Commands.sequence(
                                                 m_cf.positionArmRunShooterSpecialCase(45,
-                                                                4750, 10),
+                                                                4750),
                                                 Commands.waitSeconds(2),
                                                 m_cf.transferNoteToShooterCommand(),
                                                 new WaitCommand(1))
@@ -387,7 +387,7 @@ public class RobotContainer implements Logged {
                                 .onTrue(Commands.runOnce(() -> m_arm.useMotorEncoder = !m_arm.useMotorEncoder));
 
                 codriver.a().onTrue(m_cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
-                                Constants.subwfrShooterSpeed, 10));
+                                Constants.subwfrShooterSpeed));
 
                 codriver.b().onTrue(new JogIntake(m_intake, codriver));
 

@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Factories.AutoFactory;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
 import frc.robot.Factories.PathFactory.amppaths;
@@ -25,7 +24,6 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
         public AutoAmpWingThenCenter(
                         CommandFactory cf,
                         PathFactory pf,
-                        AutoFactory af,
                         SourceAmpAutoCommands srcac,
                         SwerveSubsystem swerve,
                         IntakeSubsystem intake,
@@ -37,7 +35,7 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
                                 Commands.race(
                                                 Commands.waitSeconds(.75),
                                                 cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
-                                                                Constants.subwfrShooterSpeed, 20)),
+                                                                Constants.subwfrShooterSpeed)),
 
                                 cf.transferNoteToShooterCommand(),
 

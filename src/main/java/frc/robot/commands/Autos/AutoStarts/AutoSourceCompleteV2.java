@@ -37,7 +37,7 @@ public class AutoSourceCompleteV2 extends SequentialCommandGroup {
                                 Commands.race(
                                                 Commands.waitSeconds(.75),
                                                 cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
-                                                                Constants.subwfrShooterSpeed, 20)),
+                                                                Constants.subwfrShooterSpeed)),
                                 cf.transferNoteToShooterCommand(),
 
                                 srcac.pickupCenter(cf, swerve,

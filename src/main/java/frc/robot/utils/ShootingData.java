@@ -30,39 +30,7 @@ public class ShootingData {
             // returns meters, radians, rpm, seconds, radians
             //
 
-            // si.add(new ShotInfo(5, 50, 3100, 300, 2));
-
-            // si.add(new ShotInfo(6, 40, 3100, 300, 2));
-
-            // si.add(new ShotInfo(7, 37, 3100, 300, 2));
-
-            // si.add(new ShotInfo(8, 33, 3100, 300, 2));
-
-            // si.add(new ShotInfo(9, 32, 3100, 300, 2));
-
-            // si.add(new ShotInfo(10, 30, 3100, 300, 2));
-
-            // si.add(new ShotInfo(11, 28, 3100, 300, 2));
-
-            // si.add(new ShotInfo(12, 27, 3100, 300, 2));
-
-            // si.add(new ShotInfo(13, 25, 3100, 300, 2));
-
-            // si.add(new ShotInfo(14, 24, 3100, 300, 2));
-
-            // si.add(new ShotInfo(15, 23, 3300, 300, 2));
-
-            // si.add(new ShotInfo(16, 21, 3500, 300, 2));
-
-            // si.add(new ShotInfo(17, 20, 3800, 300, 2));
-
-            // si.add(new ShotInfo(18, 18, 4000, 300, 2));
-
-            // si.add(new ShotInfo(19, 17, 4000, 300, 2));
-
-            // si.add(new ShotInfo(20, 17, 4500, 300, 2));
-            // =======old data===========================
-            si.add(new ShotInfo(4, 55, 3100, 300, 2, 10));
+            si.add(new ShotInfo(4.00, 55, 3100, 300, 2, 10));
             si.add(new ShotInfo(4.25, 60, 3000, 300, 2, 10));
             si.add(new ShotInfo(5.25, 51, 3000, 300, 2, 10));
             si.add(new ShotInfo(6.25, 46, 3000, 300, 2, 10));
@@ -92,7 +60,7 @@ public class ShootingData {
             armToleranceMap.put(si.get(i).getDistanceMeters(),
                     si.get(i).getToleranceRads());
         }
-        
+
         for (int i = 0; i < si.size(); i++) {
             shooterRPMMap.put(si.get(i).getDistanceMeters(), si.get(i).getSpeedRPM());
         }
@@ -103,7 +71,6 @@ public class ShootingData {
         for (int i = 0; i < si.size(); i++) {
             shotTimeMap.put(si.get(i).getDistanceMeters(), si.get(i).getTimeSec());
         }
-
     }
 
     public class ShotInfo {
@@ -156,6 +123,38 @@ public class ShootingData {
         public double getTimeSec() {
             return timeMs / 1000;
         }
+        // =======old data===========================
+        // si.add(new ShotInfo(5, 50, 3100, 300, 2));
+
+        // si.add(new ShotInfo(6, 40, 3100, 300, 2));
+
+        // si.add(new ShotInfo(7, 37, 3100, 300, 2));
+
+        // si.add(new ShotInfo(8, 33, 3100, 300, 2));
+
+        // si.add(new ShotInfo(9, 32, 3100, 300, 2));
+
+        // si.add(new ShotInfo(10, 30, 3100, 300, 2));
+
+        // si.add(new ShotInfo(11, 28, 3100, 300, 2));
+
+        // si.add(new ShotInfo(12, 27, 3100, 300, 2));
+
+        // si.add(new ShotInfo(13, 25, 3100, 300, 2));
+
+        // si.add(new ShotInfo(14, 24, 3100, 300, 2));
+
+        // si.add(new ShotInfo(15, 23, 3300, 300, 2));
+
+        // si.add(new ShotInfo(16, 21, 3500, 300, 2));
+
+        // si.add(new ShotInfo(17, 20, 3800, 300, 2));
+
+        // si.add(new ShotInfo(18, 18, 4000, 300, 2));
+
+        // si.add(new ShotInfo(19, 17, 4000, 300, 2));
+
+        // si.add(new ShotInfo(20, 17, 4500, 300, 2));
 
     }
 }

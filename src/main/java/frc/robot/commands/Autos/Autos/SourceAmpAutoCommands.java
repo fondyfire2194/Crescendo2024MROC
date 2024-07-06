@@ -23,7 +23,7 @@ import frc.robot.utils.AllianceUtil;
 /** Add your docs here. */
 public class SourceAmpAutoCommands {
 
-        public SourceAmpAutoCommands(SwerveSubsystem swerve, CommandFactory cf) {
+        public SourceAmpAutoCommands() {
         }
 
         public Command setSourceStart(SwerveSubsystem swerve, TransferSubsystem transfer, IntakeSubsystem intake,
@@ -65,7 +65,7 @@ public class SourceAmpAutoCommands {
                 return Commands.sequence(
                                 Commands.parallel(
                                                 new RunPPath(swerve, path),
-                                                cf.positionArmRunShooterSpecialCase(armAngle, shooterpm, rpmtol)),
+                                                cf.positionArmRunShooterSpecialCase(armAngle, shooterpm)),
                                 cf.transferNoteToShooterCommand());
         }
 

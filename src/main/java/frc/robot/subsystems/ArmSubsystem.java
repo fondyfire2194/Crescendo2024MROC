@@ -70,7 +70,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     @Log.NT(key = "armpidout")
     private double pidout;
 
-    public double angleToleranceRads = ArmConstants.angleTolerance;
+    private double angleToleranceRads = ArmConstants.angleTolerance;
     @Log.NT(key = "enablearm")
     public boolean enableArm;
 
@@ -134,6 +134,8 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
         armfeedforward = new ArmFeedforward(ArmConstants.armKs, ArmConstants.armKg, ArmConstants.armKv,
                 ArmConstants.armKa);
+
+                setTolerance(angleToleranceRads);
 
         setUseMotorEncoder(false);
 
@@ -265,6 +267,12 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     public void setTolerance(double toleranceRads) {
         angleToleranceRads = toleranceRads;
+        // if (angleToleranceRads < .01)
+        //     angleToleranceRads = .01;
+    }
+
+    public void setTolerance(){
+        angleToleranceRads=.02;
     }
 
     public void setTarget(double anglerads) {

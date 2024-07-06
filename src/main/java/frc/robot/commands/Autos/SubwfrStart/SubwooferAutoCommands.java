@@ -6,6 +6,7 @@ package frc.robot.commands.Autos.SubwfrStart;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
@@ -19,21 +20,22 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.TransferSubsystem;
 import frc.robot.utils.AllianceUtil;
 
 /** Add your docs here. */
 public class SubwooferAutoCommands {
 
-        public SubwooferAutoCommands(SwerveSubsystem swerve, CommandFactory cf, IntakeSubsystem intake,
-                        TransferSubsystem transfer) {
+        public SubwooferAutoCommands(ShooterSubsystem shooter, ArmSubsystem arm) {
         }
 
-        public Command setsbwrstart(SwerveSubsystem swerve, CommandFactory cf, IntakeSubsystem intake) {
+        public Command setsbwrstart(SwerveSubsystem swerve, CommandFactory cf, IntakeSubsystem intake,
+                        ShooterSubsystem shooter, ArmSubsystem arm) {
                 return Commands.sequence(
                                 Commands.runOnce(() -> swerve.targetPose = AllianceUtil.getSpeakerPose()),
                                 Commands.runOnce(() -> swerve.inhibitVision = true),
                                 Commands.runOnce(() -> intake.resetIsIntakingSim()),
+                                Commands.runOnce(() -> shooter.setRPMTolerancePCT(10)),
+                                Commands.runOnce(() -> arm.setTolerance(Units.degreesToRadians(1))),
                                 cf.setStartPosebyAlliance(FieldConstants.sbwfrStartPose));
         }
 
@@ -42,7 +44,7 @@ public class SubwooferAutoCommands {
         }
 
         public Command setArmShooter(CommandFactory cf, double angle, double rpm) {
-                return cf.positionArmRunShooterSpecialCase(angle, rpm, 25);
+                return cf.positionArmRunShooterSpecialCase(angle, rpm);
         }
 
         public Command shoot(CommandFactory cf, double angle, double rpm) {
@@ -77,7 +79,7 @@ public class SubwooferAutoCommands {
                                 Commands.parallel(
                                                 new RunPPath(swerve, pf.pathMaps.get(path.name())),
                                                 setArmShooter(cf, angle, rpm)),
-                                Commands.waitUntil(() -> shooter.bothAtSpeed(.2) && arm.getAtSetpoint()),
+                                Commands.waitUntil(() -> shooter.bothAtSpeed() && arm.getAtSetpoint()),
                                 shoot(cf));
         }
 

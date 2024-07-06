@@ -17,7 +17,7 @@ public class ViewArmShooterByDistance extends Command {
   private final CommandFactory m_cf;
   private final ShootingData m_sd;
   private final ArmSubsystem m_arm;
-  //78 to 83 less shooter pivot height 10 
+  // 78 to 83 less shooter pivot height 10
   private double shooterspeakerheightdifference = Units.inchesToMeters(70);
   private double speakeropeningwidth = Units.inchesToMeters(42);
   private double notediameter = Units.inchesToMeters(14);
@@ -57,12 +57,14 @@ public class ViewArmShooterByDistance extends Command {
       double toleranceRPM = m_sd.shooterRPMToleranceMap.get(distance);
       double theoreticalAngle = Units.radiansToDegrees(Math.atan(shooterspeakerheightdifference / distance));
       double stageAngle = m_cf.getLobArmAngleFromTarget(distance);
+      if (distance > 1 && distance < 4)
+        rpm = 3000 + (500 * distance / 4);
 
       double angleTan = Math.tan(Units.degreesToRadians(angleDeg));
 
       double aimHeightFromTable = angleTan * distance;
 
-      SmartDashboard.putNumber("ArmCalc/DistRPM", rpm/100);
+      SmartDashboard.putNumber("ArmCalc/DistRPM", rpm / 100);
       SmartDashboard.putNumber("ArmCalc/DistAngle", angleDeg);
       SmartDashboard.putNumber("ArmCalc/ShotTime", shotTimeMs);
       SmartDashboard.putNumber("ArmCalc/ToleranceAngle", toleranceDeg);

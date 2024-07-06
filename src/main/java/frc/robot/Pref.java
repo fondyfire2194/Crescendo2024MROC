@@ -41,6 +41,12 @@ public class Pref {
     prefDict.put("AmpTransferToShootSpeed", 4000.);
 
     prefDict.put("autoalignoffset", 0.0);
+    
+    // shoot by distance
+    prefDict.put("spkrarmzdiff", 70.);// inches
+    prefDict.put("shootcalcmaxdist", 4.);// meters
+    prefDict.put("shtrrpmbase", 3000.);//rpm
+    prefDict.put("shtrrpminc", 500.);//rpm
 
     prefDict.put("driveKa", 0.2);
     prefDict.put("driveKadown", 0.15);
