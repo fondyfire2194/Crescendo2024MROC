@@ -321,6 +321,7 @@ public class RobotContainer implements Logged {
                                                                 () -> -driver.getLeftY(),
                                                                 () -> driver.getLeftX(),
                                                                 () -> driver.getRightX(), true),
+                                                                m_cf.rumbleCommand(driver),
                                                 m_shooter.startShooterCommand(FieldConstants.lobRPM),
                                                 m_arm.setGoalCommand(FieldConstants.lobAngleRads, false)))
                                 .onFalse(
