@@ -138,8 +138,8 @@ public class RobotContainer implements Logged {
 
                 registerNamedCommands();
 
-                m_sac = new SubwooferAutoCommands(m_shooter, m_arm);
-                m_srcac = new SourceAmpAutoCommands();
+                m_sac = new SubwooferAutoCommands(m_swerve, m_intake, m_shooter, m_arm, m_cf, m_pf);
+                m_srcac = new SourceAmpAutoCommands(m_swerve, m_intake, m_transfer, m_cf, m_pf);
 
                 m_af = new AutoFactory(m_pf, m_cf, m_sac, m_srcac, m_swerve, m_shooter, m_arm, m_intake,
                                 m_transfer);

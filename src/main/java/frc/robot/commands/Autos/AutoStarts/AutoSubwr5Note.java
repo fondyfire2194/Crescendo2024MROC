@@ -31,7 +31,7 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                         ArmSubsystem arm) {
 
                 addCommands( // note
-                                sac.setsbwrstart(swerve, cf, intake, shooter, arm),
+                                sac.setsbwrstart(),
                                 Commands.race(
                                                 Commands.waitSeconds(.75),
                                                 cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
@@ -39,13 +39,13 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                                 cf.transferNoteToShooterCommand(),
 
                                 sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.SubToNote3Fast.name()),
-                                                swerve, cf, pf, 1),
+                                                1),
 
                                 sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.Note3ToNote2Fast.name()),
-                                                swerve, cf, pf, 1),
+                                                1),
 
                                 sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.Note2ToNote1Fast.name()),
-                                                swerve, cf, pf, 1),
+                                                1),
 
                                 Commands.parallel(
                                                 new PickupUsingVision(cf,

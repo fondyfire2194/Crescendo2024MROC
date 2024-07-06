@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Autos.AutoStarts;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Factories.CommandFactory;
@@ -34,21 +35,21 @@ public class AutoSbwfrShootThenSequence extends SequentialCommandGroup {
 
                 addCommands(
 
-                                sac.setsbwrstart(swerve, cf, intake, shooter, null),
+                                sac.setsbwrstart(),
 
-                                sac.sbwfrShoot(cf),
+                                sac.sbwfrShoot(),
 
-                                sac.moveAndPickup(path1, swerve, cf, pf),
+                                sac.moveAndPickup(path1),
 
                                 Commands.either(
-                                                sac.sbwfrmoveandshoot(path2, swerve, cf, pf),
+                                                sac.sbwfrmoveandshoot(path2),
                                                 new RunPPath(swerve, pf.pathMaps.get(path2.name())),
                                                 () -> cf.noteAtIntake()),
 
-                                sac.moveAndPickup(path3, swerve, cf, pf),
+                                sac.moveAndPickup(path3),
 
                                 Commands.either(
-                                                sac.sbwfrmoveandshoot(path4, swerve, cf, pf),
+                                                sac.sbwfrmoveandshoot(path4),
                                                 Commands.none(),
                                                 () -> cf.noteAtIntake()),
 
@@ -72,28 +73,29 @@ public class AutoSbwfrShootThenSequence extends SequentialCommandGroup {
                         sbwfrpaths path6) {
 
                 addCommands(
-                                sac.setsbwrstart(swerve, cf, intake, shooter, arm),
 
-                                sac.sbwfrShoot(cf),
+                                sac.setsbwrstart(),
 
-                                sac.moveAndPickup(path1, swerve, cf, pf),
+                                sac.sbwfrShoot(),
+
+                                sac.moveAndPickup(path1),
 
                                 Commands.either(
-                                                sac.sbwfrmoveandshoot(path2, swerve, cf, pf),
+                                                sac.sbwfrmoveandshoot(path2),
                                                 new RunPPath(swerve, pf.pathMaps.get(path2.name())),
                                                 () -> cf.noteAtIntake()),
 
-                                sac.moveAndPickup(path3, swerve, cf, pf),
+                                sac.moveAndPickup(path3),
 
                                 Commands.either(
-                                                sac.sbwfrmoveandshoot(path4, swerve, cf, pf),
+                                                sac.sbwfrmoveandshoot(path4),
                                                 new RunPPath(swerve, pf.pathMaps.get(path4.name())),
                                                 () -> cf.noteAtIntake()),
 
-                                sac.moveAndPickup(path5, swerve, cf, pf),
+                                sac.moveAndPickup(path5),
 
                                 Commands.either(
-                                                sac.sbwfrmoveandshoot(path6, swerve, cf, pf),
+                                                sac.sbwfrmoveandshoot(path6),
                                                 Commands.none(),
                                                 () -> cf.noteAtIntake()),
 

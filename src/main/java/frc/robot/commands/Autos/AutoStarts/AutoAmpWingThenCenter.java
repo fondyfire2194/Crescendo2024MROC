@@ -31,7 +31,7 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
                         boolean innerNoteFirst) {
 
                 addCommands(
-                                srcac.setAmpStart(swerve, transfer, intake, cf),
+                                srcac.setAmpStart(),
                                 Commands.race(
                                                 Commands.waitSeconds(.75),
                                                 cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
@@ -40,21 +40,18 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
                                 cf.transferNoteToShooterCommand(),
 
                                 srcac.runPathPickupAndShootIfNote(pf.pathMaps.get(amppaths.AmpToWing1.name()),
-                                                swerve, cf, pf, 1),
+                                                1),
 
-                                srcac.pickupCenter2_1FromWing1(cf, pf, swerve, transfer, intake,
-                                                innerNoteFirst),
+                                srcac.pickupCenter2_1FromWing1(innerNoteFirst),
 
                                 Commands.either(
-                                                srcac.moveShootCenter(cf, swerve,
-                                                                pf.pathMaps.get(amppaths.Center2ToAmpShoot
+                                                srcac.moveShootCenter(pf.pathMaps.get(amppaths.Center2ToAmpShoot
                                                                                 .name()),
                                                                 pf.pathMaps.get(amppaths.Center1ToAmpShoot
                                                                                 .name()),
                                                                 innerNoteFirst),
 
-                                                srcac.pickUpAdjacentNote(cf, swerve,
-                                                                pf.pathMaps.get(amppaths.Center2ToCenter1
+                                                srcac.pickUpAdjacentNote(pf.pathMaps.get(amppaths.Center2ToCenter1
                                                                                 .name()),
                                                                 pf.pathMaps.get(amppaths.Center1ToCenter2
                                                                                 .name()),
@@ -66,10 +63,7 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
                                 // if the latter robot is close to field center
 
                                 Commands.either(
-                                                srcac.pickUpNoteAfterShootVision(pf, cf,
-                                                                swerve, transfer,
-                                                                intake,
-                                                                pf.pathMaps.get(amppaths.Center2ToCenter1
+                                                srcac.pickUpNoteAfterShootVision(pf.pathMaps.get(amppaths.Center2ToCenter1
                                                                                 .name()),
                                                                 pf.pathMaps.get(amppaths.Center1ToCenter2
                                                                                 .name()),
@@ -83,7 +77,6 @@ public class AutoAmpWingThenCenter extends SequentialCommandGroup {
 
                                 Commands.either(
                                                 srcac.moveShootCenter(
-                                                                cf, swerve,
                                                                 pf.pathMaps.get(amppaths.Center1ToAmpShoot.name()),
                                                                 pf.pathMaps.get(amppaths.Center2ToAmpShoot
                                                                                 .name()),

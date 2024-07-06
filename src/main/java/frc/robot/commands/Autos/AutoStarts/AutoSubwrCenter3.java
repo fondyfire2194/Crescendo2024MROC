@@ -33,29 +33,23 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
                         boolean wing3) {
 
                 addCommands(
-                                sac.setsbwrstart(swerve, cf, intake,shooter, arm),
-                                sac.sbwfrShoot(cf),
+                                sac.setsbwrstart(),
+                                sac.sbwfrShoot(),
                                 sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.SubwfrShootToWing2.name()),
-                                                swerve, cf, pf, 1),
-                                sac.moveAndPickup(sbwfrpaths.Wing2ToCenter3, swerve, cf, pf),
+                                                1),
+                                sac.moveAndPickup(sbwfrpaths.Wing2ToCenter3),
                                 Commands.either(
-                                                sac.sbwfrmoveandshoot(sbwfrpaths.Center3ToSubwfrShoot,
-                                                                swerve, cf,
-                                                                pf),
+                                                sac.sbwfrmoveandshoot(sbwfrpaths.Center3ToSubwfrShoot),
                                                 new RunPPath(swerve, pf.pathMaps
                                                                 .get(sbwfrpaths.Center3ToSubwfrShoot
                                                                                 .name())),
                                                 () -> cf.noteAtIntake()),
                                 Commands.either(
-                                                sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing3Shoot,
-                                                                swerve, cf,
-                                                                pf),
-                                                sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing1Shoot,
-                                                                swerve, cf,
-                                                                pf),
+                                                sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing3Shoot),
+                                                sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing1Shoot),
                                                 () -> wing3),
                                 new AutoAlignSpeaker(swerve, 1, true),
-                                sac.shootbydistance(cf));
+                                sac.shootbydistance());
         }
 
 }

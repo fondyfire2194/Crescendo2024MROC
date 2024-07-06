@@ -159,6 +159,7 @@ public class AutoFactory {
                         m_pf.linkSbwfrPaths();
                         validChoice = true;
                         finalChoice = subwfrchoice;
+                        SmartDashboard.putNumber("VVVVVVVVVVV",finalChoice);
                 }
 
                 SmartDashboard.putBoolean("Auto//Valid Auto Start Choice", validChoice);
@@ -228,33 +229,7 @@ public class AutoFactory {
                 }
         }
 
-        // Command shoot(CommandFactory cf, double angle, double rpm) {
-        // return Commands.sequence(
-        // cf.positionArmRunShooterSpecialCase(angle, rpm),
-        // cf.transferNoteToShooterCommand());
-        // }
-
-        // Command moveandshoot(SwerveSubsystem swerve, sbwfrpaths path, CommandFactory
-        // cf, PathFactory pf,
-        // double angle, double rpm) {
-        // return Commands.sequence(
-        // Commands.parallel(
-        // new RunPPath(swerve, pf.pathMaps.get(path.name())),
-        // cf.positionArmRunShooterSpecialCase(
-        // angle, rpm)),
-        // cf.transferNoteToShooterCommand());
-        // }
-
-        // Command moveAndPickup(SwerveSubsystem swerve, sbwfrpaths path, CommandFactory
-        // cf, PathFactory pf) {
-        // return Commands.parallel(
-        // new RunPPath(swerve,
-        // pf.pathMaps.get(path.name())),
-        // Commands.sequence(
-        // Commands.waitSeconds(.25),
-        // cf.doIntake()));
-        // }
-
+        
         public Command getAutonomousCommand() {
                 return finalCommand(finalChoice);
         }

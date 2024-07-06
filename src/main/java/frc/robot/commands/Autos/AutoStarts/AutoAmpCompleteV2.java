@@ -33,29 +33,26 @@ public class AutoAmpCompleteV2 extends SequentialCommandGroup {
                         boolean innerNoteFirst) {
 
                 addCommands(
-                                srcac.setAmpStart(swerve, transfer, intake, cf),
+                                srcac.setAmpStart(),
                                 Commands.race(
                                                 Commands.waitSeconds(.75),
                                                 cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
                                                                 Constants.subwfrShooterSpeed)),
                                 cf.transferNoteToShooterCommand(),
 
-                                srcac.pickupCenter(cf, swerve,
-                                                pf.pathMaps.get(amppaths.AmpToCenter2.name()),
+                                srcac.pickupCenter(pf.pathMaps.get(amppaths.AmpToCenter2.name()),
                                                 pf.pathMaps.get(amppaths.AmpToCenter1.name()),
                                                 innerNoteFirst),
                                 // if note in intake go shoot it or try adjacent one
 
                                 Commands.either(
-                                                srcac.moveShootCenter(cf, swerve,
-                                                                pf.pathMaps.get(amppaths.Center2ToAmpShoot
+                                                srcac.moveShootCenter(pf.pathMaps.get(amppaths.Center2ToAmpShoot
                                                                                 .name()),
                                                                 pf.pathMaps.get(amppaths.Center1ToAmpShoot
                                                                                 .name()),
                                                                 innerNoteFirst),
 
-                                                srcac.pickUpAdjacentNote(cf, swerve,
-                                                                pf.pathMaps.get(amppaths.Center2ToCenter1
+                                                srcac.pickUpAdjacentNote(pf.pathMaps.get(amppaths.Center2ToCenter1
                                                                                 .name()),
                                                                 pf.pathMaps.get(amppaths.Center1ToCenter2
                                                                                 .name()),
@@ -67,10 +64,7 @@ public class AutoAmpCompleteV2 extends SequentialCommandGroup {
                                 // if the latter robot is close to field center
 
                                 Commands.either(
-                                                srcac.pickUpNoteAfterShootVision(pf, cf,
-                                                                swerve, transfer,
-                                                                intake,
-                                                                pf.pathMaps.get(amppaths.Center2ToCenter1
+                                                srcac.pickUpNoteAfterShootVision(pf.pathMaps.get(amppaths.Center2ToCenter1
                                                                                 .name()),
                                                                 pf.pathMaps.get(amppaths.Center1ToCenter2
                                                                                 .name()),
@@ -84,7 +78,6 @@ public class AutoAmpCompleteV2 extends SequentialCommandGroup {
 
                                 Commands.either(
                                                 srcac.moveShootCenter(
-                                                                cf, swerve,
                                                                 pf.pathMaps.get(amppaths.Center1ToAmpShoot.name()),
                                                                 pf.pathMaps.get(amppaths.Center2ToAmpShoot
                                                                                 .name()),

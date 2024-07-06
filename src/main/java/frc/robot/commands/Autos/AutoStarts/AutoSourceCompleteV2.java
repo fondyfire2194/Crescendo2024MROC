@@ -33,29 +33,26 @@ public class AutoSourceCompleteV2 extends SequentialCommandGroup {
                         boolean innerNoteFirst) {
 
                 addCommands( 
-                                srcac.setSourceStart(swerve, transfer, intake, cf),
+                                srcac.setSourceStart(),
                                 Commands.race(
                                                 Commands.waitSeconds(.75),
                                                 cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
                                                                 Constants.subwfrShooterSpeed)),
                                 cf.transferNoteToShooterCommand(),
 
-                                srcac.pickupCenter(cf, swerve,
-                                                pf.pathMaps.get(sourcepaths.SourceToCenter4.name()),
+                                srcac.pickupCenter(pf.pathMaps.get(sourcepaths.SourceToCenter4.name()),
                                                 pf.pathMaps.get(sourcepaths.SourceToCenter5.name()),
                                                 innerNoteFirst),
                                 // if note in intake go shoot it or try adjacent one
 
                                 Commands.either(
-                                                srcac.moveShootCenter(cf, swerve,
-                                                                pf.pathMaps.get(sourcepaths.Center4ToSourceShoot
+                                                srcac.moveShootCenter(pf.pathMaps.get(sourcepaths.Center4ToSourceShoot
                                                                                 .name()),
                                                                 pf.pathMaps.get(sourcepaths.Center5ToSourceShoot
                                                                                 .name()),
                                                                 innerNoteFirst),
 
-                                                srcac.pickUpAdjacentNote(cf, swerve,
-                                                                pf.pathMaps.get(sourcepaths.Center4ToCenter5
+                                                srcac.pickUpAdjacentNote(pf.pathMaps.get(sourcepaths.Center4ToCenter5
                                                                                 .name()),
                                                                 pf.pathMaps.get(sourcepaths.Center5ToCenter4
                                                                                 .name()),
@@ -67,10 +64,7 @@ public class AutoSourceCompleteV2 extends SequentialCommandGroup {
                                 // if the latter robot is close to field center
 
                                 Commands.either(
-                                                srcac.pickUpNoteAfterShootVision(pf, cf,
-                                                                swerve, transfer,
-                                                                intake,
-                                                                pf.pathMaps.get(sourcepaths.SourceShootToCenter5
+                                                srcac.pickUpNoteAfterShootVision(pf.pathMaps.get(sourcepaths.SourceShootToCenter5
                                                                                 .name()),
                                                                 pf.pathMaps.get(sourcepaths.SourceShootToCenter4
                                                                                 .name()),
@@ -83,7 +77,6 @@ public class AutoSourceCompleteV2 extends SequentialCommandGroup {
 
                                 Commands.either(
                                                 srcac.moveShootCenter(
-                                                                cf, swerve,
                                                                 pf.pathMaps.get(sourcepaths.Center5ToSourceShoot
                                                                                 .name()),
                                                                 pf.pathMaps.get(sourcepaths.Center4ToSourceShoot

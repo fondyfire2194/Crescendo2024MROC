@@ -24,107 +24,118 @@ import frc.robot.utils.AllianceUtil;
 
 /** Add your docs here. */
 public class SubwooferAutoCommands {
+        private final SwerveSubsystem m_swerve;
+        private final IntakeSubsystem m_intake;
+        private final ShooterSubsystem m_shooter;
+        private final ArmSubsystem m_arm;
+        private final CommandFactory m_cf;
+        private final PathFactory m_pf;
 
-        public SubwooferAutoCommands(ShooterSubsystem shooter, ArmSubsystem arm) {
-        }
-
-        public Command setsbwrstart(SwerveSubsystem swerve, CommandFactory cf, IntakeSubsystem intake,
-                        ShooterSubsystem shooter, ArmSubsystem arm) {
-                return Commands.sequence(
-                                Commands.runOnce(() -> swerve.targetPose = AllianceUtil.getSpeakerPose()),
-                                Commands.runOnce(() -> swerve.inhibitVision = true),
-                                Commands.runOnce(() -> intake.resetIsIntakingSim()),
-                                Commands.runOnce(() -> shooter.setRPMTolerancePCT(10)),
-                                Commands.runOnce(() -> arm.setTolerance(Units.degreesToRadians(1))),
-                                cf.setStartPosebyAlliance(FieldConstants.sbwfrStartPose));
-        }
-
-        public Command shoot(CommandFactory cf) {
-                return cf.transferNoteToShooterCommand();
-        }
-
-        public Command setArmShooter(CommandFactory cf, double angle, double rpm) {
-                return cf.positionArmRunShooterSpecialCase(angle, rpm);
-        }
-
-        public Command shoot(CommandFactory cf, double angle, double rpm) {
-                return Commands.sequence(
-                                setArmShooter(cf, angle, rpm),
-                                cf.checkAtTargets(20),
-                                shoot(cf));
-        }
-
-        public Command sbwfrShoot(CommandFactory cf) {
-                return Commands.sequence(
-                                setArmShooter(cf, Constants.subwfrArmAngle,
-                                                Constants.subwfrShooterSpeed),
-                                cf.checkAtTargets(20),
-                                shoot(cf));
-        }
-
-        public Command shootbydistance(CommandFactory cf) {
-                return Commands.sequence(
-                                cf.positionArmRunShooterByDistance(false, true),
-                                shoot(cf));
-        }
-
-        public Command move(sbwfrpaths path, SwerveSubsystem swerve, PathFactory pf) {
-                return new RunPPath(swerve, pf.pathMaps.get(path.name()));
-        }
-
-        public Command moveandshoot(sbwfrpaths path, SwerveSubsystem swerve, CommandFactory cf, PathFactory pf,
+        public SubwooferAutoCommands(SwerveSubsystem swerve, IntakeSubsystem intake,
                         ShooterSubsystem shooter, ArmSubsystem arm,
+                        CommandFactory cf, PathFactory pf) {
+                m_swerve = swerve;
+                m_intake = intake;
+                m_shooter = shooter;
+                m_arm = arm;
+                m_cf = cf;
+                m_pf = pf;
+
+        }
+
+        public Command setsbwrstart() {
+                return Commands.sequence(
+                                Commands.runOnce(() -> m_swerve.targetPose = AllianceUtil.getSpeakerPose()),
+                                Commands.runOnce(() -> m_swerve.inhibitVision = true),
+                                Commands.runOnce(() -> m_intake.resetIsIntakingSim()),
+                                Commands.runOnce(() -> m_shooter.setRPMTolerancePCT(10)),
+                                Commands.runOnce(() -> m_arm.setTolerance(Units.degreesToRadians(1))),
+                                m_cf.setStartPosebyAlliance(FieldConstants.sbwfrStartPose));
+        }
+
+        public Command shoot() {
+                return m_cf.transferNoteToShooterCommand();
+        }
+
+        public Command setArmShooter(double angle, double rpm) {
+                return m_cf.positionArmRunShooterSpecialCase(angle, rpm);
+        }
+
+        public Command shoot(double angle, double rpm) {
+                return Commands.sequence(
+                                setArmShooter(angle, rpm),
+                                m_cf.checkAtTargets(20),
+                                shoot());
+        }
+
+        public Command sbwfrShoot() {
+                return Commands.sequence(
+                                setArmShooter(Constants.subwfrArmAngle,
+                                                Constants.subwfrShooterSpeed),
+                                m_cf.checkAtTargets(20),
+                                shoot());
+        }
+
+        public Command shootbydistance() {
+                return Commands.sequence(
+                                m_cf.positionArmRunShooterByDistance(false, true),
+                                shoot());
+        }
+
+        public Command move(sbwfrpaths path) {
+                return new RunPPath(m_swerve, m_pf.pathMaps.get(path.name()));
+        }
+
+        public Command moveandshoot(sbwfrpaths path,
                         double angle, double rpm) {
                 return Commands.sequence(
                                 Commands.parallel(
-                                                new RunPPath(swerve, pf.pathMaps.get(path.name())),
-                                                setArmShooter(cf, angle, rpm)),
-                                Commands.waitUntil(() -> shooter.bothAtSpeed() && arm.getAtSetpoint()),
-                                shoot(cf));
+                                                new RunPPath(m_swerve, m_pf.pathMaps.get(path.name())),
+                                                setArmShooter(angle, rpm)),
+                                Commands.waitUntil(() -> m_shooter.bothAtSpeed() && m_arm.getAtSetpoint()),
+                                shoot());
         }
 
-        public Command sbwfrmoveandshoot(sbwfrpaths path, SwerveSubsystem swerve, CommandFactory cf, PathFactory pf) {
+        public Command sbwfrmoveandshoot(sbwfrpaths path) {
                 return Commands.sequence(
                                 Commands.parallel(
-                                                move(path, swerve, pf),
-                                                setArmShooter(cf, Constants.subwfrArmAngle,
+                                                move(path),
+                                                setArmShooter(Constants.subwfrArmAngle,
                                                                 Constants.subwfrShooterSpeed)),
-                                shoot(cf));
+                                shoot());
         }
 
-        public Command moveAndPickup(sbwfrpaths path, SwerveSubsystem swerve, CommandFactory cf, PathFactory pf) {
+        public Command moveAndPickup(sbwfrpaths path) {
                 return Commands.parallel(
-                                move(path, swerve, pf),
+                                move(path),
                                 Commands.sequence(
                                                 Commands.waitSeconds(.25),
-                                                cf.doIntake()));
+                                                m_cf.doIntake()));
         }
 
-        public Command moveAndPickupUsingVision(sbwfrpaths path, SwerveSubsystem swerve, CommandFactory cf,
-                        PathFactory pf) {
+        public Command moveAndPickupUsingVision(sbwfrpaths path) {
                 return Commands.parallel(
-                                move(path, swerve, pf),
+                                move(path),
                                 Commands.sequence(
                                                 Commands.waitSeconds(.25),
-                                                cf.doIntake()));
+                                                m_cf.doIntake()));
         }
 
-        public Command runPathPickupAndShootIfNote(PathPlannerPath path, SwerveSubsystem swerve,
-                        CommandFactory cf, PathFactory pf, double aligntolerance) {
+        public Command runPathPickupAndShootIfNote(PathPlannerPath path, double aligntolerance) {
                 return Commands.sequence(
                                 Commands.parallel(
-                                                new RunPPath(swerve, path),
-                                                cf.doIntake()),
+                                                new RunPPath(m_swerve, path),
+                                                m_cf.doIntake()),
                                 Commands.either(
                                                 Commands.sequence(
                                                                 Commands.parallel(
-                                                                                cf.positionArmRunShooterByDistance(
+                                                                                m_cf.positionArmRunShooterByDistance(
                                                                                                 false, true),
-                                                                                new AutoAlignSpeaker(swerve,
+                                                                                new AutoAlignSpeaker(m_swerve,
                                                                                                 aligntolerance, true)),
-                                                                cf.transferNoteToShooterCommand()),
+                                                                m_cf.transferNoteToShooterCommand()),
                                                 Commands.none(),
-                                                () -> cf.noteAtIntake()));
+                                                () -> m_cf.noteAtIntake()));
         }
 
 }
