@@ -2,9 +2,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Volts;
 
-import java.lang.reflect.Field;
-
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.FaultID;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
@@ -12,6 +11,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -20,7 +20,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -30,14 +30,12 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.lib.util.CANSparkMaxUtil;
 import frc.lib.util.CANSparkMaxUtil.Usage;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.CANIDConstants;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Pref;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -50,6 +48,8 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     private final RelativeEncoder armEncoder;
 
+    private final AHRS m_gyro;
+
     public ArmFeedforward armfeedforward;
 
     public boolean armMotorConnected;
@@ -61,9 +61,9 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     public double armVolts;
     @Log.NT(key = "armfeedforward")
     private double feedforward;
+    @Log.NT(key = "acceleration")
     private double acceleration;
-    private double lastTime;
-    private double lastSpeed;
+
     private double lastPosition = 0;
     public double appliedVolts;
     public double armAngleRads;
@@ -78,7 +78,6 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     private double simAngleRads;
 
-    public double angleDegWhenShooting;
     private boolean cancoderconnected;
     private int checkCancoderCounter;
 
@@ -101,11 +100,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
                     6,
                     new Color8Bit(Color.kRed)));
 
-    Trigger setMotorEncoderToCancoder;
-
     private int cancdrokctr;
-    @Log.NT(key = "cancoderatpreset")
-    private double cancoderAtPreset;
 
     public boolean presetDone;
 
@@ -136,6 +131,8 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
         setTolerance(angleToleranceRads);
 
+        m_gyro = new AHRS(Port.kUSB);
+
         armEncoder.setPosition(ArmConstants.cancoderOffsetRadiansAtCalibration);
         simAngleRads = ArmConstants.cancoderOffsetRadiansAtCalibration;
         SmartDashboard.putData("Arm//Arm Sim", m_mech2d);
@@ -159,7 +156,8 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
         if (!enableArm || !isEnabled()) {
             setGoal(armAngleRads);
         }
-
+        boolean gycon = m_gyro.isConnected();
+        SmartDashboard.putBoolean("ARM?gycom", gycon);
         checkCancoderCounter++;
         if (checkCancoderCounter == 10) {
             cancoderconnected = RobotBase.isSimulation() || checkCancoderCanOK();
@@ -184,10 +182,10 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     }
 
     private boolean checkCancoderCanOK() {
-        SmartDashboard.putNumber("CCC/Ctr", cancdrokctr);
+        // SmartDashboard.putNumber("CCC/Ctr", cancdrokctr);
         double currentPosition = getAngleDegrees();
-        SmartDashboard.putNumber("CCC/Cp", currentPosition);
-        SmartDashboard.putNumber("CCC/Lp", lastPosition);
+        // SmartDashboard.putNumber("CCC/Cp", currentPosition);
+        // SmartDashboard.putNumber("CCC/Lp", lastPosition);
         if (currentPosition == lastPosition) {
             cancdrokctr++;
         } else {
@@ -204,12 +202,9 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     @Override
     public void simulationPeriodic() {
-
         double diff = getCurrentGoalRads() - simAngleRads;
-
         if (diff != 0)
             simAngleRads += diff / 10;
-
         // Update the Mechanism Arm angle based on the simulated arm angle
         m_arm.setAngle(Units.radiansToDegrees(getAngleRadians()));
         m_armTarget.setAngle(Units.radiansToDegrees(getCurrentGoalRads()));
@@ -217,10 +212,8 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     @Override
     protected void useOutput(double output, State goalState) {
-
         boolean tuning = false;
         if (!tuning) {
-
             feedforward = armfeedforward.calculate(getController().getSetpoint().position,
                     getController().getSetpoint().velocity,
                     acceleration);
@@ -236,12 +229,9 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
         // Add the feedforward to the PID output to get the motor output
 
-        lastSpeed = getController().getSetpoint().velocity;
         lastPosition = getController().getSetpoint().position;
 
-        lastTime = Timer.getFPGATimestamp();
-
-        pidout = output;
+        pidout = output;// logs
 
         double out = output + feedforward;
 
@@ -272,34 +262,45 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
             anglerads = ArmConstants.armMaxRadians;
         if (anglerads < ArmConstants.armMinRadians)
             anglerads = ArmConstants.armMinRadians;
-            SmartDashboard.putNumber("LOBBBB", FieldConstants.lobAngleRads);
-
         setGoal(anglerads);
     }
 
-    @Log.NT(key = "armmotorposition")
     public double getMotorEncoderAngleRadians() {
         return armEncoder.getPosition();
     }
 
-    public Command setGoalCommand(double angleRads, boolean UDA) {
+    @Log.NT(key = "armmotordegrees")
+    public double getMotorDegrees() {
+        return Units.radiansToDegrees(armEncoder.getPosition());
+    }
 
-        return Commands.either(
-                Commands.sequence(
-                        Commands.runOnce(() -> SmartDashboard.putNumber("ArmGoal", angleRads)),
-                        Commands.runOnce(() -> setTolerance(ArmConstants.angleTolerance)),
-                        Commands.runOnce(() -> resetController()),
-                        Commands.runOnce(() -> setGoal(angleRads), this),
-                        Commands.runOnce(() -> enable(), this)),
-                Commands.sequence(
-                        Commands.runOnce(() -> SmartDashboard.putNumber("ArmGoal", angleRads)),
-                        Commands.runOnce(() -> setTolerance(ArmConstants.angleTolerance)),
-                        Commands.runOnce(() -> resetController()),
-                        Commands.runOnce(() -> setGoal(angleRads + .1), this),
-                        Commands.runOnce(() -> enable(), this),
-                        Commands.waitUntil(() -> getAngleRadians() > angleRads),
-                        Commands.runOnce(() -> setGoal(angleRads), this)),
-                () -> !UDA);
+    public double getMotorEncoderRadsPerSec() {
+        return armEncoder.getVelocity();
+    }
+
+    @Log.NT(key = "armmotordegspersec")
+    public double getMotorEncoderDegsPerSec() {
+        return Units.radiansToDegrees(armEncoder.getVelocity());
+    }
+
+    public Command setGoalCommand(double angleRads) {
+        return Commands.sequence(
+                Commands.runOnce(() -> setTolerance(ArmConstants.angleTolerance)),
+                Commands.runOnce(() -> resetController()),
+                Commands.runOnce(() -> setGoal(angleRads), this),
+                Commands.runOnce(() -> enable(), this));
+    }
+
+    // provides an always down final move to position by first moving 1/2 the second
+    // parameter degrees above goal
+    public Command setGoalCommand(double angleRads, double degrees) {
+        return Commands.sequence(
+                Commands.runOnce(() -> setTolerance(ArmConstants.angleTolerance)),
+                Commands.runOnce(() -> resetController()),
+                Commands.runOnce(() -> setGoal(angleRads + Units.degreesToRadians(degrees)), this),
+                Commands.runOnce(() -> enable(), this),
+                Commands.waitUntil(() -> getAngleRadians() > angleRads + Units.degreesToRadians(degrees) / 2),
+                Commands.runOnce(() -> setGoal(angleRads), this));
     }
 
     public void incrementArmAngle(double valdeg) {
@@ -348,6 +349,21 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
         return round2dp(Units.radiansToDegrees(getAngleRadians()), 2);
     }
 
+    @Log.NT(key = "armpitchdeg")
+    public double getGyroRoll() {
+        return -m_gyro.getRoll();
+    }
+
+    @Log.NT(key = "armrolldegs")
+    public double getGyroPitch() {
+        return -m_gyro.getPitch();
+    }
+
+    @Log.NT(key = "armyawdegs")
+    public double getGyroYaw() {
+        return m_gyro.getYaw();
+    }
+
     @Log.NT(key = "cancoderencoderdifference")
     public double getCancoderEncoderDifference() {
         return Units.radiansToDegrees(getCanCoderRad() - armEncoder.getPosition());
@@ -360,22 +376,33 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     public double getVoltsPerRadPerSec() {
         appliedVolts = armMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
-        double temp = appliedVolts / getRadsPerSec();
+        double temp = appliedVolts / getCanCoderRadsPerSec();
         if (temp < 1 || temp > 3)
             temp = 0;
         return temp;
     }
 
-    public double getRadsPerSec() {
+    public double getMotorRadsPerSec() {
         return armEncoder.getVelocity();
+    }
+
+    @Log.NT(key = "motordegspersec")
+    public double getDegsPerSec() {
+        return Units.radiansToDegrees(armEncoder.getVelocity());
     }
 
     public double getCanCoderRadsPerSec() {
         return Math.PI * armCancoder.getVelocity().getValueAsDouble();
     }
 
-    public double getDegreesPerSec() {
-        return Units.radiansToDegrees(armEncoder.getVelocity());
+    @Log.NT(key = "cancoderdegspersec")
+    public double getCanCoderDegsPerSec() {
+        return Units.radiansToDegrees(getCanCoderRadsPerSec());
+    }
+
+    @Log.NT(key = "cancoderdegs")
+    public double getCanCoderDegs() {
+        return Units.radiansToDegrees(getCanCoderRad());
     }
 
     public boolean onPlusSoftwareLimit() {
@@ -449,10 +476,6 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
         return temp1 / temp;
     }
 
-    public double getCanCoderDeg() {
-        return Units.radiansToDegrees(getCanCoderRad());
-    }
-
     public double getCanCoderRad() {
         double temp = armCancoder.getAbsolutePosition().getValueAsDouble();
         // cancoder returns 0 to 1
@@ -466,14 +489,9 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
         return temp;
     }
 
-    @Log.NT(key = "cancodervelocity")
-    public double getCanCoderRadPerSec() {
-        return armCancoder.getVelocity().getValueAsDouble() * Math.PI;
-    }
-
     @Log.NT(key = "isstopped")
     public boolean isStopped() {
-        return Math.abs(getCanCoderRadPerSec()) < Units.degreesToRadians(1);
+        return Math.abs(getMotorRadsPerSec()) < Units.degreesToRadians(1);
     }
 
     public Command testCan() {

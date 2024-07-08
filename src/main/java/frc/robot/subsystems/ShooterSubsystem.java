@@ -184,6 +184,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
       return bottomSimRPM;
   }
 
+  public double getNoteLinearSpeed(){
+    return getRPMTop()* ShooterConstants.rollerDiameter*Math.PI;
+  }
+
   public void setCommandRPM(double rpm) {
     topCommandRPM = rpm;
     bottomCommandRPM = rpm;

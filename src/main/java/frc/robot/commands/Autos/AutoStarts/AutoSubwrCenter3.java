@@ -48,8 +48,13 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
                                                 sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing3Shoot),
                                                 sac.moveAndPickup(sbwfrpaths.SubwfrShootToWing1Shoot),
                                                 () -> wing3),
-                                new AutoAlignSpeaker(swerve, 1, true),
-                                sac.shootbydistance());
+
+                                Commands.either(Commands.sequence(
+                                                new AutoAlignSpeaker(swerve, 1, true),
+                                                sac.shootbydistance()),
+                                                Commands.none(),
+                                                () -> cf.noteAtIntake()));
+
         }
 
 }

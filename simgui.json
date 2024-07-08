@@ -116,6 +116,9 @@
         "open": true
       },
       "SmartDashboard": {
+        "Drive": {
+          "open": true
+        },
         "DtoPuN": {
           "open": true
         },

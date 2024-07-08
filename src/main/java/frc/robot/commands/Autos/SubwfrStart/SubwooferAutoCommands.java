@@ -20,6 +20,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.TransferSubsystem;
 import frc.robot.utils.AllianceUtil;
 
 /** Add your docs here. */
@@ -28,15 +29,17 @@ public class SubwooferAutoCommands {
         private final IntakeSubsystem m_intake;
         private final ShooterSubsystem m_shooter;
         private final ArmSubsystem m_arm;
+        private final TransferSubsystem m_transfer;
         private final CommandFactory m_cf;
         private final PathFactory m_pf;
 
         public SubwooferAutoCommands(SwerveSubsystem swerve, IntakeSubsystem intake,
-                        ShooterSubsystem shooter, ArmSubsystem arm,
+                        ShooterSubsystem shooter, ArmSubsystem arm,TransferSubsystem transfer,
                         CommandFactory cf, PathFactory pf) {
                 m_swerve = swerve;
                 m_intake = intake;
                 m_shooter = shooter;
+                m_transfer=transfer;
                 m_arm = arm;
                 m_cf = cf;
                 m_pf = pf;
@@ -48,6 +51,7 @@ public class SubwooferAutoCommands {
                                 Commands.runOnce(() -> m_swerve.targetPose = AllianceUtil.getSpeakerPose()),
                                 Commands.runOnce(() -> m_swerve.inhibitVision = true),
                                 Commands.runOnce(() -> m_intake.resetIsIntakingSim()),
+                                Commands.runOnce(() -> m_transfer.simnoteatintake = true),
                                 Commands.runOnce(() -> m_shooter.setRPMTolerancePCT(10)),
                                 Commands.runOnce(() -> m_arm.setTolerance(Units.degreesToRadians(1))),
                                 m_cf.setStartPosebyAlliance(FieldConstants.sbwfrStartPose));
@@ -108,9 +112,7 @@ public class SubwooferAutoCommands {
         public Command moveAndPickup(sbwfrpaths path) {
                 return Commands.parallel(
                                 move(path),
-                                Commands.sequence(
-                                                Commands.waitSeconds(.25),
-                                                m_cf.doIntake()));
+                                m_cf.doIntake());
         }
 
         public Command moveAndPickupUsingVision(sbwfrpaths path) {

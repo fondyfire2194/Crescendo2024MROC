@@ -13,8 +13,8 @@ import com.pathplanner.lib.util.GeometryUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -22,10 +22,9 @@ import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Pref;
 import frc.robot.commands.Transfer.TransferIntakeToSensor;
@@ -165,7 +164,7 @@ public class CommandFactory {
 
         public Command positionArmRunShooterSpecialCase(double armAngleDeg, double shooterSpeed) {
                 return Commands.parallel(
-                                m_arm.setGoalCommand(Units.degreesToRadians(armAngleDeg), false),
+                                m_arm.setGoalCommand(Units.degreesToRadians(armAngleDeg)),
                                 m_shooter.startShooterCommand(shooterSpeed));
         }
 
@@ -188,7 +187,7 @@ public class CommandFactory {
         }
 
         public Command armToIntake() {
-                return m_arm.setGoalCommand(ArmConstants.pickupAngleRadians, false);
+                return m_arm.setGoalCommand(ArmConstants.pickupAngleRadians);
         }
 
         public Command transferNoteToShooterCommand() {
@@ -201,7 +200,7 @@ public class CommandFactory {
 
         public Command setArmShooterValues(double armAngle, double shooterRPM) {
                 return Commands.parallel(
-                                m_arm.setGoalCommand(Units.degreesToRadians(armAngle), false),
+                                m_arm.setGoalCommand(Units.degreesToRadians(armAngle)),
                                 m_shooter.startShooterCommand(shooterRPM, 10));
         }
 
@@ -214,17 +213,26 @@ public class CommandFactory {
                         if (m_swerve.alignedToTarget && m_arm.getAtSetpoint() && m_shooter.bothAtSpeed()) {
                                 controller.getHID().setRumble(RumbleType.kLeftRumble, 1.0);
                                 if (RobotBase.isSimulation())
-                                        SmartDashboard.putString("BUZZ ", "BIZZ");
+                                        SmartDashboard.putString("BUZZ ", "AlignedToTarget");
                         } else
                                 controller.getHID().setRumble(RumbleType.kLeftRumble, 0.0);
 
-                        if (noteAtIntake() || m_intake.getAmps() > ArmConstants.noteAtIntakeAmps)
+                        if (noteAtIntake() || m_intake.getAmps() > ArmConstants.noteAtIntakeAmps) {
                                 controller.getHID().setRumble(RumbleType.kRightRumble, 1.0);
-                        else
+                                if (RobotBase.isSimulation())
+                                        SmartDashboard.putString("BUZZ ", "NoteAtIntake");
+                        } else
                                 controller.getHID().setRumble(RumbleType.kRightRumble, 0.0);
-
                 })
                                 .finallyDo(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.0));
+        }
+
+        public Command startShooterSpeedCompedCommand(double toprpm) {
+                double speed = Math.sqrt(Math.pow(m_swerve.getChassisSpeeds().vxMetersPerSecond, 2)
+                                + Math.pow(m_swerve.getChassisSpeeds().vyMetersPerSecond, 2));
+                double rpmspeedcomp = ShooterConstants.speedFactor * speed;
+                return Commands.run(() -> m_shooter.startShooter(toprpm - rpmspeedcomp))
+                                .until(() -> m_shooter.bothAtSpeed());
         }
 
         public Command setStartPosebyAlliance(Pose2d startPose) {
@@ -239,18 +247,18 @@ public class CommandFactory {
                                 m_shooter.stopShooterCommand(),
                                 m_intake.stopIntakeCommand(),
                                 m_transfer.stopTransferCommand(),
-                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians, false)
+                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians)
                                                 .withName("Reset All"))
                                 .asProxy();
         }
 
         public Command doAmpShot() {
                 return Commands.sequence(
-                                m_arm.setGoalCommand(Units.degreesToRadians(90), false),
+                                m_arm.setGoalCommand(Units.degreesToRadians(90)),
                                 m_shooter.startShooterCommand(
                                                 Pref.getPref("AmpTopRPM"), Pref.getPref("AmpBottomRPM")),
                                 Commands.waitUntil(() -> m_arm.getAtSetpoint()),
-                                m_arm.setGoalCommand(Units.degreesToRadians(Pref.getPref("AmpArmDegrees")), false),
+                                m_arm.setGoalCommand(Units.degreesToRadians(Pref.getPref("AmpArmDegrees"))),
                                 Commands.waitUntil(() -> m_arm.getAtSetpoint()),
                                 Commands.parallel(
                                                 m_transfer.transferToShooterCommandAmp(),
@@ -260,13 +268,12 @@ public class CommandFactory {
                                                                                 Units.degreesToRadians(Pref.getPref(
                                                                                                 "AmpArmDegrees"))
                                                                                                 + Units.degreesToRadians(
-                                                                                                                Pref.getPref("AmpDegreeIncrement")),
-                                                                                false),
+                                                                                                                Pref.getPref("AmpDegreeIncrement"))),
                                                                 new WaitCommand(2))),
 
                                 Commands.parallel(
                                                 m_shooter.stopShooterCommand(),
-                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians, false)));
+                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians)));
 
         }
 }

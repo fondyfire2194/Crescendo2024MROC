@@ -8,6 +8,7 @@ import edu.wpi.first.math.VecBuilder;
 import frc.robot.Constants.CameraConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
+
 /** Add your docs here. */
 public class LimelightTagsUpdate {
 
@@ -29,71 +30,42 @@ public class LimelightTagsUpdate {
         LimelightHelpers.SetRobotOrientation(m_cam.camname,
                 m_swerve.getPoseEstimator().getEstimatedPosition().getRotation().getDegrees(),
                 // m_swerve.getHeadingDegrees(),
-                m_swerve.getGyroRate(), 0, 0, 0, 0);
+                0, 0, 0, 0, 0);
     }
 
     public void execute() {
 
-        if (m_cam.isActive) {
+        if (m_cam.isActive && !m_swerve.inhibitVision &&LimelightHelpers.getTV(m_cam.camname)) {
 
             if (m_useMegaTag2) {
-
                 setLLRobotorientation();
-
                 LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(m_cam.camname);
-
                 m_swerve.distanceLimelightToEstimator = mt2.pose.getTranslation()
                         .getDistance(m_swerve.getPoseEstimator().getEstimatedPosition().getTranslation());
-
-                rejectUpdate = mt2.tagCount == 0 || Math.abs(m_swerve.getGyroRate()) > 720
-                        || (mt2.tagCount == 1 && mt2.rawFiducials.length == 1 && mt2.rawFiducials[0].ambiguity > .7
-                                && mt2.rawFiducials[0].distToCamera > 3);
-
-                rejectUpdate = !GeometryUtil.checkPoseInField(mt2.pose);
-
-                if (m_swerve.logllupdates) {
-
-                    if (m_cam.camname == CameraConstants.frontLeftCamera.camname) {
-                        m_swerve.fcamMT2TagPose[0] = mt2.pose;
-                        m_swerve.rejectUpdate[0] = rejectUpdate;
-                        m_swerve.tagsSeen[0] = mt2.tagCount;
-                    } else {
-                        m_swerve.fcamMT2TagPose[1] = mt2.pose;
-                        m_swerve.rejectUpdate[1] = rejectUpdate;
-                        m_swerve.tagsSeen[1] = mt2.tagCount;
-                    }
-                }
-                if (!rejectUpdate && !m_swerve.inhibitVision) {
-                    m_swerve.getPoseEstimator().setVisionMeasurementStdDevs(VecBuilder.fill(1.0, 1.0, 9999999));
+                rejectUpdate = mt2.tagCount == 0 || Math.abs(m_swerve.getGyroRate()) > 720                    
+                        || (mt2.tagCount == 1 && mt2.rawFiducials.length == 1 &&
+                                mt2.rawFiducials[0].ambiguity > .7
+                                && mt2.rawFiducials[0].distToCamera > 5);
+                if (!rejectUpdate) {
+                    m_swerve.getPoseEstimator().setVisionMeasurementStdDevs(VecBuilder.fill(1.0,
+                            1.0, 9999999));
                     m_swerve.getPoseEstimator().addVisionMeasurement(
                             mt2.pose,
                             mt2.timestampSeconds);
                 }
-            }
 
-            else {
+            } else {
 
                 LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(m_cam.camname);
+          
+                rejectUpdate = mt1.tagCount == 0 
+                        || mt1.tagCount == 1 && mt1.rawFiducials.length == 1 &&
+                                mt1.rawFiducials[0].ambiguity > .7
+                                && mt1.rawFiducials[0].distToCamera > 5;
 
-                rejectUpdate = mt1.tagCount == 0
-                        || mt1.tagCount == 1 && mt1.rawFiducials.length == 1 && mt1.rawFiducials[0].ambiguity > .7
-                                && mt1.rawFiducials[0].distToCamera > 3;
-
-                rejectUpdate = !GeometryUtil.checkPoseInField(mt1.pose);
-
-                if (m_swerve.logllupdates) {
-                    if (m_cam.camname == CameraConstants.frontLeftCamera.camname) {
-                        m_swerve.fcamMT1TagPose[0] = mt1.pose;
-                        m_swerve.rejectUpdate[0] = rejectUpdate;
-                        m_swerve.tagsSeen[0] = mt1.tagCount;
-                    } else {
-                        m_swerve.fcamMT1TagPose[1] = mt1.pose;
-                        m_swerve.rejectUpdate[1] = rejectUpdate;
-                        m_swerve.tagsSeen[1] = mt1.tagCount;
-                    }
-                }
                 if (!rejectUpdate) {
-                    m_swerve.getPoseEstimator().setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 1));
+                    m_swerve.getPoseEstimator().setVisionMeasurementStdDevs(VecBuilder.fill(.7,
+                            .7, 1));
                     m_swerve.getPoseEstimator().addVisionMeasurement(
                             mt1.pose,
                             mt1.timestampSeconds);
@@ -101,5 +73,4 @@ public class LimelightTagsUpdate {
             }
         }
     }
-
 }

@@ -39,7 +39,7 @@ public class SourceAmpAutoCommands {
 
         public Command setSourceStart() {
                 return Commands.sequence(
-                                Commands.runOnce(() -> m_transfer.simnoteatintake = false),
+                                Commands.runOnce(() -> m_transfer.simnoteatintake = true),
                                 Commands.runOnce(() -> m_intake.resetIsIntakingSim()),
                                 Commands.runOnce(() -> m_swerve.targetPose = AllianceUtil.getSpeakerPose()),
                                 Commands.runOnce(() -> m_swerve.ampActive = false),

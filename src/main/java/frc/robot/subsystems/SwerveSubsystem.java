@@ -26,6 +26,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -68,7 +69,7 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   private double lastDriveTime = 0.0;
   @Log.NT(key = "actualstartpose")
   public Pose2d actualstartPose = new Pose2d();
-  @Log.NT(key = "cancoderatabsreset")
+  
   private double[] cancoderAtAbsoluteReset = new double[4];
 
   private static final Matrix<N3, N1> ODOMETRY_STDDEV = VecBuilder.fill(0.03, 0.03, Math.toRadians(1));
@@ -96,21 +97,12 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   private boolean pathStarted;
   public PathPlannerPath currentPlannerPath;
 
-  @Log.NT(key = "currentpathstarttime")
+  
   public double curretnpathstartTime;
   @Log.NT(key = "realstates")
   double[] rsbuff = new double[8];
   @Log.NT(key = "desiredstates")
   double[] desbuff = new double[8];
-
-  @Log.NT(key = "camtagMT1poses")
-  public Pose2d[] fcamMT1TagPose = new Pose2d[2];
-  @Log.NT(key = "camtagMT2poses")
-  public Pose2d[] fcamMT2TagPose = new Pose2d[2];
-  @Log.NT(key = "rejectupdate")
-  public boolean[] rejectUpdate = { false, false };
-  @Log.NT(key = "rejectupdate")
-  public int[] tagsSeen = { 0, 0 };
 
   public LimelightTagsUpdate flUpdate = new LimelightTagsUpdate(CameraConstants.frontLeftCamera, this);
   public LimelightTagsUpdate frUpdate = new LimelightTagsUpdate(CameraConstants.frontRightCamera, this);
@@ -127,6 +119,16 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   LinearFilter noteDistanceFilter = LinearFilter.movingAverage(10);// was 5
   @Log.NT(key = "skidratio")
   private double skidRatio;
+
+  BuiltInAccelerometer bui = new BuiltInAccelerometer();
+
+  private double lastvxmps;
+
+  private double lastvymps;
+  @Log.NT(key = "xaccpp")
+  private double xaccpp;
+  @Log.NT(key = "yaccpp")
+  private double yaccpp;
 
   public SwerveSubsystem() {
 
@@ -201,7 +203,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     // setModuleDriveFF();now uses Constants instead
     // setModuleDriveKp();
     setModuleAngleKp();
-
   }
 
   public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
@@ -212,6 +213,11 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     SwerveModuleState[] targetStates = Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
     setStates(targetStates);
+    xaccpp = (robotRelativeSpeeds.vxMetersPerSecond - lastvxmps) / .02;
+    lastvxmps = robotRelativeSpeeds.vxMetersPerSecond;
+    yaccpp = (robotRelativeSpeeds.vyMetersPerSecond - lastvymps) / .02;
+    lastvymps = robotRelativeSpeeds.vyMetersPerSecond;
+
   }
 
   public ChassisSpeeds getFieldRelativeSpeeds(double translation, double strafe, double rotation) {
@@ -249,6 +255,7 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(desiredStates[mod.moduleNumber], false);
     }
+
   }
 
   /**
@@ -373,7 +380,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     return getPose().getRotation().getDegrees();
   }
 
-  @Log.NT(key = "robrads")
   public double getAngleRadians() {
     return getPose().getRotation().getRadians();
   }
@@ -559,7 +565,7 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
 
   @Override
   public void periodic() {
-
+    
     if (!mod0connected) {
       mod0connected = checkMod0CansOK();
       SmartDashboard.putBoolean("Drive//Ok0ModCan", mod0connected);
@@ -590,7 +596,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
       frUpdate.execute();
 
       if (!isStopped())
-
         skidRatio = getSkiddingRatio(getStates(), Constants.SwerveConstants.swerveKinematics);
 
       if (getPathRunning() && isStopped())
@@ -607,7 +612,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     }
   }
 
-  @Log.NT(key = "targetPose")
   public void setTargetPose(Pose2d pose) {
     targetPose = pose;
   }
@@ -632,7 +636,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
         .getDistance(getPose().getTranslation())), 2);
   }
 
-  @Log.NT(key = "stageDistMtrs")
   public double getDistanceFromStage() {
     return round2dp(
         stageDistanceFilter.calculate(AllianceUtil.getAlliancePose(FieldConstants.stageBlueAlliance).getTranslation()
@@ -725,6 +728,23 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     swervePoseEstimator.resetPosition(new Rotation2d(Math.PI), getPositions(), new Pose2d());
     simOdometryPose = new Pose2d();
     updateKeepAngle();
+  }
+
+  @Log.NT(key = "builtinaccelx")
+  public double getBuiltInAccelX() {
+    return bui.getX();
+  }
+  @Log.NT(key = "builtinaccely")
+  public double getBuiltInAccelY() {
+    return bui.getY();
+  }
+  @Log.NT(key = "navxaccelx")
+  public float getNavXAccelX() {
+    return gyro.getWorldLinearAccelX();
+  }
+  @Log.NT(key = "navxaccely")
+  public float getNavXAccelY() {
+    return gyro.getWorldLinearAccelY();
   }
 
   public Command setPoseToX0Y0() {
@@ -847,11 +867,11 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   public boolean alignedToTarget;
   @Log.NT(key = "targetpose")
   public Pose2d targetPose = new Pose2d();
-  @Log.NT(key = "virtualtargetpose")
+  
   public Pose2d virtualPose = new Pose2d();
-  @Log.NT(key = "stagepose")
+  
   public Pose2d stagePose = new Pose2d();
-  @Log.NT(key = "shootingpose")
+  
   public Pose2d poseWhenShooting = new Pose2d();
   @Log.NT(key = "distancetopickup")
   public double distanceToPickup = 0;
@@ -862,11 +882,11 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   @Log.NT(key = "noteseen")
   public boolean noteSeen;
 
-  @Log.NT(key = "tgtmtrs")
+  
   public double targetdistance;
 
   public boolean inhibitVision;
-  @Log.NT(key = "pathfindpose")
+  
   private Pose2d pathfindpose = new Pose2d();
 
   public boolean noteposecreated;
@@ -875,8 +895,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
 
   public int targetNote;
 
-  public boolean logllupdates;
-  @Log.NT(key = "distancelltopose")
   public double distanceLimelightToEstimator;
 
   public void setPathRunning() {

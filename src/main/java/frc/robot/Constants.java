@@ -16,7 +16,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Distance;
@@ -579,15 +578,9 @@ public final class Constants {
                 public static double jogSpeed = .25;
                 public static double debounceTime = .1;
                 public static double kAccelCompFactor = 0.100; // in units of seconds
+                public static double speedFactor =.25;
+                public static double rollerDiameter = Units.inchesToMeters(4);
 
-        }
-
-        /** Shooter look up table key: meters, values: rpm */
-        public static final InterpolatingDoubleTreeMap shooterLobRPMMap = new InterpolatingDoubleTreeMap();
-        static {
-                shooterLobRPMMap.put(SwerveConstants.minLobDistance, 2000.);
-                shooterLobRPMMap.put(SwerveConstants.minLobDistance + SwerveConstants.rangeLobDistance / 2, 2400.0);
-                shooterLobRPMMap.put(SwerveConstants.maxLobDistance, 2800.);
         }
 
         public static double subwfrArmAngle = 55;// 60;// degrees
@@ -703,7 +696,7 @@ public final class Constants {
                 public static double intakingSpeed = 5500;
                 public static double transferToShootSpeed = 7000;
 
-                public static final double transferKp = .00001; // P gains caused oscilliation
+                public static final double transferKp = .00002; // P gains caused oscilliation
 
                 public static final double transferPositionKp = .00002; // P gains caused oscilliation
                 public static final double transferKi = 0.0;
