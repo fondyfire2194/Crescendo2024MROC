@@ -69,7 +69,7 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   private double lastDriveTime = 0.0;
   @Log.NT(key = "actualstartpose")
   public Pose2d actualstartPose = new Pose2d();
-  
+
   private double[] cancoderAtAbsoluteReset = new double[4];
 
   private static final Matrix<N3, N1> ODOMETRY_STDDEV = VecBuilder.fill(0.03, 0.03, Math.toRadians(1));
@@ -97,7 +97,6 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   private boolean pathStarted;
   public PathPlannerPath currentPlannerPath;
 
-  
   public double curretnpathstartTime;
   @Log.NT(key = "realstates")
   double[] rsbuff = new double[8];
@@ -203,6 +202,8 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     // setModuleDriveFF();now uses Constants instead
     // setModuleDriveKp();
     setModuleAngleKp();
+
+    SmartDashboard.putString("Drive/GyroVersion", gyro.getFirmwareVersion());
   }
 
   public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
@@ -565,7 +566,7 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
 
   @Override
   public void periodic() {
-    
+
     if (!mod0connected) {
       mod0connected = checkMod0CansOK();
       SmartDashboard.putBoolean("Drive//Ok0ModCan", mod0connected);
@@ -734,14 +735,17 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   public double getBuiltInAccelX() {
     return bui.getX();
   }
+
   @Log.NT(key = "builtinaccely")
   public double getBuiltInAccelY() {
     return bui.getY();
   }
+
   @Log.NT(key = "navxaccelx")
   public float getNavXAccelX() {
     return gyro.getWorldLinearAccelX();
   }
+
   @Log.NT(key = "navxaccely")
   public float getNavXAccelY() {
     return gyro.getWorldLinearAccelY();
@@ -867,11 +871,11 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   public boolean alignedToTarget;
   @Log.NT(key = "targetpose")
   public Pose2d targetPose = new Pose2d();
-  
+
   public Pose2d virtualPose = new Pose2d();
-  
+
   public Pose2d stagePose = new Pose2d();
-  
+
   public Pose2d poseWhenShooting = new Pose2d();
   @Log.NT(key = "distancetopickup")
   public double distanceToPickup = 0;
@@ -882,11 +886,10 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   @Log.NT(key = "noteseen")
   public boolean noteSeen;
 
-  
   public double targetdistance;
 
   public boolean inhibitVision;
-  
+
   private Pose2d pathfindpose = new Pose2d();
 
   public boolean noteposecreated;

@@ -476,7 +476,7 @@ public final class Constants {
                         public double vfov;
                         public int horpixels;
                         public int vertpixels;
-                        public boolean isUsed = false;
+                        public boolean isUsed = true;
                         public boolean isActive = false;
 
                         public CameraValues(

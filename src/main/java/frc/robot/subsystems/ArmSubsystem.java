@@ -157,13 +157,13 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
             setGoal(armAngleRads);
         }
         boolean gycon = m_gyro.isConnected();
-        SmartDashboard.putBoolean("ARM?gycom", gycon);
-        checkCancoderCounter++;
-        if (checkCancoderCounter == 10) {
-            cancoderconnected = RobotBase.isSimulation() || checkCancoderCanOK();
-            checkCancoderCounter = 0;
-            SmartDashboard.putBoolean("Arm//OKCancoder", cancoderconnected);
-        }
+        SmartDashboard.putBoolean("Arm/Gyconn", gycon);
+        // checkCancoderCounter++;
+        // if (checkCancoderCounter == 10) {
+        // cancoderconnected = RobotBase.isSimulation() || checkCancoderCanOK();
+        // checkCancoderCounter = 0;
+        // SmartDashboard.putBoolean("Arm//OKCancoder", cancoderconnected);
+        // }
 
         if (!armMotorConnected) {
             armMotorConnected = checkMotorCanOK(armMotor);
@@ -351,17 +351,17 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     @Log.NT(key = "armpitchdeg")
     public double getGyroRoll() {
-        return -m_gyro.getRoll();
+        return -round2dp(m_gyro.getRoll(), 2);
     }
 
     @Log.NT(key = "armrolldegs")
     public double getGyroPitch() {
-        return -m_gyro.getPitch();
+        return -round2dp(m_gyro.getPitch(), 2);
     }
 
     @Log.NT(key = "armyawdegs")
     public double getGyroYaw() {
-        return m_gyro.getYaw();
+        return round2dp(m_gyro.getYaw(), 2);
     }
 
     @Log.NT(key = "cancoderencoderdifference")
