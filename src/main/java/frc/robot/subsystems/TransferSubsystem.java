@@ -103,10 +103,9 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
   }
 
   public Command transferToShooterCommand() {
-    return Commands
-        .run(() -> transferToShooter(), this)
+    return Commands.run(() -> transferToShooter()).until(() -> !noteAtIntake() && RobotBase.isReal())
         .withTimeout(TransferConstants.clearShooterTime)
-        .andThen(stopTransferCommand());    
+        .andThen(stopTransferCommand());
   }
 
   public Command transferToShooterCommandAmp() {
@@ -114,14 +113,12 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
         .until(() -> !noteAtIntake())
         .withTimeout(TransferConstants.clearShooterTime)
         .andThen(stopTransferCommand());
-
   }
 
   public void transferToShooterAmp() {
     enableLimitSwitch(false);
     commandrpm = Pref.getPref("AmpTransferToShootSpeed");
     simnoteatintake = false;
-
     runAtVelocity(commandrpm);
   }
 

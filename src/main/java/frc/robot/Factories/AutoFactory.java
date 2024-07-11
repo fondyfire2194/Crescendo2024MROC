@@ -159,7 +159,6 @@ public class AutoFactory {
                         m_pf.linkSbwfrPaths();
                         validChoice = true;
                         finalChoice = subwfrchoice;
-                        SmartDashboard.putNumber("VVVVVVVVVVV",finalChoice);
                 }
 
                 SmartDashboard.putBoolean("Auto//Valid Auto Start Choice", validChoice);
@@ -173,27 +172,27 @@ public class AutoFactory {
 
                         case 1:
                                 return new AutoSbwfrShootThenSequence(m_cf, m_pf, m_sac, m_swerve,
-                                                m_intake, m_shooter, m_arm, sbwfrpaths.SubwfrShootToWing2,
-                                                sbwfrpaths.Wing2ToSubwfrShoot,
-                                                sbwfrpaths.SubwfrShootToWing1, sbwfrpaths.Wing1ShootToSubwfr,
+                                                m_intake, m_shooter, m_arm,
+                                                sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot,
+                                                sbwfrpaths.SubwfrShootToWing1, sbwfrpaths.Wing1ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing3, sbwfrpaths.Wing3ToSubwfrShoot);
                         case 2:
                                 return new AutoSbwfrShootThenSequence(m_cf, m_pf, m_sac, m_swerve,
-                                                m_intake, m_shooter, m_arm, sbwfrpaths.SubwfrShootToWing2,
-                                                sbwfrpaths.Wing2ToSubwfrShoot,
+                                                m_intake, m_shooter, m_arm,
+                                                sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing3, sbwfrpaths.Wing3ToSubwfrShoot,
-                                                sbwfrpaths.SubwfrShootToWing1, sbwfrpaths.Wing1ShootToSubwfr);
+                                                sbwfrpaths.SubwfrShootToWing1, sbwfrpaths.Wing1ToSubwfrShoot);
 
                         case 3:
                                 return new AutoSbwfrShootThenSequence(m_cf, m_pf, m_sac, m_swerve,
-                                                m_intake, m_shooter, m_arm, sbwfrpaths.SubwfrShootToWing3,
-                                                sbwfrpaths.Wing3ToSubwfrShoot,
+                                                m_intake, m_shooter, m_arm,
+                                                sbwfrpaths.SubwfrShootToWing3, sbwfrpaths.Wing3ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot);
 
                         case 4:
                                 return new AutoSbwfrShootThenSequence(m_cf, m_pf, m_sac, m_swerve,
-                                                m_intake, m_shooter, m_arm, sbwfrpaths.SubwfrShootToWing2,
-                                                sbwfrpaths.Wing2ToSubwfrShoot,
+                                                m_intake, m_shooter, m_arm,
+                                                sbwfrpaths.SubwfrShootToWing2, sbwfrpaths.Wing2ToSubwfrShoot,
                                                 sbwfrpaths.SubwfrShootToWing1, sbwfrpaths.Wing1ToSubwfrShoot);
 
                         case 5:
@@ -229,7 +228,6 @@ public class AutoFactory {
                 }
         }
 
-        
         public Command getAutonomousCommand() {
                 return finalCommand(finalChoice);
         }

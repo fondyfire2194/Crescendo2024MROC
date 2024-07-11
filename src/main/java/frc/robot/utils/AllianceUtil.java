@@ -90,4 +90,8 @@ public class AllianceUtil {
       return 2.88;
   }
 
+  public boolean facingSpeakerInDistance(){
+    return true;
+  }
+
 }

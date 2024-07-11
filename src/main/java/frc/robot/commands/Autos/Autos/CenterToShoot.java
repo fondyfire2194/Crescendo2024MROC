@@ -33,8 +33,7 @@ public class CenterToShoot extends SequentialCommandGroup {
                                                                                 Constants.source_ampShootAngle,
                                                                                 Constants.source_ampShootSpeed)),
                                                 Commands.parallel(
-                                                                Commands.runOnce(() -> SmartDashboard
-                                                                                .putBoolean("GI+OT3", true)),
+                                                               
                                                                 cf.positionArmRunShooterByDistance(true),
                                                                 new AutoAlignSpeaker(swerve, 1, true)),
                                                 cf.transferNoteToShooterCommand()));

@@ -578,7 +578,7 @@ public final class Constants {
                 public static double jogSpeed = .25;
                 public static double debounceTime = .1;
                 public static double kAccelCompFactor = 0.100; // in units of seconds
-                public static double speedFactor =.25;
+                public static double speedFactor = .25;
                 public static double rollerDiameter = Units.inchesToMeters(4);
 
         }
@@ -589,7 +589,7 @@ public final class Constants {
         public static double autoShootArmAngle = 60;// degrees
         public static double autoShootRPM = 3000;// rpm
 
-        public static double source_ampShootAngle = 27;
+        public static double source_ampShootAngle = 30;
         public static double source_ampShootSpeed = 3650;
 
         public static double wing1ArmAngle = 34;// degrees
@@ -616,6 +616,10 @@ public final class Constants {
         public static final class ArmConstants {
 
                 public static final double cancoderOffsetRadiansAtCalibration = Units.degreesToRadians(20);
+
+                public static final double aboveDistanceShootAngleForUDA = Units.degreesToRadians(45);
+
+                 public static final double UDARads = Units.degreesToRadians(3);
 
                 public static final double maxarmMotorRPM = 5700;
 

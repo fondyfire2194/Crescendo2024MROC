@@ -146,7 +146,7 @@ public class Robot extends TimedRobot implements Logged {
     m_robotContainer.m_swerve.drive(0, 0, 0, false, true, false);
     m_robotContainer.m_arm.disable();
     m_robotContainer.m_arm.enableArm = false;
-    if (m_robotContainer.m_arm.getMotorDegrees() < 26)
+    if (m_robotContainer.m_arm.getMotorDegrees() < 45)
       m_robotContainer.m_arm.armMotor.setIdleMode(IdleMode.kCoast);
 
     m_robotContainer.m_swerve.flUpdate.setLLRobotorientation();
@@ -187,6 +187,10 @@ public class Robot extends TimedRobot implements Logged {
     // m_robotContainer.m_swerve.getPose();
     m_robotContainer.m_swerve.absoluteResetFrontModuleEncoders();
     m_robotContainer.m_swerve.absoluteResetBackModuleEncoders();
+
+    m_robotContainer.m_arm.enable();
+    m_robotContainer.m_arm.enableArm = true;
+    m_robotContainer.m_arm.setIdleModeBrake(true);
 
     m_robotContainer.m_swerve.flUpdate.setUseMegatag2(true);
     m_robotContainer.m_swerve.frUpdate.setUseMegatag2(true);
@@ -285,6 +289,10 @@ public class Robot extends TimedRobot implements Logged {
     m_robotContainer.m_swerve.flUpdate.setUseMegatag2(true);
     m_robotContainer.m_swerve.frUpdate.setUseMegatag2(true);
     m_robotContainer.m_swerve.inhibitVision = false;
+
+    m_robotContainer.m_arm.enable();
+    m_robotContainer.m_arm.enableArm = true;
+    m_robotContainer.m_arm.setIdleModeBrake(true);
   }
 
   @Override

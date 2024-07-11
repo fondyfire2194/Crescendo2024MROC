@@ -57,10 +57,6 @@ public class CommandFactory {
 
         Debouncer changeZone = new Debouncer(1);
 
-        private double anglerads;
-
-        private double rpm;
-
         private double maprads;
 
         private double maprpm;
@@ -136,24 +132,10 @@ public class CommandFactory {
                                                         .get(distance));
                                         m_shooter.setRPMTolerancePCT(m_sd.shooterRPMToleranceMap
                                                         .get(distance));
-                                        anglerads = Math.atan(Units
-                                                        .inchesToMeters(Pref.getPref("spkrarmzdiff"))
-                                                        / distance);
-                                        rpm = Pref.getPref("shtrrpmbase")
-                                                        + (Pref.getPref("shtrrpminc") * distance / 4);
                                         maprads = m_sd.armAngleMap.get(distance);
                                         maprpm = m_sd.shooterRPMMap.get(distance);
-
-                                        if (changeZone.calculate(m_swerve.getDistanceFromSpeaker() >= .1
-                                                        && m_swerve.getDistanceFromSpeaker() <= Pref
-                                                                        .getPref("shootcalcmaxdist"))) {
-                                                m_arm.setTarget(anglerads);
-                                                m_shooter.startShooter(rpm);
-                                        } else {
-                                                m_arm.setTarget(maprads);
-                                                m_shooter.startShooter(maprpm);
-
-                                        }
+                                        m_arm.setTarget(maprads);
+                                        m_shooter.startShooter(maprpm);
                                 },
 
                                 (interrupted) -> Commands.none(),
@@ -167,6 +149,7 @@ public class CommandFactory {
                                 m_arm.setGoalCommand(Units.degreesToRadians(armAngleDeg)),
                                 m_shooter.startShooterCommand(shooterSpeed));
         }
+
 
         public Command doIntake() {
                 return Commands.sequence(
@@ -196,12 +179,6 @@ public class CommandFactory {
 
         public Command stopShooter() {
                 return m_shooter.stopShooterCommand();
-        }
-
-        public Command setArmShooterValues(double armAngle, double shooterRPM) {
-                return Commands.parallel(
-                                m_arm.setGoalCommand(Units.degreesToRadians(armAngle)),
-                                m_shooter.startShooterCommand(shooterRPM, 10));
         }
 
         public Command checkAtTargets(double pct) {

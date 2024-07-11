@@ -13,7 +13,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -39,6 +38,7 @@ import frc.robot.Factories.PathFactory;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
 import frc.robot.Factories.PathFactory.sourcepaths;
 import frc.robot.commands.JogClimber;
+import frc.robot.commands.Arm.JogArm;
 import frc.robot.commands.Autos.Autos.SourceAmpAutoCommands;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.commands.Drive.AlignTargetOdometry;
@@ -49,6 +49,7 @@ import frc.robot.commands.Drive.RotateToAngle;
 import frc.robot.commands.Drive.TeleopSwerve;
 import frc.robot.commands.Intake.JogIntake;
 import frc.robot.commands.Pathplanner.RunPPath;
+import frc.robot.commands.Test.MovePickupShootTest;
 import frc.robot.commands.Transfer.TransferIntakeToSensor;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -100,15 +101,12 @@ public class RobotContainer implements Logged {
         public final AutoFactory m_af;
 
         private SubwooferAutoCommands m_sac;
+
         private SourceAmpAutoCommands m_srcac;
 
         BooleanSupplier keepAngle;
 
         public BooleanSupplier fieldRelative;
-
-        private Trigger doLobShot;
-
-        // private Trigger doMovingShot;
 
         // private Trigger logShotTrigger;
 
@@ -117,6 +115,8 @@ public class RobotContainer implements Logged {
         private BooleanEvent doAutoSetup;
 
         private Trigger canivoreCheck;
+
+        private Trigger setArmPreShoot;
 
         public CANBusStatus canInfo;
         @Log.NT(key = "canivoreutil")
@@ -171,11 +171,11 @@ public class RobotContainer implements Logged {
                 SmartDashboard.putData("PP 5metersX",
                                 m_cf.autopathfind(new Pose2d(), 0, 0));
 
-                // SmartDashboard.putData("RunTestPickupAndShoot",
-                // new MovePickupShootTest(m_cf, m_swerve, m_arm, m_transfer, m_intake,
-                // m_shooter, m_sd,
-                // CameraConstants.rearCamera.camname,
-                // 4));
+                SmartDashboard.putData("RunTestPickupAndShoot",
+                                new MovePickupShootTest(m_cf, m_swerve, m_arm, m_transfer, m_intake,
+                                                m_shooter, m_sd,
+                                                CameraConstants.rearCamera.camname,
+                                                4));
 
                 // SmartDashboard.putData("TrapTuneTo Pref",
                 // new TrapTune(m_swerve));
@@ -253,16 +253,15 @@ public class RobotContainer implements Logged {
                                                                 () -> driver.getLeftX(),
                                                                 () -> driver.getRightX(), false),
                                                 m_cf.positionArmRunShooterByDistance(false)));
-                // new ShootByDistanceAndVelocity(m_arm, m_transfer, m_shooter, m_swerve,
-                // m_sd)));
 
                 driver.rightBumper().and(driver.a().negate()).onTrue(
-                                Commands.parallel(
+                                Commands.sequence(
                                                 m_intake.startIntakeCommand(),
-                                                new TransferIntakeToSensor(m_transfer, m_intake, m_swerve, 120),
-                                                m_cf.rumbleCommand(driver),
-                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians))
-                                                .withTimeout(10));
+                                                m_arm.setGoalCommand(ArmConstants.pickupAngleRadians),
+                                                Commands.parallel(
+                                                                new TransferIntakeToSensor(m_transfer, m_intake,
+                                                                                m_swerve, 20),
+                                                                m_cf.rumbleCommand(driver))));
 
                 // pick up notes with vision align
                 driver.rightBumper().and(driver.a()).onTrue(
@@ -416,7 +415,9 @@ public class RobotContainer implements Logged {
 
                 // setup.a().whileTrue(new WheelRadiusCharacterization(m_swerve));
 
-                setup.leftBumper().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(20)));
+                setup.leftBumper().whileTrue(new JogArm(m_arm, setup));
+
+                // setup.leftBumper().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(20)));
 
                 setup.leftTrigger().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(30)));
 
@@ -476,11 +477,8 @@ public class RobotContainer implements Logged {
                 m_batteryChooser.addOption("F", "F");
 
                 SmartDashboard.putData("DelayChooser", m_startDelayChooser);
-
                 SmartDashboard.putData("PPAutoChooser", autoChooser);
-
                 SmartDashboard.putData("BatteryChooser", m_batteryChooser);
-
         }
 
         public Command getPPAutCommand() {
@@ -489,8 +487,6 @@ public class RobotContainer implements Logged {
 
         void setAutoData() {
                 m_af.validStartChoice = m_af.selectAndLoadPathFiles();
-                SmartDashboard.putNumber("VSCH", m_af.validStartChoice);
-                SmartDashboard.putNumber("AFSB", m_af.validStartChoice);
                 if (m_af.validStartChoice >= m_af.minsbwfrauto && m_af.validStartChoice <= m_af.maxsbwfrauto) {
                 }
                 if (m_af.validStartChoice >= m_af.minsourceauto && m_af.validStartChoice <= m_af.maxsourceauto) {

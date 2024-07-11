@@ -120,14 +120,16 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   private double skidRatio;
 
   BuiltInAccelerometer bui = new BuiltInAccelerometer();
-
+  @Log.NT(key = "lastvxmps")
   private double lastvxmps;
-
+  @Log.NT(key = "lastvymps")
   private double lastvymps;
   @Log.NT(key = "xaccpp")
   private double xaccpp;
   @Log.NT(key = "yaccpp")
   private double yaccpp;
+  @Log.NT(key = "vxmps")
+  private double vxmps;
 
   public SwerveSubsystem() {
 
@@ -203,7 +205,7 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     // setModuleDriveKp();
     setModuleAngleKp();
 
-    SmartDashboard.putString("Drive/GyroVersion", gyro.getFirmwareVersion());
+    // SmartDashboard.putString("Drive/GyroVersion", gyro.getFirmwareVersion());
   }
 
   public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
@@ -214,11 +216,10 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     SwerveModuleState[] targetStates = Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
     setStates(targetStates);
-    xaccpp = (robotRelativeSpeeds.vxMetersPerSecond - lastvxmps) / .02;
+    xaccpp = (robotRelativeSpeeds.vxMetersPerSecond - lastvxmps)/.02;
     lastvxmps = robotRelativeSpeeds.vxMetersPerSecond;
-    yaccpp = (robotRelativeSpeeds.vyMetersPerSecond - lastvymps) / .02;
+    yaccpp = (robotRelativeSpeeds.vyMetersPerSecond - lastvymps)/.02;
     lastvymps = robotRelativeSpeeds.vyMetersPerSecond;
-
   }
 
   public ChassisSpeeds getFieldRelativeSpeeds(double translation, double strafe, double rotation) {
@@ -285,6 +286,8 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
           swerveStatesRotationalPartAsVector = convertSwerveStateToVelocityVector(swerveStatesRotationalPart[i]),
           swerveStatesTranslationalPartAsVector = swerveStateMeasuredAsVector.minus(swerveStatesRotationalPartAsVector);
       swerveStatesTranslationalPartMagnitudes[i] = swerveStatesTranslationalPartAsVector.getNorm();
+      SmartDashboard.putNumber("Modules/ " + String.valueOf(i) + " transmag",
+          swerveStatesTranslationalPartMagnitudes[i]);
     }
 
     double maximumTranslationalSpeed = 0, minimumTranslationalSpeed = Double.POSITIVE_INFINITY;
