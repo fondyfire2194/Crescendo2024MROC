@@ -8,9 +8,14 @@ import java.util.*;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.ArmConstants;
+import monologue.Annotations.Log;
+import monologue.Logged;
 
 /** Add your docs here. */
-public class ShootingData {
+public class ShootingData implements Logged {
 
     public ArrayList<ShotInfo> si = new ArrayList<ShotInfo>();
 
@@ -22,6 +27,10 @@ public class ShootingData {
 
     public InterpolatingDoubleTreeMap shooterRPMMap = new InterpolatingDoubleTreeMap();
     public InterpolatingDoubleTreeMap shooterRPMToleranceMap = new InterpolatingDoubleTreeMap();
+    @Log.NT(key = "armoffsetdegrees")
+    private double armOffsetDegrees = 0;
+    private double maxarmoffsetdegrees = ArmConstants.maxShootOffsetDegrees;;
+    private double minarmoffsetdegrees = ArmConstants.minShootOffsetDegrees;
 
     public ShootingData() {
         {
@@ -73,6 +82,42 @@ public class ShootingData {
         }
     }
 
+    private void setArmOffsetDegrees(double val) {
+        if (val > maxarmoffsetdegrees)
+            val = maxarmoffsetdegrees;
+        if (val < minarmoffsetdegrees)
+            val = minarmoffsetdegrees;
+        armOffsetDegrees = val;
+    }
+
+    public Command setArmOffsetDegreesCommand(double val) {
+        return Commands.runOnce(() -> setArmOffsetDegrees(val));
+    }
+
+    private void resetArmOffsetDegrees() {
+        armOffsetDegrees = 0;
+    }
+
+    public Command resetArmOffsetDegreesCommand() {
+        return Commands.runOnce(() -> resetArmOffsetDegrees());
+    }
+
+    public double getArmOffsetDegrees() {
+        return armOffsetDegrees;
+    }
+
+    private void incArmOffsetDegrees(double increment) {
+        armOffsetDegrees += increment;
+        if (armOffsetDegrees > maxarmoffsetdegrees)
+            armOffsetDegrees = maxarmoffsetdegrees;
+        if (armOffsetDegrees < minarmoffsetdegrees)
+            armOffsetDegrees = minarmoffsetdegrees;
+    }
+
+    public Command incArmOffsetDegreesCommand(double val) {
+        return Commands.runOnce(() -> incArmOffsetDegrees(val));
+    }
+
     public class ShotInfo {
         private final double distanceFeet;
         private final double speedRPM;
@@ -105,7 +150,7 @@ public class ShootingData {
         }
 
         public double getArmRads() {
-            return Units.degreesToRadians(armDegrees);
+            return Units.degreesToRadians(armDegrees + armOffsetDegrees);
         }
 
         public double getSpeedRPM() {
@@ -123,6 +168,7 @@ public class ShootingData {
         public double getTimeSec() {
             return timeMs / 1000;
         }
+
         // =======old data===========================
         // si.add(new ShotInfo(5, 50, 3100, 300, 2));
 

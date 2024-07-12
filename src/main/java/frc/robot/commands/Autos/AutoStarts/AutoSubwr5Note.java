@@ -17,6 +17,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.utils.ShootingData;
 
 /** Add your docs here. */
 public class AutoSubwr5Note extends SequentialCommandGroup {
@@ -28,7 +29,8 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                         SwerveSubsystem swerve,
                         IntakeSubsystem intake,
                         ShooterSubsystem shooter,
-                        ArmSubsystem arm) {
+                        ArmSubsystem arm,
+                        ShootingData sd) {
 
                 addCommands( // note
                                 sac.setsbwrstart(),
@@ -57,7 +59,7 @@ public class AutoSubwr5Note extends SequentialCommandGroup {
                                 new CenterToShoot(cf,
                                                 pf.pathMaps.get(sbwfrpaths.Center1ToAmpShoot
                                                                 .name()),
-                                                swerve, true));
+                                                swerve, sd, true));
         }
 
 }

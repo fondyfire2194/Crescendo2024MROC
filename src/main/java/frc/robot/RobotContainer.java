@@ -36,18 +36,13 @@ import frc.robot.Factories.AutoFactory;
 import frc.robot.Factories.CommandFactory;
 import frc.robot.Factories.PathFactory;
 import frc.robot.Factories.PathFactory.sbwfrpaths;
-import frc.robot.Factories.PathFactory.sourcepaths;
-import frc.robot.commands.JogClimber;
 import frc.robot.commands.Arm.JogArm;
 import frc.robot.commands.Autos.Autos.SourceAmpAutoCommands;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.commands.Drive.AlignTargetOdometry;
 import frc.robot.commands.Drive.AlignToNote;
-import frc.robot.commands.Drive.AutoAlignSpeaker;
-import frc.robot.commands.Drive.DriveToPickupNote;
 import frc.robot.commands.Drive.RotateToAngle;
 import frc.robot.commands.Drive.TeleopSwerve;
-import frc.robot.commands.Intake.JogIntake;
 import frc.robot.commands.Pathplanner.RunPPath;
 import frc.robot.commands.Test.MovePickupShootTest;
 import frc.robot.commands.Transfer.TransferIntakeToSensor;
@@ -116,8 +111,6 @@ public class RobotContainer implements Logged {
 
         private Trigger canivoreCheck;
 
-        private Trigger setArmPreShoot;
-
         public CANBusStatus canInfo;
         @Log.NT(key = "canivoreutil")
         public float busUtil;
@@ -140,11 +133,11 @@ public class RobotContainer implements Logged {
 
                 // registerNamedCommands();
 
-                m_sac = new SubwooferAutoCommands(m_swerve, m_intake, m_shooter, m_arm, m_transfer, m_cf, m_pf);
-                m_srcac = new SourceAmpAutoCommands(m_swerve, m_intake, m_transfer, m_cf, m_pf);
+                m_sac = new SubwooferAutoCommands(m_swerve, m_intake, m_shooter, m_arm, m_transfer, m_cf, m_pf, m_sd);
+                m_srcac = new SourceAmpAutoCommands(m_swerve, m_intake, m_transfer, m_cf, m_pf, m_sd);
 
                 m_af = new AutoFactory(m_pf, m_cf, m_sac, m_srcac, m_swerve, m_shooter, m_arm, m_intake,
-                                m_transfer);
+                                m_transfer, m_sd);
 
                 if (RobotBase.isReal()) {
                         Pref.deleteUnused();
@@ -339,62 +332,64 @@ public class RobotContainer implements Logged {
 
         private void configureCodriverBindings() {
                 // CoDriver
-                // KEEP IN BUTTON ORDER
-                // jogs are in case note gets stuck
-
-                codriver.leftTrigger().whileTrue(m_climber.raiseClimberArmsCommand(0.6))
+                // left and right triggers are for climber
+                codriver.leftTrigger().whileTrue(
+                                m_climber.raiseClimberArmsCommand(0.3))
                                 .onFalse(m_climber.stopClimberCommand());
 
-                codriver.leftBumper().whileTrue(new JogClimber(m_climber, codriver));
-
-                codriver.rightTrigger().whileTrue(m_climber.lowerClimberArmsCommand(0.6))
+                codriver.leftTrigger().and(codriver.povUp()).whileTrue(
+                                m_climber.raiseClimberArmsCommand(0.6))
                                 .onFalse(m_climber.stopClimberCommand());
+
+                codriver.rightTrigger().whileTrue(
+                                m_climber.lowerClimberArmsCommand(0.3))
+                                .onFalse(m_climber.stopClimberCommand());
+
+                codriver.rightTrigger().and(codriver.povDown()).whileTrue(
+                                m_climber.lowerClimberArmsCommand(0.6))
+                                .onFalse(m_climber.stopClimberCommand());
+
+                // left bumper for commands used during match
+
+                codriver.leftBumper().and(codriver.y())
+                                .onTrue(m_cf.positionArmRunShooterSpecialCase(
+                                                Constants.subwfrArmAngle,
+                                                Constants.subwfrShooterSpeed));
+
+                codriver.leftBumper().and(codriver.a())
+                                .onTrue(m_arm.setGoalCommand(ArmConstants.armAngleOnBottomStopBar));
+
+                codriver.leftBumper().and(codriver.b()).onTrue(
+                                m_arm.setGoalCommand(ArmConstants.aboveDistanceShootAngleForUDA));
+
+                codriver.leftBumper().and(codriver.povUp())
+                                .onTrue(m_sd.incArmOffsetDegreesCommand(.5));
+
+                codriver.leftBumper().and(codriver.povDown()).onTrue(
+                                m_sd.incArmOffsetDegreesCommand(-.5));
+
+                codriver.leftBumper().and(codriver.povLeft()).onTrue(
+                                m_sd.resetArmOffsetDegreesCommand());
+
+                codriver.leftBumper().and(codriver.povRight()).onTrue(
+                                m_sd.setArmOffsetDegreesCommand(2));
+
+                // right bumper occasional use
 
                 if (codriver.rightBumper().and(codriver.start()).getAsBoolean() && DriverStation.isDisabled())
                         Commands.runOnce(() -> m_arm.armMotor.setIdleMode(IdleMode.kCoast)).ignoringDisable(true);
 
-                codriver.a().onTrue(m_cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,
-                                Constants.subwfrShooterSpeed));
-
-                codriver.b().onTrue(new JogIntake(m_intake, codriver));
-
-                codriver.y().whileTrue(
+                codriver.rightBumper().and(codriver.y()).whileTrue(
                                 Commands.run(() -> m_swerve.wheelsAlign(), m_swerve));
 
-                codriver.x().onTrue(
+                codriver.rightBumper().and(codriver.x()).onTrue(
                                 Commands.parallel(
                                                 Commands.runOnce(() -> m_swerve.absoluteResetFrontModuleEncoders()),
                                                 Commands.runOnce(() -> m_swerve.absoluteResetBackModuleEncoders())));
 
-                codriver.povUp().onTrue(m_climber.raiseClimberArmsCommand(.3));
-
-                codriver.povDown().onTrue(m_climber.lowerClimberArmsCommand(.3));
-
-                // codriver.povLeft().whileTrue(Commands.runOnce(() ->
-                // m_transfer.transferMotor.setVoltage(-.5)))
-                // .onFalse(Commands.runOnce(() -> m_transfer.transferMotor.setVoltage(0)));
-
-                // codriver.povUp().onTrue(
-
-                // codriver.povDown().onTrue(
-
-                codriver.povLeft().onTrue(
-                                Commands.parallel(
-                                                new DriveToPickupNote(m_swerve, m_transfer, m_intake),
-                                                m_cf.doIntake()));
-
-                codriver.povRight().onTrue(
-                                Commands.sequence(
-                                                new RunPPath(m_swerve, m_pf.getPath(
-                                                                sourcepaths.Center4ToSourceShoot.name())),
-                                                new AutoAlignSpeaker(m_swerve, .5, true)));
-
-                codriver.back().whileTrue(
-                                Commands.sequence(
-                                                m_intake.startIntakeCommand(),
-                                                Commands.runOnce(() -> m_intake.intakeMotor.setVoltage(-8))))
-                                .onFalse(Commands.sequence(m_intake.stopIntakeCommand(),
-                                                Commands.runOnce(() -> m_intake.intakeMotor.setVoltage(0))));
+                codriver.rightBumper().and(codriver.back()).whileTrue(
+                                m_intake.reverseIntakeCommand())
+                                .onFalse(m_intake.stopIntakeCommand());
 
         }
 

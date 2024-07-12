@@ -131,7 +131,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
                 ArmConstants.armKa);
 
         if (RobotBase.isReal()) {
-            armEncoder.setPosition(ArmConstants.cancoderOffsetRadiansAtCalibration);
+            armEncoder.setPosition(ArmConstants.armAngleOnBottomStopBar);
             setGoalCommand(getAngleRadians());
         } else {
             armEncoder.setPosition(ArmConstants.armMinRadians);
@@ -288,7 +288,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     // }
 
     // provides an always down final move to position by first moving
-    // UDA parameter degrees above goal if yarget is above actual
+    // UDA parameter rads above goal if target is above actual
     public Command setGoalCommand(double angleRads) {
 
         return Commands.either(
@@ -302,7 +302,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
                         Commands.runOnce(() -> enable(), this),
                         Commands.waitUntil(() -> getAtSetpoint()),
                         Commands.runOnce(() -> setGoal(angleRads), this)),
-                () -> angleRads < getAngleRadians());
+                () -> angleRads < getAngleRadians() || angleRads >= ArmConstants.maxUDAAngleRads);
     }
 
     public void incrementArmAngle(double valdeg) {
@@ -442,6 +442,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
         armMotor.enableSoftLimit(SoftLimitDirection.kReverse, on);
     }
 
+    @Log.NT(key = "brakemode")
     public boolean isBraked() {
         return armMotor.getIdleMode() == IdleMode.kBrake;
     }
@@ -479,7 +480,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     public double getCanCoderRad() {
         double temp = (armCancoder.getAbsolutePosition().getValueAsDouble()
-                * Math.PI) + ArmConstants.cancoderOffsetRadiansAtCalibration;
+                * Math.PI) + ArmConstants.armAngleOnBottomStopBar;
         if (temp > Math.PI)
             temp = temp - Math.PI;
         return temp;

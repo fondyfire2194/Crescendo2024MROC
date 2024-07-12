@@ -22,6 +22,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
+import frc.robot.utils.ShootingData;
 
 /** Add your docs here. */
 public class AutoFactory {
@@ -64,6 +65,8 @@ public class AutoFactory {
 
         private final ShooterSubsystem m_shooter;
 
+        private final ShootingData m_sd;
+
         private CommandFactory m_cf;
 
         private SourceAmpAutoCommands m_srcac;
@@ -76,7 +79,8 @@ public class AutoFactory {
                         ShooterSubsystem shooter,
                         ArmSubsystem arm,
                         IntakeSubsystem intake,
-                        TransferSubsystem transfer) {
+                        TransferSubsystem transfer,
+                        ShootingData sd) {
                 m_pf = pf;
                 m_cf = cf;
                 m_sac = sac;
@@ -86,6 +90,7 @@ public class AutoFactory {
                 m_transfer = transfer;
                 m_intake = intake;
                 m_shooter = shooter;
+                m_sd=sd;
 
                 minsbwfrauto = 1;
                 m_subwfrStartChooser.setDefaultOption("Not Used", 0);
@@ -203,7 +208,7 @@ public class AutoFactory {
                                                 m_shooter, false);
                         case 7:
                                 return new AutoSubwr5Note(m_cf, m_pf, m_sac, m_swerve, m_intake,
-                                                m_shooter, m_arm);
+                                                m_shooter, m_arm, m_sd);
                         case 11:
                                 return new AutoSourceCompleteV2(m_cf, m_pf, this,
                                                 m_srcac, m_swerve, m_intake, m_transfer, true);

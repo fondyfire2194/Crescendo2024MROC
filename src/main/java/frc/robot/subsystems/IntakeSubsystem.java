@@ -30,11 +30,12 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
 
   @Log.NT(key = "intakerun")
   private boolean runIntake;
+  private boolean reverseIntake;
   public boolean jogging;
 
   @Log.NT(key = "intakecommandrpm")
   private double commandrpm;
-   @Log.NT(key = "notemissed")
+  @Log.NT(key = "notemissed")
   public boolean noteMissed;
   public boolean intakeMotorConnected;
   @Log.NT(key = "isIntaking1")
@@ -81,6 +82,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     intakeMotor.stopMotor();
     intakeController.setReference(0, ControlType.kVelocity);
     resetRunIntake();
+    resetReverseIntake();
     commandrpm = 0;
   }
 
@@ -90,11 +92,15 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
 
   public Command startIntakeCommand() {
     return Commands.runOnce(() -> setRunIntake());
+  }
 
+  public Command reverseIntakeCommand() {
+    return Commands.runOnce(() -> setReverseIntake());
   }
 
   public void setRunIntake() {
     runIntake = true;
+    reverseIntake = false;
   }
 
   public void resetRunIntake() {
@@ -103,6 +109,19 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
 
   public boolean getRunIntake() {
     return runIntake;
+  }
+
+  public void setReverseIntake() {
+    reverseIntake = true;
+    runIntake = false;
+  }
+
+  public void resetReverseIntake() {
+    reverseIntake = false;
+  }
+
+  public boolean getReverseIntake() {
+    return reverseIntake;
   }
 
   public void resetIsIntakingSim() {
@@ -121,11 +140,17 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    if (runIntake) {
+    if (runIntake && !reverseIntake) {
       commandrpm = IntakeConstants.intakeSpeed;// Pref.getPref("IntakeSpeed");
       runAtVelocity(commandrpm);
     }
-    if (!runIntake && !jogging) {
+
+    if (reverseIntake && !runIntake) {
+      commandrpm = -IntakeConstants.intakeSpeed;// Pref.getPref("IntakeSpeed");
+      runAtVelocity(commandrpm);
+    }
+
+    if (!runIntake && !reverseIntake && !jogging) {
       stopMotor();
     }
 

@@ -586,11 +586,10 @@ public final class Constants {
         public static double subwfrArmAngle = 55;// 60;// degrees
         public static double subwfrShooterSpeed = 3000;// rpm
 
-        public static double autoShootArmAngle = 60;// degrees
-        public static double autoShootRPM = 3000;// rpm
+        public static double source_ampShootAngle = 34;
+        public static double source_ampShootSpeed = 3550;
 
-        public static double source_ampShootAngle = 30;
-        public static double source_ampShootSpeed = 3650;
+        public static double source_ampShootDistance = 4;
 
         public static double wing1ArmAngle = 34;// degrees
         public static double wing1ShooterSpeed = 3500;// rpm
@@ -615,11 +614,13 @@ public final class Constants {
 
         public static final class ArmConstants {
 
-                public static final double cancoderOffsetRadiansAtCalibration = Units.degreesToRadians(20);
+                public static final double armAngleOnBottomStopBar = Units.degreesToRadians(20);
 
                 public static final double aboveDistanceShootAngleForUDA = Units.degreesToRadians(45);
 
-                 public static final double UDARads = Units.degreesToRadians(3);
+                public static final double UDARads = Units.degreesToRadians(3);
+
+                public static final double maxUDAAngleRads = Units.degreesToRadians(50);
 
                 public static final double maxarmMotorRPM = 5700;
 
@@ -644,7 +645,7 @@ public final class Constants {
                 public static final double voltageComp = 12;
                 public static final IdleMode armIdleMode = IdleMode.kBrake;
                 public static final int armContinuousCurrentLimit = 40;
-                public static double armMinRadians = Units.degreesToRadians(15);
+                public static double armMinRadians = armAngleOnBottomStopBar;
                 public static double armMaxRadians = Units.degreesToRadians(110);
                 public static double pickupAngleRadians = Units.degreesToRadians(25);
                 public static double midRange = Units.degreesToRadians(35);
@@ -676,6 +677,9 @@ public final class Constants {
                 public static double armMass = Units.lbsToKilograms(30.0);
 
                 public static double noteAtIntakeAmps = 30;
+
+                public static double maxShootOffsetDegrees = 3;
+                public static final double minShootOffsetDegrees = -3;
 
                 public static final double armPivotZ = Units.inchesToMeters(10.3);// 10.3
                 public static final double armPivotX = Units.inchesToMeters(-7.5);

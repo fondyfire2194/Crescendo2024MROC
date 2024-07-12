@@ -22,6 +22,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 import frc.robot.utils.AllianceUtil;
+import frc.robot.utils.ShootingData;
 
 /** Add your docs here. */
 public class SubwooferAutoCommands {
@@ -32,18 +33,19 @@ public class SubwooferAutoCommands {
         private final TransferSubsystem m_transfer;
         private final CommandFactory m_cf;
         private final PathFactory m_pf;
+        private final ShootingData m_sd;
 
         public SubwooferAutoCommands(SwerveSubsystem swerve, IntakeSubsystem intake,
-                        ShooterSubsystem shooter, ArmSubsystem arm,TransferSubsystem transfer,
-                        CommandFactory cf, PathFactory pf) {
+                        ShooterSubsystem shooter, ArmSubsystem arm, TransferSubsystem transfer,
+                        CommandFactory cf, PathFactory pf, ShootingData sd) {
                 m_swerve = swerve;
                 m_intake = intake;
                 m_shooter = shooter;
-                m_transfer=transfer;
+                m_transfer = transfer;
                 m_arm = arm;
                 m_cf = cf;
                 m_pf = pf;
-
+                m_sd = sd;
         }
 
         public Command setsbwrstart() {
@@ -82,6 +84,7 @@ public class SubwooferAutoCommands {
 
         public Command shootbydistance() {
                 return Commands.sequence(
+                        m_sd.setArmOffsetDegreesCommand(2),
                                 m_cf.positionArmRunShooterByDistance(true),
                                 shoot());
         }

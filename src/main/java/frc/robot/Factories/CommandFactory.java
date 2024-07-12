@@ -110,6 +110,10 @@ public class CommandFactory {
 
         }
 
+        public Command setArmGoal(double anglerads) {
+                return m_arm.setGoalCommand(anglerads);
+        }
+
         public Command pathfindpickup() {
                 return Commands.parallel(
                                 AutoBuilder.pathfindToPose(
@@ -149,7 +153,6 @@ public class CommandFactory {
                                 m_arm.setGoalCommand(Units.degreesToRadians(armAngleDeg)),
                                 m_shooter.startShooterCommand(shooterSpeed));
         }
-
 
         public Command doIntake() {
                 return Commands.sequence(

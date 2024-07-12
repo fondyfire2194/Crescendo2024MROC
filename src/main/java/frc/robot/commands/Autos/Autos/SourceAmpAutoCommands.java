@@ -19,6 +19,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
 import frc.robot.utils.AllianceUtil;
+import frc.robot.utils.ShootingData;
 
 /** Add your docs here. */
 public class SourceAmpAutoCommands {
@@ -27,14 +28,16 @@ public class SourceAmpAutoCommands {
         private final IntakeSubsystem m_intake;
         private final CommandFactory m_cf;
         private final PathFactory m_pf;
+        private final ShootingData m_sd;
 
         public SourceAmpAutoCommands(SwerveSubsystem swerve, IntakeSubsystem intake, TransferSubsystem transfer,
-                        CommandFactory cf, PathFactory pf) {
+                        CommandFactory cf, PathFactory pf, ShootingData sd) {
                 m_swerve = swerve;
                 m_intake = intake;
                 m_transfer = transfer;
                 m_cf = cf;
                 m_pf = pf;
+                m_sd=sd;
         }
 
         public Command setSourceStart() {
@@ -97,9 +100,9 @@ public class SourceAmpAutoCommands {
                         boolean innerNoteFirst) {
                 return Commands.either(
                                 new CenterToShoot(m_cf, path1,
-                                                m_swerve, true),
+                                                m_swerve, m_sd, true),
                                 new CenterToShoot(m_cf, path2,
-                                                m_swerve, true),
+                                                m_swerve, m_sd, true),
                                 () -> innerNoteFirst);
         }
 
@@ -155,7 +158,7 @@ public class SourceAmpAutoCommands {
                                                 Commands.sequence(
                                                                 Commands.parallel(
                                                                                 m_cf.positionArmRunShooterByDistance(
-                                                                                                 true),
+                                                                                                true),
                                                                                 new AutoAlignSpeaker(m_swerve,
                                                                                                 aligntolerance, true)),
                                                                 m_cf.transferNoteToShooterCommand()),
