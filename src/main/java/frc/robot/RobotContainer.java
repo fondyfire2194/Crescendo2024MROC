@@ -39,6 +39,7 @@ import frc.robot.Factories.PathFactory.sbwfrpaths;
 import frc.robot.commands.Arm.JogArm;
 import frc.robot.commands.Autos.Autos.SourceAmpAutoCommands;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
+import frc.robot.commands.Climber.PositionClimber;
 import frc.robot.commands.Drive.AlignTargetOdometry;
 import frc.robot.commands.Drive.AlignToNote;
 import frc.robot.commands.Drive.RotateToAngle;
@@ -333,20 +334,24 @@ public class RobotContainer implements Logged {
         private void configureCodriverBindings() {
                 // CoDriver
                 // left and right triggers are for climber
-                codriver.leftTrigger().whileTrue(
-                                m_climber.raiseClimberArmsCommand(0.3))
+                codriver.leftTrigger().and(codriver.povUp().negate()).and(codriver.a().negate())
+                                .whileTrue(m_climber.raiseClimberArmsCommand(0.3))
                                 .onFalse(m_climber.stopClimberCommand());
 
-                codriver.leftTrigger().and(codriver.povUp()).whileTrue(
-                                m_climber.raiseClimberArmsCommand(0.6))
+                codriver.leftTrigger().and(codriver.povUp()).and(codriver.a().negate())
+                                .whileTrue(m_climber.raiseClimberArmsCommand(0.6))
                                 .onFalse(m_climber.stopClimberCommand());
 
-                codriver.rightTrigger().whileTrue(
-                                m_climber.lowerClimberArmsCommand(0.3))
+                codriver.a().whileTrue(new PositionClimber(m_climber, 500, .6));
+
+                codriver.b().whileTrue(new PositionClimber(m_climber, 750, .6));
+
+                codriver.rightTrigger().and(codriver.povDown().negate())
+                                .whileTrue(m_climber.lowerClimberArmsCommand(0.3))
                                 .onFalse(m_climber.stopClimberCommand());
 
-                codriver.rightTrigger().and(codriver.povDown()).whileTrue(
-                                m_climber.lowerClimberArmsCommand(0.6))
+                codriver.rightTrigger().and(codriver.povDown())
+                                .whileTrue(m_climber.lowerClimberArmsCommand(0.6))
                                 .onFalse(m_climber.stopClimberCommand());
 
                 // left bumper for commands used during match

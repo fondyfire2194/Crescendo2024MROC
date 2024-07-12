@@ -112,6 +112,12 @@
       "LiveWindow": {
         "open": true
       },
+      "Monologue": {
+        "m_climber": {
+          "open": true
+        },
+        "open": true
+      },
       "Preferences": {
         "open": true
       },
@@ -130,8 +136,7 @@
         },
         "Transfer": {
           "open": true
-        },
-        "open": true
+        }
       },
       "limelight-frright": {
         "open": true

@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
+
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Servo;
@@ -33,7 +34,16 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
 
   public boolean leftMotorConnected;
   public boolean rightMotorConnected;
-
+  @Log.NT(key = "simarmpositionleft")
+  private double simarmpositionleft;
+  @Log.NT(key = "simarmpositionright")
+  private double simarmpositionright;
+  @Log.NT(key = "currentspeedleft")
+  private double currentSpeedLeft;
+  @Log.NT(key = "currentspeedright")
+  private double currentSpeedRight;
+  @Log.NT(key = "erroright")
+  private double errorright;
 
   public ClimberSubsystem() {
     climberMotorLeft = new CANSparkMax(CANIDConstants.climberIDLeft, MotorType.kBrushless);
@@ -89,38 +99,84 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
   }
 
   public void stopMotors() {
-    climberMotorLeft.stopMotor();
-    climberMotorLeft.setVoltage(0);
+    stopLeftMotor();
+    stopRightMotor();
+  }
+
+  public void stopRightMotor() {
     climberMotorRight.stopMotor();
     climberMotorRight.setVoltage(0);
+    currentSpeedRight = 0;
+  }
+
+  public void stopLeftMotor() {
+    climberMotorLeft.stopMotor();
+    climberMotorLeft.setVoltage(0);
+    currentSpeedLeft = 0;
+
   }
 
   public Command stopClimberCommand() {
-    return Commands.runOnce(() -> stopMotors(), this);
+    return Commands.parallel(
+        stopLeftClimberCommand(),
+        stopRightClimberCommand());
   }
 
-  public void runClimberMotor(double speed) {
+  public Command stopLeftClimberCommand() {
+    return Commands.runOnce(() -> stopLeftMotor());
+  }
+
+  public Command stopRightClimberCommand() {
+    return Commands.runOnce(() -> stopRightMotor());
+  }
+
+  public void runLeftClimberMotor(double speed) {
     if (getPositionLeft() > 130) {
       speed = speed * 0.5;
     }
+    currentSpeedLeft = speed;
     climberMotorLeft.setVoltage(speed * RobotController.getBatteryVoltage());
+
+  }
+
+  public void runRightClimberMotor(double speed) {
+    if (getPositionRight() > 130) {
+      speed = speed * 0.5;
+    }
+    currentSpeedRight = speed;
     climberMotorRight.setVoltage(speed * RobotController.getBatteryVoltage());
   }
 
-  public void lowerClimber(double speed) {
-    if (getPositionLeft() < 10) {
-      runClimberMotor(speed * 0.2);
+  public void runClimberMotors(double speed) {
+    runRightClimberMotor(speed);
+    runLeftClimberMotor(speed);
+  }
+
+  public void raiseClimber(double speed) {
+    runClimberMotors(speed * 0.2);
+    if (getPositionLeft() > 1000) {
+      runClimberMotors(speed * 0.2);
     } else {
-      runClimberMotor(speed);
+      runClimberMotors(speed);
+    }
+  }
+
+  public void lowerClimber(double speed) {
+    speed *= -1;
+    runClimberMotors(speed * 0.2);
+    if (getPositionLeft() < 10) {
+      runClimberMotors(speed * 0.2);
+    } else {
+      runClimberMotors(speed);
     }
   }
 
   public Command lowerClimberArmsCommand(double speed) {
-    return Commands.run(() -> lowerClimber(-speed));
+    return Commands.run(() -> lowerClimber(speed));
   }
 
   public Command raiseClimberArmsCommand(double speed) {
-    return Commands.run(() -> runClimberMotor(speed));
+    return Commands.run(() -> raiseClimber(speed));
   }
 
   @Log.NT(key = "leftRPM")
@@ -135,13 +191,30 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
 
   @Log.NT(key = "leftposition")
   public double getPositionLeft() {
-    return climberEncoderLeft.getPosition();
+    if (RobotBase.isReal())
+      return climberEncoderLeft.getPosition();
+    else
+      return simarmpositionleft;
   }
 
   @Log.NT(key = "rightposition")
   public double getPositionRight() {
-    return climberEncoderRight.getPosition();
+    if (RobotBase.isReal())
+      return climberEncoderRight.getPosition();
+    else
+      return simarmpositionright;
   }
+
+  @Log.NT(key = "leftattarget")
+  public boolean getLeftAtTarget(double target) {
+    return getPositionLeft() > target;
+  }
+
+  @Log.NT(key = "rightattarget")
+  public boolean getRightAtTarget(double target) {
+    return getPositionRight() > target;
+  }
+
 
   @Log.NT(key = "climberleftstickyfault")
   public int getLeftStickyFaults() {
@@ -183,6 +256,14 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
 
   public Command unlockClimberCommand() {
     return Commands.runOnce(() -> unlockClimber());
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    simarmpositionleft += currentSpeedLeft * 6;
+    simarmpositionright += currentSpeedRight * 6;
+    SmartDashboard.putNumber("CLERR", 500 - getPositionLeft());
+    SmartDashboard.putBoolean("CLAT", getPositionLeft() > 500);
   }
 
 }
