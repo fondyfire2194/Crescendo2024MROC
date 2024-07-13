@@ -40,22 +40,22 @@ public class ShootingData implements Logged {
             //
 
             // si.add(new ShotInfo(4.00, 55, 3100, 300, 2, 10));
-            si.add(new ShotInfo(4.25, 63, 3000, 300, 2, 10));
-            si.add(new ShotInfo(5.25, 54, 3000, 300, 2, 10));
-            si.add(new ShotInfo(6.25, 49, 3000, 300, 2, 10));
-            si.add(new ShotInfo(7.25, 45, 3000, 300, 2, 10));
-            si.add(new ShotInfo(8.25, 42, 3000, 300, 2, 10));
-            si.add(new ShotInfo(9.25, 39, 3250, 300, 2, 10));
-            si.add(new ShotInfo(10.25, 37, 3500, 300, 2, 10));
-            si.add(new ShotInfo(11.25, 35, 3500, 300, 2, 10));
-            si.add(new ShotInfo(12.25, 33, 3500, 300, 2, 10));
-            si.add(new ShotInfo(13.25, 31, 3500, 300, 2, 10));
-            si.add(new ShotInfo(14.25, 30, 3750, 300, 2, 10));
-            si.add(new ShotInfo(15.25, 29, 4000, 300, 2, 10));
-            si.add(new ShotInfo(16.25, 28, 4000, 300, 2, 10));
-            si.add(new ShotInfo(17.25, 27, 4250, 300, 2, 10));
-            si.add(new ShotInfo(18.25, 26.5, 4500, 300, 2, 10));
-            si.add(new ShotInfo(19.25, 25, 4600, 300, 2, 10));
+            si.add(new ShotInfo(4.25, 58, 3000, 300, 2, 10));
+            si.add(new ShotInfo(5.25, 52, 3000, 300, 2, 10));
+            si.add(new ShotInfo(6.25, 47, 3000, 300, 2, 10));
+            si.add(new ShotInfo(7.25, 43, 3000, 300, 2, 10));
+            si.add(new ShotInfo(8.25, 40, 3000, 300, 2, 10));
+            si.add(new ShotInfo(9.25, 37, 3250, 300, 2, 10));
+            si.add(new ShotInfo(10.25, 35, 3500, 300, 2, 10));
+            si.add(new ShotInfo(11.25, 32.5, 3500, 300, 2, 10));
+            si.add(new ShotInfo(12.25, 30.5, 3500, 300, 2, 10));
+            si.add(new ShotInfo(13.25, 28, 3500, 300, 2, 10));
+            si.add(new ShotInfo(14.25, 27, 3750, 300, 2, 10));
+            si.add(new ShotInfo(15.25, 26, 4000, 300, 2, 10));
+            si.add(new ShotInfo(16.25, 25, 4000, 300, 2, 10));
+            si.add(new ShotInfo(17.25, 24, 4250, 300, 2, 10));
+            si.add(new ShotInfo(18.25, 23.5, 4500, 300, 2, 10));
+            si.add(new ShotInfo(19.25, 22, 4600, 300, 2, 10));
 
         }
 
@@ -84,7 +84,6 @@ public class ShootingData implements Logged {
 
     private void setArmOffsetDegrees(double val) {
         armOffsetDegrees = Math.min(Math.max(val, minarmoffsetdegrees), maxarmoffsetdegrees);
-
     }
 
     public Command setArmOffsetDegreesCommand(double val) {
@@ -102,10 +101,13 @@ public class ShootingData implements Logged {
     public double getArmOffsetDegrees() {
         return armOffsetDegrees;
     }
+    public double getArmOffsetRadians() {
+        return Units.degreesToRadians(armOffsetDegrees);
+    }
 
     private void incArmOffsetDegrees(double increment) {
-        armOffsetDegrees += increment;
-        armOffsetDegrees = Math.min(Math.max(armOffsetDegrees, minarmoffsetdegrees), maxarmoffsetdegrees);
+        double temp = armOffsetDegrees + increment;
+        armOffsetDegrees = Math.min(Math.max(temp, minarmoffsetdegrees), maxarmoffsetdegrees);
     }
 
     public Command incArmOffsetDegreesCommand(double val) {
@@ -144,7 +146,7 @@ public class ShootingData implements Logged {
         }
 
         public double getArmRads() {
-            return Units.degreesToRadians(armDegrees + armOffsetDegrees);
+            return Units.degreesToRadians(armDegrees);
         }
 
         public double getSpeedRPM() {

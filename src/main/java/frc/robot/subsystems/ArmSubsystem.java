@@ -131,7 +131,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
                 ArmConstants.armKa);
 
         if (RobotBase.isReal()) {
-            armEncoder.setPosition(ArmConstants.armAngleOnBottomStopBar);
+            armEncoder.setPosition(ArmConstants.armAngleOnBottomStopBar - ArmConstants.startupBacklashCompensation);
             setGoalCommand(getAngleRadians());
         } else {
             armEncoder.setPosition(ArmConstants.armMinRadians);
@@ -224,7 +224,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
         }
 
         if (isEnabled() && enableArm) {
-            pidout = pid.calculate(armAngleRads, getController().getSetpoint().position);
+            pidout = pid.calculate(getAngleRadians(), getController().getSetpoint().position);
             acceleration = (getController().getSetpoint().velocity - lastSpeed)
                     / (Timer.getFPGATimestamp() - lastTime);
         } else {
@@ -261,7 +261,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     @Override
     protected double getMeasurement() {
-        return armAngleRads;
+        return getAngleRadians();
     }
 
     public void resetController() {
@@ -350,7 +350,8 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     public double getAngleRadians() {
         if (RobotBase.isReal()) {
-            return armEncoder.getPosition();
+           // return armEncoder.getPosition();
+           return getCanCoderRad();
         } else
             return simAngleRads;
     }
@@ -474,13 +475,14 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
         return temp1 / temp;
     }
 
+    @Log.NT(key = "cancoderdegrees")
     public double getCanCoderDeg() {
         return Units.radiansToDegrees(getCanCoderRad());
     }
 
     public double getCanCoderRad() {
         double temp = (armCancoder.getAbsolutePosition().getValueAsDouble()
-                * Math.PI) + ArmConstants.armAngleOnBottomStopBar;
+                * Math.PI) + ArmConstants.armAngleOnBottomStopBar - ArmConstants.startupBacklashCompensation;
         if (temp > Math.PI)
             temp = temp - Math.PI;
         return temp;

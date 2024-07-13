@@ -332,7 +332,7 @@ public final class Constants {
                 public static final double stageHeight = Units.inchesToMeters(106);
                 public static final double speakerSlotHeight = Units.inchesToMeters(80.4375);
 
-                public static final double lobAngleRads = Units.degreesToRadians(55);
+                public static final double lobAngleRads = Units.degreesToRadians(50);
                 public static final double lobRPM = 2800;
                 private static double speakerAimXOffset = Units.inchesToMeters(0);
                 private static Transform2d speakerAimAdjustBlue = new Transform2d(speakerAimXOffset, 0.,
@@ -583,7 +583,7 @@ public final class Constants {
 
         }
 
-        public static double subwfrArmAngle = 55;// 60;// degrees
+        public static double subwfrArmAngle = 57;// 60;// degrees
         public static double subwfrShooterSpeed = 3000;// rpm
 
         public static double source_ampShootAngle = 34;
@@ -616,11 +616,13 @@ public final class Constants {
 
                 public static final double armAngleOnBottomStopBar = Units.degreesToRadians(20);
 
+                public static final double startupBacklashCompensation = Units.degreesToRadians(2);
+
                 public static final double aboveDistanceShootAngleForUDA = Units.degreesToRadians(45);
 
                 public static final double UDARads = Units.degreesToRadians(3);
 
-                public static final double maxUDAAngleRads = Units.degreesToRadians(50);
+                public static final double maxUDAAngleRads = Units.degreesToRadians(60);
 
                 public static final double maxarmMotorRPM = 5700;
 

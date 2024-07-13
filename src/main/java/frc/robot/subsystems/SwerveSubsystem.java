@@ -599,7 +599,7 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
 
       frUpdate.execute();
 
-      if (!isStopped())
+    
         skidRatio = getSkiddingRatio(getStates(), Constants.SwerveConstants.swerveKinematics);
 
       if (getPathRunning() && isStopped())
@@ -613,6 +613,8 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
       SmartDashboard.putNumber("Drive//GyroYaw", getYaw().getDegrees());
 
       SmartDashboard.putNumber("Drive/SpeakerFeet", getDistanceFromSpeakerFt());
+
+      SmartDashboard.putNumber("Drive/LobDistance", getDistanceFromLobTarget());
     }
   }
 

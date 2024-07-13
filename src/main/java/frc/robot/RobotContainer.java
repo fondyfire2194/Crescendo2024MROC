@@ -342,9 +342,9 @@ public class RobotContainer implements Logged {
                                 .whileTrue(m_climber.raiseClimberArmsCommand(0.6))
                                 .onFalse(m_climber.stopClimberCommand());
 
-                codriver.a().whileTrue(new PositionClimber(m_climber, 500, .6));
+                // codriver.a().whileTrue(new PositionClimber(m_climber, 500, .6));
 
-                codriver.b().whileTrue(new PositionClimber(m_climber, 750, .6));
+                // codriver.b().whileTrue(new PositionClimber(m_climber, 750, .6));
 
                 codriver.rightTrigger().and(codriver.povDown().negate())
                                 .whileTrue(m_climber.lowerClimberArmsCommand(0.3))
@@ -364,8 +364,8 @@ public class RobotContainer implements Logged {
                 codriver.leftBumper().and(codriver.a())
                                 .onTrue(m_arm.setGoalCommand(ArmConstants.armAngleOnBottomStopBar));
 
-                codriver.leftBumper().and(codriver.b()).onTrue(
-                                m_arm.setGoalCommand(ArmConstants.aboveDistanceShootAngleForUDA));
+            //    codriver.leftBumper().and(codriver.b()).onTrue(
+                             
 
                 codriver.leftBumper().and(codriver.povUp())
                                 .onTrue(m_sd.incArmOffsetDegreesCommand(.5));
@@ -417,25 +417,30 @@ public class RobotContainer implements Logged {
 
                 setup.leftBumper().whileTrue(new JogArm(m_arm, setup));
 
-                // setup.leftBumper().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(20)));
+                // setup.leftBumper().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(25)));
+
+                setup.povDown().onTrue(
+                                m_arm.setGoalCommand(ArmConstants.armAngleOnBottomStopBar));
+
+                setup.povUp().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(25)));
 
                 setup.leftTrigger().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(30)));
 
-                setup.rightBumper().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(40)));
+                setup.rightBumper().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(35)));
 
-                setup.rightTrigger().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(50)));
+                setup.rightTrigger().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(40)));
 
-                setup.x().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(60)));
+                setup.x().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(45)));
 
-                setup.y().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(65)));
+                setup.y().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(50)));
 
-                setup.povDown().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(55)));
+                setup.povLeft().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(55)));
 
-                setup.povLeft().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(45)));
+                setup.povRight().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(60)));
 
-                setup.povRight().onTrue(new RotateToAngle(m_swerve, -90));
+                //
 
-                // setup.start()
+                // setup.start().onTrue(new RotateToAngle(m_swerve, -90));
 
                 // setup.back()
         }

@@ -77,7 +77,7 @@ public class TransferSubsystem extends SubsystemBase implements Logged {
     // encoder.setVelocityConversionFactor(TransferConstants.transferConversionVelocityFactor);
     // encoder.setPositionConversionFactor(TransferConstants.transferConversionPositionFactor);
     motor.enableVoltageCompensation(TransferConstants.voltageComp);
-    motor.setClosedLoopRampRate(1);
+    motor.setClosedLoopRampRate(.1);
     int i = 0;
     int loop = 100;
     while (i < loop) {

@@ -138,7 +138,7 @@ public class CommandFactory {
                                                         .get(distance));
                                         maprads = m_sd.armAngleMap.get(distance);
                                         maprpm = m_sd.shooterRPMMap.get(distance);
-                                        m_arm.setTarget(maprads);
+                                        m_arm.setTarget(maprads +m_sd.getArmOffsetRadians());
                                         m_shooter.startShooter(maprpm);
                                 },
 
@@ -147,6 +147,7 @@ public class CommandFactory {
                                 () -> endAtTargets && m_arm.getAtSetpoint()
                                                 && m_shooter.bothAtSpeed());
         }
+
 
         public Command positionArmRunShooterSpecialCase(double armAngleDeg, double shooterSpeed) {
                 return Commands.parallel(
