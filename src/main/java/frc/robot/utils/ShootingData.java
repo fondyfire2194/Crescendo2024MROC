@@ -83,11 +83,8 @@ public class ShootingData implements Logged {
     }
 
     private void setArmOffsetDegrees(double val) {
-        if (val > maxarmoffsetdegrees)
-            val = maxarmoffsetdegrees;
-        if (val < minarmoffsetdegrees)
-            val = minarmoffsetdegrees;
-        armOffsetDegrees = val;
+        armOffsetDegrees = Math.min(Math.max(val, minarmoffsetdegrees), maxarmoffsetdegrees);
+
     }
 
     public Command setArmOffsetDegreesCommand(double val) {
@@ -108,10 +105,7 @@ public class ShootingData implements Logged {
 
     private void incArmOffsetDegrees(double increment) {
         armOffsetDegrees += increment;
-        if (armOffsetDegrees > maxarmoffsetdegrees)
-            armOffsetDegrees = maxarmoffsetdegrees;
-        if (armOffsetDegrees < minarmoffsetdegrees)
-            armOffsetDegrees = minarmoffsetdegrees;
+        armOffsetDegrees = Math.min(Math.max(armOffsetDegrees, minarmoffsetdegrees), maxarmoffsetdegrees);
     }
 
     public Command incArmOffsetDegreesCommand(double val) {

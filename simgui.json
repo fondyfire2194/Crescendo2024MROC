@@ -115,20 +115,13 @@
       "Monologue": {
         "m_climber": {
           "open": true
-        },
-        "open": true
+        }
       },
       "Preferences": {
         "open": true
       },
       "SmartDashboard": {
-        "Drive": {
-          "open": true
-        },
         "DtoPuN": {
-          "open": true
-        },
-        "SetDriveKP1": {
           "open": true
         },
         "Shooter": {
@@ -136,7 +129,8 @@
         },
         "Transfer": {
           "open": true
-        }
+        },
+        "open": true
       },
       "limelight-frright": {
         "open": true
