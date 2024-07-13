@@ -138,7 +138,7 @@ public class CommandFactory {
                                                         .get(distance));
                                         maprads = m_sd.armAngleMap.get(distance);
                                         maprpm = m_sd.shooterRPMMap.get(distance);
-                                        m_arm.setTarget(maprads +m_sd.getArmOffsetRadians());
+                                        m_arm.setTarget(maprads + m_sd.getArmOffsetRadians());
                                         m_shooter.startShooter(maprpm);
                                 },
 
@@ -147,7 +147,6 @@ public class CommandFactory {
                                 () -> endAtTargets && m_arm.getAtSetpoint()
                                                 && m_shooter.bothAtSpeed());
         }
-
 
         public Command positionArmRunShooterSpecialCase(double armAngleDeg, double shooterSpeed) {
                 return Commands.parallel(
@@ -191,7 +190,8 @@ public class CommandFactory {
 
         public Command rumbleCommand(CommandXboxController controller) {
                 return Commands.run(() -> {
-                        if (m_swerve.alignedToTarget && m_arm.getAtSetpoint() && m_shooter.bothAtSpeed()) {
+                        if (m_swerve.aligning && m_swerve.alignedToTarget && m_arm.getAtSetpoint()
+                                        && m_shooter.bothAtSpeed()) {
                                 controller.getHID().setRumble(RumbleType.kLeftRumble, 1.0);
                                 if (RobotBase.isSimulation())
                                         SmartDashboard.putString("BUZZ ", "AlignedToTarget");

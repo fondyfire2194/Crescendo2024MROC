@@ -58,6 +58,7 @@ public class AlignTargetOdometry extends Command {
       m_swerve.setTargetPose(AllianceUtil.getLobPose());
       m_alignTargetPID.setTolerance(1);
     }
+    m_swerve.aligning = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -91,6 +92,7 @@ public class AlignTargetOdometry extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_swerve.aligning = false;
   }
 
   // Returns true when the command should end.

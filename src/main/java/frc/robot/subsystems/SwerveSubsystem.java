@@ -905,6 +905,8 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
 
   public double distanceLimelightToEstimator;
 
+public boolean aligning;
+
   public void setPathRunning() {
     pathRunning = true;
   }

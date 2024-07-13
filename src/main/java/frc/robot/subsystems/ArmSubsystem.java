@@ -64,7 +64,6 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     private double lastSpeed;
     private double lastPosition = 0;
     public double appliedVolts;
-    public double armAngleRads;
     @Log.NT(key = "armpidout")
     private double pidout;
     private PIDController pid = new PIDController(ArmConstants.armKp, 0.0, 0);
@@ -88,7 +87,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
             new MechanismLigament2d(
                     "Arm",
                     30,
-                    Units.radiansToDegrees(armAngleRads),
+                    Units.radiansToDegrees(getAngleRadians()),
                     6,
                     new Color8Bit(Color.kYellow)));
 
@@ -159,9 +158,9 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     }
 
     public void periodicRobot() {
-        armAngleRads = getAngleRadians();
+        
         if (!enableArm || !isEnabled()) {
-            setGoal(armAngleRads);
+            setGoal(getAngleRadians());
         }
 
         checkCancoderCounter++;
