@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.databind.EnumNamingStrategies.CamelCaseStrategy;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -188,6 +189,9 @@ public class Robot extends TimedRobot implements Logged {
     m_robotContainer.m_swerve.absoluteResetFrontModuleEncoders();
     m_robotContainer.m_swerve.absoluteResetBackModuleEncoders();
 
+    // m_robotContainer.m_llv.setAutoTagFilter(CameraConstants.frontLeftCamera.camname);
+    // m_robotContainer.m_llv.setAutoTagFilter(CameraConstants.frontRightCamera.camname);
+
     m_robotContainer.m_arm.enable();
     m_robotContainer.m_arm.enableArm = true;
     m_robotContainer.m_arm.setIdleModeBrake(true);
@@ -262,6 +266,10 @@ public class Robot extends TimedRobot implements Logged {
     }
     m_robotContainer.m_swerve.absoluteResetFrontModuleEncoders();
     m_robotContainer.m_swerve.absoluteResetBackModuleEncoders();
+
+    // m_robotContainer.m_llv.setTeleopTagFilter(CameraConstants.frontLeftCamera.camname);
+    // m_robotContainer.m_llv.setTeleopTagFilter(CameraConstants.frontRightCamera.camname);
+
 
     m_robotContainer.m_swerve.actualstartPose = m_robotContainer.m_swerve.getPose();
 

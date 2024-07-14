@@ -48,6 +48,9 @@ public class LimelightVision extends SubsystemBase implements Logged {
 
   Optional<Pose3d> temp;
 
+  final int[] autoTagFilter = new int[] { 3, 4, 7, 8 };
+  final int[] teleopTagFilter = new int[] { 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16 };
+
   public LimelightVision() {
 
     if (CameraConstants.rearCamera.isUsed)
@@ -59,6 +62,14 @@ public class LimelightVision extends SubsystemBase implements Logged {
     if (CameraConstants.frontRightCamera.isUsed)
       setCamToRobotOffset(CameraConstants.frontRightCamera);
 
+  }
+
+  public void setAutoTagFilter(String camname) {
+    LimelightHelpers.SetFiducialIDFiltersOverride(camname, autoTagFilter);
+  }
+
+  public void setTeleopTagFilter(String camname) {
+    LimelightHelpers.SetFiducialIDFiltersOverride(camname, teleopTagFilter);
   }
 
   @Override
