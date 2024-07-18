@@ -34,10 +34,14 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
 
                 addCommands(
                                 sac.setsbwrstart(),
-                                sac.sbwfrShoot(),
-                                sac.runPathPickupAndShootIfNote(pf.pathMaps.get(sbwfrpaths.SubwfrShootToWing2.name()),
+                                // sac.sbwfrShoot(),
+                                sac.sbwfrShootEarly(),
+
+                                sac.runPathPickupAndShootIfNote(
+                                                pf.pathMaps.get(sbwfrpaths.SubwfrShootToWing2.name()),
                                                 1),
-                                sac.moveAndPickup(sbwfrpaths.Wing2ToCenter3),
+
+                                sac.moveAndPickupUsingVision(sbwfrpaths.Wing2ToCenter3),
                                 Commands.either(
                                                 sac.sbwfrmoveandshoot(sbwfrpaths.Center3ToSubwfrShoot),
                                                 new RunPPath(swerve, pf.pathMaps

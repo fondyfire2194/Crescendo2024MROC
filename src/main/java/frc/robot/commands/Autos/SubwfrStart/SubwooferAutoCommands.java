@@ -82,9 +82,18 @@ public class SubwooferAutoCommands {
                                 shoot());
         }
 
+        public Command sbwfrShootEarly() {
+                return Commands.sequence(
+                                Commands.race(
+                                                Commands.waitSeconds(.5),
+                                                setArmShooter(Constants.subwfrArmAngle - Units.degreesToRadians(2),
+                                                                Constants.subwfrShooterSpeed + 300)),
+                                shoot());
+        }
+
         public Command shootbydistance() {
                 return Commands.sequence(
-                        m_sd.setArmOffsetDegreesCommand(2),
+                                m_sd.setArmOffsetDegreesCommand(2),
                                 m_cf.positionArmRunShooterByDistance(true),
                                 shoot());
         }

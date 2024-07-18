@@ -87,7 +87,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
             new MechanismLigament2d(
                     "Arm",
                     30,
-                    Units.radiansToDegrees(getAngleRadians()),
+                    Units.radiansToDegrees(simAngleRads),
                     6,
                     new Color8Bit(Color.kYellow)));
 
@@ -98,8 +98,6 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
                     Units.radiansToDegrees(getCurrentGoalRads()),
                     6,
                     new Color8Bit(Color.kRed)));
-
-    Trigger setMotorEncoderToCancoder;
 
     private int cancdrokctr;
 
@@ -158,7 +156,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
     }
 
     public void periodicRobot() {
-        
+
         if (!enableArm || !isEnabled()) {
             setGoal(getAngleRadians());
         }
@@ -175,7 +173,7 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
             SmartDashboard.putBoolean("Arm//OKArmMotor", armMotorConnected);
         }
 
-        SmartDashboard.putNumber("Arm/CanCdrRads", getCanCoderRad());
+         SmartDashboard.putNumber("Arm/CanCdrRads", getCanCoderRad());
         SmartDashboard.putBoolean("Arm/isenab", isEnabled());
     }
 
@@ -349,8 +347,8 @@ public class ArmSubsystem extends ProfiledPIDSubsystem implements Logged {
 
     public double getAngleRadians() {
         if (RobotBase.isReal()) {
-           // return armEncoder.getPosition();
-           return getCanCoderRad();
+            // return armEncoder.getPosition();
+            return getCanCoderRad();
         } else
             return simAngleRads;
     }

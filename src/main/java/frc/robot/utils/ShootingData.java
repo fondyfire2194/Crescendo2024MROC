@@ -27,6 +27,22 @@ public class ShootingData implements Logged {
 
     public InterpolatingDoubleTreeMap shooterRPMMap = new InterpolatingDoubleTreeMap();
     public InterpolatingDoubleTreeMap shooterRPMToleranceMap = new InterpolatingDoubleTreeMap();
+
+    public static InterpolatingDoubleTreeMap armLobAngleMap = new InterpolatingDoubleTreeMap();
+    static {
+
+        armLobAngleMap.put(3., Units.degreesToRadians(45.0));
+        armLobAngleMap.put(4.5, Units.degreesToRadians(45.0));
+
+    }
+    public static InterpolatingDoubleTreeMap shooterLobRPMMap = new InterpolatingDoubleTreeMap();
+    static {
+
+        shooterLobRPMMap.put(10., 3700.);
+        shooterLobRPMMap.put(11., 3800.);
+        shooterLobRPMMap.put(12., 3900.);
+    }
+
     @Log.NT(key = "armoffsetdegrees")
     private double armOffsetDegrees = 0;
     private double maxarmoffsetdegrees = ArmConstants.maxShootOffsetDegrees;;
@@ -49,10 +65,10 @@ public class ShootingData implements Logged {
             si.add(new ShotInfo(10.25, 35, 3500, 300, 2, 10));
             si.add(new ShotInfo(11.25, 32.5, 3500, 300, 2, 10));
             si.add(new ShotInfo(12.25, 30.5, 3500, 300, 2, 10));
-            si.add(new ShotInfo(13.25, 28, 3500, 300, 2, 10));
-            si.add(new ShotInfo(14.25, 27, 3750, 300, 2, 10));
-            si.add(new ShotInfo(15.25, 26, 4000, 300, 2, 10));
-            si.add(new ShotInfo(16.25, 25, 4000, 300, 2, 10));
+            si.add(new ShotInfo(13.25, 28.5, 3500, 300, 2, 10));
+            si.add(new ShotInfo(14.25, 27.5, 3750, 300, 2, 10));
+            si.add(new ShotInfo(15.25, 26.5, 4000, 300, 2, 10));
+            si.add(new ShotInfo(16.25, 25.5, 4000, 300, 2, 10));
             si.add(new ShotInfo(17.25, 24, 4250, 300, 2, 10));
             si.add(new ShotInfo(18.25, 23.5, 4500, 300, 2, 10));
             si.add(new ShotInfo(19.25, 22, 4600, 300, 2, 10));
@@ -101,6 +117,7 @@ public class ShootingData implements Logged {
     public double getArmOffsetDegrees() {
         return armOffsetDegrees;
     }
+
     public double getArmOffsetRadians() {
         return Units.degreesToRadians(armOffsetDegrees);
     }
@@ -164,39 +181,6 @@ public class ShootingData implements Logged {
         public double getTimeSec() {
             return timeMs / 1000;
         }
-
-        // =======old data===========================
-        // si.add(new ShotInfo(5, 50, 3100, 300, 2));
-
-        // si.add(new ShotInfo(6, 40, 3100, 300, 2));
-
-        // si.add(new ShotInfo(7, 37, 3100, 300, 2));
-
-        // si.add(new ShotInfo(8, 33, 3100, 300, 2));
-
-        // si.add(new ShotInfo(9, 32, 3100, 300, 2));
-
-        // si.add(new ShotInfo(10, 30, 3100, 300, 2));
-
-        // si.add(new ShotInfo(11, 28, 3100, 300, 2));
-
-        // si.add(new ShotInfo(12, 27, 3100, 300, 2));
-
-        // si.add(new ShotInfo(13, 25, 3100, 300, 2));
-
-        // si.add(new ShotInfo(14, 24, 3100, 300, 2));
-
-        // si.add(new ShotInfo(15, 23, 3300, 300, 2));
-
-        // si.add(new ShotInfo(16, 21, 3500, 300, 2));
-
-        // si.add(new ShotInfo(17, 20, 3800, 300, 2));
-
-        // si.add(new ShotInfo(18, 18, 4000, 300, 2));
-
-        // si.add(new ShotInfo(19, 17, 4000, 300, 2));
-
-        // si.add(new ShotInfo(20, 17, 4500, 300, 2));
 
     }
 }

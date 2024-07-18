@@ -17,6 +17,7 @@ public class PositionClimber extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     m_climber = climber;
     m_target = target;
+
     m_speed = speed;
   }
 
@@ -29,14 +30,13 @@ public class PositionClimber extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!m_climber.getLeftAtTarget(m_target))
+    if (!m_climber.getLeftAtTarget(m_target)) {
       m_climber.runLeftClimberMotor(m_speed);
-    else
-      m_climber.stopLeftMotor();
-    if (!m_climber.getRightAtTarget(m_target))
       m_climber.runRightClimberMotor(m_speed);
-    else
+    } else {
+      m_climber.stopLeftMotor();
       m_climber.stopRightMotor();
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -48,6 +48,6 @@ public class PositionClimber extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_climber.getLeftAtTarget(m_target) && m_climber.getRightAtTarget(m_target);
+    return m_climber.getLeftAtTarget(m_target);
   }
 }

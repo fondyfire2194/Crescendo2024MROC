@@ -148,6 +148,31 @@ public class CommandFactory {
                                                 && m_shooter.bothAtSpeed());
         }
 
+        public Command positionArmRunShooterByDistanceLobShot(boolean endAtTargets) {
+
+                return new FunctionalCommand(
+
+                                () -> Commands.none(),
+
+                                () -> {
+                                        double stagedistance = m_swerve.getDistanceFromStageEdge();
+                                        double lobdistance = m_swerve.getDistanceFromLobTarget();
+                                        m_arm.setTolerance(ArmConstants.angleTolerance);
+                                        m_shooter.setRPMTolerancePCT(10);
+                                        maprads = ShootingData.armLobAngleMap.get(stagedistance);
+                                        maprpm = ShootingData.shooterLobRPMMap.get(lobdistance);
+                                        if (m_swerve.getY() > 5)
+                                                maprpm = 3000;
+                                        m_arm.setTarget(maprads);
+                                        m_shooter.startShooter(maprpm, maprpm * .75);
+                                },
+
+                                (interrupted) -> Commands.none(),
+
+                                () -> endAtTargets && m_arm.getAtSetpoint()
+                                                && m_shooter.bothAtSpeed());
+        }
+
         public Command positionArmRunShooterSpecialCase(double armAngleDeg, double shooterSpeed) {
                 return Commands.parallel(
                                 m_arm.setGoalCommand(Units.degreesToRadians(armAngleDeg)),
@@ -198,7 +223,8 @@ public class CommandFactory {
                         } else
                                 controller.getHID().setRumble(RumbleType.kLeftRumble, 0.0);
 
-                        if (noteAtIntake() || m_intake.getAmps() > ArmConstants.noteAtIntakeAmps) {
+                        if (noteAtIntake() || m_intake.getAmps() > ArmConstants.noteAtIntakeAmps
+                                        || m_transfer.simnoteatintake) {
                                 controller.getHID().setRumble(RumbleType.kRightRumble, 1.0);
                                 if (RobotBase.isSimulation())
                                         SmartDashboard.putString("BUZZ ", "NoteAtIntake");

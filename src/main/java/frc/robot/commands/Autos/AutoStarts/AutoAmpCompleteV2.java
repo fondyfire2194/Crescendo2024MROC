@@ -34,6 +34,7 @@ public class AutoAmpCompleteV2 extends SequentialCommandGroup {
 
                 addCommands(
                                 srcac.setAmpStart(),
+                                
                                 Commands.race(
                                                 Commands.waitSeconds(.75),
                                                 cf.positionArmRunShooterSpecialCase(Constants.subwfrArmAngle,

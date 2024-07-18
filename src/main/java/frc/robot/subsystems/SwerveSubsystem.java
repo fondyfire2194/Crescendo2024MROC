@@ -216,9 +216,9 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     SwerveModuleState[] targetStates = Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
     setStates(targetStates);
-    xaccpp = (robotRelativeSpeeds.vxMetersPerSecond - lastvxmps)/.02;
+    xaccpp = (robotRelativeSpeeds.vxMetersPerSecond - lastvxmps) / .02;
     lastvxmps = robotRelativeSpeeds.vxMetersPerSecond;
-    yaccpp = (robotRelativeSpeeds.vyMetersPerSecond - lastvymps)/.02;
+    yaccpp = (robotRelativeSpeeds.vyMetersPerSecond - lastvymps) / .02;
     lastvymps = robotRelativeSpeeds.vyMetersPerSecond;
   }
 
@@ -599,8 +599,7 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
 
       frUpdate.execute();
 
-    
-        skidRatio = getSkiddingRatio(getStates(), Constants.SwerveConstants.swerveKinematics);
+      skidRatio = getSkiddingRatio(getStates(), Constants.SwerveConstants.swerveKinematics);
 
       if (getPathRunning() && isStopped())
         resetPathRunning();
@@ -642,10 +641,11 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
         .getDistance(getPose().getTranslation())), 2);
   }
 
-  public double getDistanceFromStage() {
+  @Log.NT(key = "stageOuterDistMtrs")
+  public double getDistanceFromStageEdge() {
     return round2dp(
         stageDistanceFilter.calculate(AllianceUtil.getAlliancePose(FieldConstants.stageBlueAlliance).getTranslation()
-            .getDistance(getPose().getTranslation())),
+            .getDistance(getPose().getTranslation())) - FieldConstants.stageRadius,
         2);
   }
 
@@ -904,8 +904,8 @@ public class SwerveSubsystem extends SubsystemBase implements Logged {
   public int targetNote;
 
   public double distanceLimelightToEstimator;
-
-public boolean aligning;
+  @Log.NT(key = "aligning")
+  public boolean aligning;
 
   public void setPathRunning() {
     pathRunning = true;

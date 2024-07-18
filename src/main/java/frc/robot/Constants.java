@@ -329,7 +329,9 @@ public final class Constants {
 
                 public static final double noteDiameter = Units.inchesToMeters(14);
 
-                public static final double stageHeight = Units.inchesToMeters(106);
+                public static final double stageHeight = Units.inchesToMeters(90);
+                public static final double stageRadius = 2;
+                
                 public static final double speakerSlotHeight = Units.inchesToMeters(80.4375);
 
                 public static final double lobAngleRads = Units.degreesToRadians(50);
@@ -351,8 +353,8 @@ public final class Constants {
                 // Units.inchesToMeters(190),
                 // FIELD_WIDTH / 2, Rotation2d.fromDegrees(180.0));
 
-                public static final Pose2d lobBlueAlliance = new Pose2d(0.0, 7.1, Rotation2d.fromDegrees(0.0));
-                public static final Pose2d lobRedAlliance = new Pose2d(16.54, 7.1, Rotation2d.fromDegrees(180.0));
+                public static final Pose2d lobBlueAlliance = new Pose2d(0.0, 7.5, Rotation2d.fromDegrees(0.0));
+                public static final Pose2d lobRedAlliance = new Pose2d(16.54, 7.5, Rotation2d.fromDegrees(180.0));
 
                 public static Pose2d speakerAimPointX = new Pose2d(.45, 5.55, Rotation2d.fromDegrees(0.0));
 
@@ -680,8 +682,8 @@ public final class Constants {
 
                 public static double noteAtIntakeAmps = 30;
 
-                public static double maxShootOffsetDegrees = 3;
-                public static final double minShootOffsetDegrees = -3;
+                public static double maxShootOffsetDegrees = 4;
+                public static final double minShootOffsetDegrees = -4;
 
                 public static final double armPivotZ = Units.inchesToMeters(10.3);// 10.3
                 public static final double armPivotX = Units.inchesToMeters(-7.5);
@@ -735,7 +737,7 @@ public final class Constants {
 
         public static final class ClimberConstants {
                 public static final double maxClimberMotorRPM = 5700;
-                public static final double climberConversionPositionFactor = 1;
+                public static final double climberConversionPositionFactor = .1;
                 public static final double climberConversionVelocityFactor = climberConversionPositionFactor / 60;
                 public static final double voltageComp = 12;
                 public static final IdleMode climberIdleMode = IdleMode.kBrake;

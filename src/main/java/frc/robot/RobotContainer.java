@@ -111,7 +111,7 @@ public class RobotContainer implements Logged {
         private BooleanEvent doAutoSetup;
 
         private Trigger canivoreCheck;
-
+        private Trigger lobshootTrigger;
         public CANBusStatus canInfo;
         @Log.NT(key = "canivoreutil")
         public float busUtil;
@@ -171,7 +171,7 @@ public class RobotContainer implements Logged {
                                                 CameraConstants.rearCamera.camname,
                                                 4));
 
-                // SmartDashboard.putData("TrapTuneTo Pref",
+                // SmartDashboard.putData("TrapTuneToPref",
                 // new TrapTune(m_swerve));
 
                 SmartDashboard.putData("Set Robot At 0",
@@ -218,6 +218,14 @@ public class RobotContainer implements Logged {
                                         () -> !canInfo.Status.isOK() || canInfo.Status.isError()
                                                         || canInfo.Status.isWarning());
                         canivoreCheck.onTrue(Commands.runOnce(() -> logCanivore()));
+
+                        lobshootTrigger = new Trigger(
+                                        () -> m_swerve.isStopped() && m_transfer.noteAtIntake() && m_swerve.aligning
+                                                        && m_swerve.alignedToTarget && m_arm.getAtSetpoint()
+                                                        && m_shooter.bothAtSpeed()
+                                                        && driver.leftBumper().getAsBoolean());
+
+                        lobshootTrigger.onTrue(m_cf.transferNoteToShooterCommand());
                 }
 
                 // ela portForwardCameras();
@@ -283,8 +291,9 @@ public class RobotContainer implements Logged {
                                                                 () -> driver.getLeftX(),
                                                                 () -> driver.getRightX(), true),
                                                 m_cf.rumbleCommand(driver),
-                                                m_cf.startShooterSpeedCompedCommand(FieldConstants.lobRPM),
-                                                m_arm.setGoalCommand(FieldConstants.lobAngleRads)))
+                                                m_cf.positionArmRunShooterByDistanceLobShot(false)))
+                                // m_cf.startShooterSpeedCompedCommand(FieldConstants.lobRPM),
+                                // m_arm.setGoalCommand(FieldConstants.lobAngleRads)))
                                 .onFalse(
                                                 Commands.parallel(
                                                                 m_shooter.stopShooterCommand(),
@@ -342,9 +351,11 @@ public class RobotContainer implements Logged {
                                 .whileTrue(m_climber.raiseClimberArmsCommand(0.6))
                                 .onFalse(m_climber.stopClimberCommand());
 
-                // codriver.a().whileTrue(new PositionClimber(m_climber, 500, .6));
+                // codriver.leftTrigger().and(codriver.a()).onTrue(new
+                // PositionClimber(m_climber, 10, .6));
 
-                // codriver.b().whileTrue(new PositionClimber(m_climber, 750, .6));
+                // codriver.leftTrigger().and(codriver.b()).onTrue(new
+                // PositionClimber(m_climber, 20, .6));
 
                 codriver.rightTrigger().and(codriver.povDown().negate())
                                 .whileTrue(m_climber.lowerClimberArmsCommand(0.3))
@@ -364,8 +375,7 @@ public class RobotContainer implements Logged {
                 codriver.leftBumper().and(codriver.a())
                                 .onTrue(m_arm.setGoalCommand(ArmConstants.armAngleOnBottomStopBar));
 
-            //    codriver.leftBumper().and(codriver.b()).onTrue(
-                             
+                // codriver.leftBumper().and(codriver.b()).onTrue(
 
                 codriver.leftBumper().and(codriver.povUp())
                                 .onTrue(m_sd.incArmOffsetDegreesCommand(.5));
