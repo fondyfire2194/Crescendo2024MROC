@@ -176,7 +176,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     else
       return topSimRPM;
   }
-
+  @Log.NT(key = "shtrbottomrpm")
   public double getRPMBottom() {
     if (RobotBase.isReal())
       return bottomEncoder.getVelocity();
