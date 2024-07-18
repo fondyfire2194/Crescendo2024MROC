@@ -4,11 +4,15 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.EnumNamingStrategies.CamelCaseStrategy;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.REVPhysicsSim;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -100,6 +104,8 @@ public class Robot extends TimedRobot implements Logged {
 
     DriverStation.startDataLog(DataLogManager.getLog());
 
+     Pathfinding.setPathfinder(new LocalADStar());
+
     FollowPathCommand.warmupCommand().schedule();
 
     // System.gc();
@@ -118,7 +124,7 @@ public class Robot extends TimedRobot implements Logged {
     CommandScheduler.getInstance().run();
 
     m_robotContainer.m_arm.periodicRobot();
-
+    SmartDashboard.putBoolean("TTTTTISRED", AllianceUtil.isRedAlliance());
     // setFileOnly is used to shut off NetworkTables broadcasting for most logging
     // calls.
     // Basing this condition on the connected state of the FMS is a suggestion only.
@@ -270,13 +276,11 @@ public class Robot extends TimedRobot implements Logged {
     // m_robotContainer.m_llv.setTeleopTagFilter(CameraConstants.frontLeftCamera.camname);
     // m_robotContainer.m_llv.setTeleopTagFilter(CameraConstants.frontRightCamera.camname);
 
-
     m_robotContainer.m_swerve.actualstartPose = m_robotContainer.m_swerve.getPose();
 
     // if (RobotBase.isSimulation() || !autoHasRun) {
-    // m_robotContainer.m_swerve.resetPoseEstimator(new Pose2d(8, 1, new
-    // Rotation2d(0)));
-    // m_robotContainer.m_transfer.simnoteatintake = false;
+    //   m_robotContainer.m_swerve.resetPoseEstimator(new Pose2d(0, 0, new Rotation2d(Math.PI)));
+    //   m_robotContainer.m_transfer.simnoteatintake = false;
     // }
     m_robotContainer.m_arm.armMotor.setIdleMode(IdleMode.kBrake);
 

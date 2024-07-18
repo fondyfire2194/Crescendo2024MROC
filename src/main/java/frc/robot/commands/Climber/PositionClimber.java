@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Climber;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimberSubsystem;
 
@@ -17,7 +18,6 @@ public class PositionClimber extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     m_climber = climber;
     m_target = target;
-
     m_speed = speed;
   }
 
@@ -30,9 +30,19 @@ public class PositionClimber extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double positionError = m_target - m_climber.getPositionLeft();
+    double usespeed = m_speed;
+
+    if (positionError < 6)
+      usespeed = m_speed / 2;
+
+    if (positionError < 1)
+      usespeed = m_speed / 4;
+
+
     if (!m_climber.getLeftAtTarget(m_target)) {
-      m_climber.runLeftClimberMotor(m_speed);
-      m_climber.runRightClimberMotor(m_speed);
+      m_climber.runLeftClimberMotor(usespeed);
+      m_climber.runRightClimberMotor(usespeed);
     } else {
       m_climber.stopLeftMotor();
       m_climber.stopRightMotor();

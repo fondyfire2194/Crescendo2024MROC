@@ -8,6 +8,7 @@ import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.CANBus.CANBusStatus;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -40,6 +41,7 @@ import frc.robot.commands.Arm.JogArm;
 import frc.robot.commands.Autos.Autos.SourceAmpAutoCommands;
 import frc.robot.commands.Autos.SubwfrStart.SubwooferAutoCommands;
 import frc.robot.commands.Climber.PositionClimber;
+import frc.robot.commands.Climber.PrepositionForClimb;
 import frc.robot.commands.Drive.AlignTargetOdometry;
 import frc.robot.commands.Drive.AlignToNote;
 import frc.robot.commands.Drive.RotateToAngle;
@@ -54,6 +56,7 @@ import frc.robot.subsystems.LimelightVision;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
+import frc.robot.utils.AllianceUtil;
 import frc.robot.utils.ShootingData;
 import frc.robot.utils.ViewArmShooterByDistance;
 import monologue.Annotations.Log;
@@ -220,10 +223,12 @@ public class RobotContainer implements Logged {
                         canivoreCheck.onTrue(Commands.runOnce(() -> logCanivore()));
 
                         lobshootTrigger = new Trigger(
-                                        () -> m_swerve.isStopped() && m_transfer.noteAtIntake() && m_swerve.aligning
+                                        () -> m_transfer.noteAtIntake() && m_swerve.aligning
                                                         && m_swerve.alignedToTarget && m_arm.getAtSetpoint()
-                                                        && m_shooter.bothAtSpeed()
-                                                        && driver.leftBumper().getAsBoolean());
+                                                        && m_shooter.bothAtSpeed() && driver.leftBumper().getAsBoolean()
+                                                        && m_swerve.getDistanceFromStageEdge() < 4.2
+                                                        && m_swerve.getDistanceFromStageEdge() > 3
+                                                        && m_swerve.getY() < 5);
 
                         lobshootTrigger.onTrue(m_cf.transferNoteToShooterCommand());
                 }
@@ -312,8 +317,10 @@ public class RobotContainer implements Logged {
 
                 driver.x().onTrue(m_shooter.startShooterCommand(3500, 5));
 
-                // driver.a().and(driver.leftTrigger().negate()).and(driver.rightBumper().negate())
-                // .onTrue(m_cf.doAmpShot());
+                driver.a().and(driver.leftTrigger().negate()).and(driver.rightBumper().negate())
+                                .onTrue(
+                                                Commands.parallel(new PositionClimber(m_climber, 10, .6),
+                                                                new PrepositionForClimb(m_swerve, m_cf, 0)));
 
                 driver.povUp().onTrue(m_shooter.increaseRPMCommand(100));
 
@@ -351,11 +358,9 @@ public class RobotContainer implements Logged {
                                 .whileTrue(m_climber.raiseClimberArmsCommand(0.6))
                                 .onFalse(m_climber.stopClimberCommand());
 
-                // codriver.leftTrigger().and(codriver.a()).onTrue(new
-                // PositionClimber(m_climber, 10, .6));
+                codriver.leftTrigger().and(codriver.a()).onTrue(new PositionClimber(m_climber, 10, .6));
 
-                // codriver.leftTrigger().and(codriver.b()).onTrue(new
-                // PositionClimber(m_climber, 20, .6));
+                codriver.leftTrigger().and(codriver.b()).onTrue(new PositionClimber(m_climber, 20, .6));
 
                 codriver.rightTrigger().and(codriver.povDown().negate())
                                 .whileTrue(m_climber.lowerClimberArmsCommand(0.3))

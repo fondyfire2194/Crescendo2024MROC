@@ -331,7 +331,7 @@ public final class Constants {
 
                 public static final double stageHeight = Units.inchesToMeters(90);
                 public static final double stageRadius = 2;
-                
+
                 public static final double speakerSlotHeight = Units.inchesToMeters(80.4375);
 
                 public static final double lobAngleRads = Units.degreesToRadians(50);
@@ -348,6 +348,9 @@ public final class Constants {
 
                 public static final Pose2d stageBlueAlliance = new Pose2d(Units.inchesToMeters(190), FIELD_WIDTH / 2,
                                 Rotation2d.fromDegrees(0.0));// 8 ft high
+
+                public static final Pose2d stageBlueAllianceClimb = new Pose2d(6.17, 4.13,
+                                Rotation2d.fromDegrees(180.0));
 
                 // public static final Pose2d stageRedAlliance = new Pose2d(FIELD_LENGTH -
                 // Units.inchesToMeters(190),
@@ -391,21 +394,6 @@ public final class Constants {
                                 new Pose2d(8., 0.78, new Rotation2d(Units.degreesToRadians(176.09))),
                 };
 
-                // public static final Pose2d centerNote1PickupBlue = new Pose2d(8.26, 7.44,
-                // new Rotation2d(Units.degreesToRadians(193)));// 23.2
-
-                // public static final Pose2d centerNote2PickupBlue = new Pose2d(8.28, 5.79,
-                // new Rotation2d(Units.degreesToRadians(165)));// 23.2
-
-                // public static final Pose2d centerNote3PickupBlue = new Pose2d(8.48, 4.11,
-                // new Rotation2d(Units.degreesToRadians(-156)));// 23.2
-
-                // public static final Pose2d centerNote4PickupBlue = new Pose2d(8.48, 2.43,
-                // new Rotation2d(Units.degreesToRadians(-170)));// 23.2
-
-                // public static final Pose2d centerNote5PickupBlue = new Pose2d(8.5, 0.78,
-                // new Rotation2d(Units.degreesToRadians(-176.09)));
-
                 public static final Pose2d sourceShootBlue = new Pose2d(3.4, 2.7,
                                 new Rotation2d(Units.degreesToRadians(150)));
 
@@ -426,6 +414,36 @@ public final class Constants {
 
                 public static final Pose2d sbwfrStartPose = new Pose2d(1.34, 5.55,
                                 new Rotation2d(Units.degreesToRadians(180)));
+
+                // poses for blue stage climb
+                public static final Pose2d blueSourceCenter = new Pose2d(4, 2.75,
+                                new Rotation2d(Units.degreesToRadians(60)));
+                public static final Pose2d blueSourceSpeaker = new Pose2d(3.06, 2.85,
+                                new Rotation2d(Units.degreesToRadians(60)));
+                public static final Pose2d blueSourceMidfield = new Pose2d(4.49, 2.06,
+                                new Rotation2d(Units.degreesToRadians(60)));
+
+                public static final Pose2d blueAmpCenter = new Pose2d(4, 5.38,
+                                new Rotation2d(Units.degreesToRadians(-60)));
+                public static final Pose2d blueAmpSpeaker = new Pose2d(3.06, 5.33,
+                                new Rotation2d(Units.degreesToRadians(-60)));
+                public static final Pose2d blueAmpMidfield = new Pose2d(4.49, 6.1,
+                                new Rotation2d(Units.degreesToRadians(-60)));
+
+                // poses for red stage climb
+                public static final Pose2d redSourceCenter = new Pose2d(12.66, 2.92,
+                                new Rotation2d(Units.degreesToRadians(120)));
+                public static final Pose2d redSourceSpeaker = new Pose2d(3.06, 2.85,
+                                new Rotation2d(Units.degreesToRadians(60)));
+                public static final Pose2d redSourceMidfield = new Pose2d(4.49, 2.06,
+                                new Rotation2d(Units.degreesToRadians(60)));
+
+                public static final Pose2d redAmpCenter = new Pose2d(12.56, 5.31,
+                                new Rotation2d(Units.degreesToRadians(-120)));
+                public static final Pose2d redAmpSpeaker = new Pose2d(3.06, 5.33,
+                                new Rotation2d(Units.degreesToRadians(-60)));
+                public static final Pose2d redAmpMidfield = new Pose2d(4.49, 6.1,
+                                new Rotation2d(Units.degreesToRadians(-60)));
 
         }
 

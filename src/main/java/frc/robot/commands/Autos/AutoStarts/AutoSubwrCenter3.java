@@ -34,8 +34,8 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
 
                 addCommands(
                                 sac.setsbwrstart(),
-                                // sac.sbwfrShoot(),
-                                sac.sbwfrShootEarly(),
+                                sac.sbwfrShoot(),
+                                // sac.sbwfrShootEarly(),
 
                                 sac.runPathPickupAndShootIfNote(
                                                 pf.pathMaps.get(sbwfrpaths.SubwfrShootToWing2.name()),

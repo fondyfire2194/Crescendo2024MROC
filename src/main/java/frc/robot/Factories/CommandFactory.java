@@ -4,6 +4,7 @@
 
 package frc.robot.Factories;
 
+import java.util.Optional;
 import java.util.Set;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -13,6 +14,8 @@ import com.pathplanner.lib.util.GeometryUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -90,6 +93,7 @@ public class CommandFactory {
         }
 
         public Command autopathfind(Pose2d targetPose, double rotationdelaydistance) {
+                SmartDashboard.putString("TTTTTTTFFFF", targetPose.toString());
                 return AutoBuilder.pathfindToPose(
                                 targetPose,
                                 SwerveConstants.pfConstraints,
@@ -227,7 +231,7 @@ public class CommandFactory {
                                         || m_transfer.simnoteatintake) {
                                 controller.getHID().setRumble(RumbleType.kRightRumble, 1.0);
                                 if (RobotBase.isSimulation())
-                                        SmartDashboard.putString("BUZZ ", "NoteAtIntake");
+                                        SmartDashboard.putString("BUZZ ", "NoteAtIntake");                                        
                         } else
                                 controller.getHID().setRumble(RumbleType.kRightRumble, 0.0);
                 })
@@ -248,6 +252,14 @@ public class CommandFactory {
                         tempPose2d = GeometryUtil.flipFieldPose(startPose);
                 return Commands.runOnce(() -> m_swerve.resetPoseEstimator(tempPose2d));
         }
+        public boolean isRedAlliance() {
+                Optional<Alliance> alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                  return alliance.get() == Alliance.Red;
+                } else {
+                  return false;
+                }
+              }
 
         public Command resetAll() {
                 return Commands.parallel(

@@ -34,10 +34,10 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
 
   public boolean leftMotorConnected;
   public boolean rightMotorConnected;
-  @Log.NT(key = "simarmpositionleft")
-  private double simarmpositionleft;
-  @Log.NT(key = "simarmpositionright")
-  private double simarmpositionright;
+  @Log.NT(key = "simpositionleft")
+  public double simpositionleft;
+  @Log.NT(key = "simpositionright")
+  private double simpositionright;
   @Log.NT(key = "currentspeedleft")
   private double currentSpeedLeft;
   @Log.NT(key = "currentspeedright")
@@ -131,7 +131,7 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
   }
 
   public void runLeftClimberMotor(double speed) {
-    if (getPositionLeft() > 130) {
+    if (getPositionLeft() > 13.0) {
       speed = speed * 0.5;
     }
     currentSpeedLeft = speed;
@@ -140,7 +140,7 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
   }
 
   public void runRightClimberMotor(double speed) {
-    if (getPositionRight() > 130) {
+    if (getPositionRight() > 13.0) {
       speed = speed * 0.5;
     }
     currentSpeedRight = speed;
@@ -154,7 +154,7 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
 
   public void raiseClimber(double speed) {
     runClimberMotors(speed * 0.2);
-    if (getPositionLeft() > 1000) {
+    if (getPositionLeft() > 100.0) {
       runClimberMotors(speed * 0.2);
     } else {
       runClimberMotors(speed);
@@ -194,7 +194,7 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
     if (RobotBase.isReal())
       return climberEncoderLeft.getPosition();
     else
-      return simarmpositionleft;
+      return simpositionleft;
   }
 
   @Log.NT(key = "rightposition")
@@ -202,7 +202,7 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
     if (RobotBase.isReal())
       return climberEncoderRight.getPosition();
     else
-      return simarmpositionright;
+      return simpositionright;
   }
 
   @Log.NT(key = "leftattarget")
@@ -214,7 +214,6 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
   public boolean getRightAtTarget(double target) {
     return getPositionRight() > target;
   }
-
 
   @Log.NT(key = "climberleftstickyfault")
   public int getLeftStickyFaults() {
@@ -260,10 +259,8 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
 
   @Override
   public void simulationPeriodic() {
-    simarmpositionleft += currentSpeedLeft * 6;
-    simarmpositionright += currentSpeedRight * 6;
-    SmartDashboard.putNumber("CLERR", 500 - getPositionLeft());
-    SmartDashboard.putBoolean("CLAT", getPositionLeft() > 500);
-  }
+    simpositionleft += currentSpeedLeft * .2;
+    simpositionright += currentSpeedRight * .2;
 
+  }
 }
