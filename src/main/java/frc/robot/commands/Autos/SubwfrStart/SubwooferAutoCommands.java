@@ -127,14 +127,6 @@ public class SubwooferAutoCommands {
                                 m_cf.doIntake());
         }
 
-        public Command moveAndPickupUsingVision(sbwfrpaths path) {
-                return Commands.parallel(
-                                move(path),
-                                Commands.sequence(
-                                                Commands.waitSeconds(.25),
-                                                m_cf.doIntake()));
-        }
-
         public Command runPathPickupAndShootIfNote(PathPlannerPath path, double aligntolerance) {
                 return Commands.sequence(
                                 Commands.parallel(

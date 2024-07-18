@@ -41,7 +41,7 @@ public class AutoSubwrCenter3 extends SequentialCommandGroup {
                                                 pf.pathMaps.get(sbwfrpaths.SubwfrShootToWing2.name()),
                                                 1),
 
-                                sac.moveAndPickupUsingVision(sbwfrpaths.Wing2ToCenter3),
+                                sac.moveAndPickup(sbwfrpaths.Wing2ToCenter3),
                                 Commands.either(
                                                 sac.sbwfrmoveandshoot(sbwfrpaths.Center3ToSubwfrShoot),
                                                 new RunPPath(swerve, pf.pathMaps
