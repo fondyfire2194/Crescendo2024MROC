@@ -90,7 +90,7 @@ public class AutoFactory {
                 m_transfer = transfer;
                 m_intake = intake;
                 m_shooter = shooter;
-                m_sd=sd;
+                m_sd = sd;
 
                 minsbwfrauto = 1;
                 m_subwfrStartChooser.setDefaultOption("Not Used", 0);
@@ -101,6 +101,7 @@ public class AutoFactory {
                 m_subwfrStartChooser.addOption("W2-C3-SBWFR-W3 SRC", 5);
                 m_subwfrStartChooser.addOption("W2-C3-SBWFR-W1 SRC", 6);
                 m_subwfrStartChooser.addOption("W3-W2-W1-C1", 7);
+                m_subwfrStartChooser.addOption("SetSbwfrOrigin Test Only", 8);
 
                 maxsbwfrauto = 7;
 
@@ -209,6 +210,9 @@ public class AutoFactory {
                         case 7:
                                 return new AutoSubwr5Note(m_cf, m_pf, m_sac, m_swerve, m_intake,
                                                 m_shooter, m_arm, m_sd);
+
+                        case 8:
+                                return m_sac.setsbwrstart();
                         case 11:
                                 return new AutoSourceCompleteV2(m_cf, m_pf, this,
                                                 m_srcac, m_swerve, m_intake, m_transfer, true);

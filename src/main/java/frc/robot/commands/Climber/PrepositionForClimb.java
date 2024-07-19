@@ -26,12 +26,12 @@ public class PrepositionForClimb extends SequentialCommandGroup {
   /** Creates a new PrepositionForClimb. */
   int temp = 0;
 
-  public PrepositionForClimb(SwerveSubsystem swerve, CommandFactory cf, int lcr) {
+  public PrepositionForClimb(SwerveSubsystem swerve, CommandFactory cf, boolean away) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
-        getLoc(swerve),
+        getLoc(swerve,away),
 
         new DeferredCommand(() -> midampsource(swerve, cf), m_requirements),
         new DeferredCommand(() -> cf.autopathfind(swerve.targetPose, 0, 0), m_requirements));
@@ -47,13 +47,24 @@ public class PrepositionForClimb extends SequentialCommandGroup {
         return setTargetPose(swerve, FieldConstants.blueAmpCenter);
       case 2:
         return setTargetPose(swerve, FieldConstants.blueSourceCenter);
-
+      case 5:
+        return setTargetPose(swerve, AllianceUtil.getAlliancePose(FieldConstants.stageBlueAllianceClimb));
+      case 6:
+        return setTargetPose(swerve, FieldConstants.blueAmpMidfield);
+      case 7:
+        return setTargetPose(swerve, FieldConstants.blueSourceMidfield);
       case 10:
         return setTargetPose(swerve, AllianceUtil.getAlliancePose(FieldConstants.stageBlueAllianceClimb));
       case 11:
         return setTargetPose(swerve, FieldConstants.redAmpCenter);
       case 12:
         return setTargetPose(swerve, FieldConstants.redSourceCenter);
+      case 15:
+        return setTargetPose(swerve, AllianceUtil.getAlliancePose(FieldConstants.stageBlueAllianceClimb));
+      case 16:
+        return setTargetPose(swerve, FieldConstants.redAmpMidfield);
+      case 17:
+        return setTargetPose(swerve, FieldConstants.redSourceMidfield);
 
       default:
         return Commands.none();
@@ -62,12 +73,11 @@ public class PrepositionForClimb extends SequentialCommandGroup {
 
   }
 
-
   private Command setTargetPose(SwerveSubsystem swerve, Pose2d pose) {
     return Commands.runOnce(() -> swerve.targetPose = pose);
   }
 
-  private Command getLoc(SwerveSubsystem swerve) {
+  private Command getLoc(SwerveSubsystem swerve, boolean away) {
 
     return new FunctionalCommand(
 
@@ -79,7 +89,8 @@ public class PrepositionForClimb extends SequentialCommandGroup {
             temp = 1;
           if (swerve.getY() < FieldConstants.FIELD_WIDTH / 2 - 2)
             temp = 2;
-
+          if (away)
+            temp += 5;
           Optional<Alliance> ally = DriverStation.getAlliance();
           if (ally.isPresent()) {
             if (ally.get() == Alliance.Red) {

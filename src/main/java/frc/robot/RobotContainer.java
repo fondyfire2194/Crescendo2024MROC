@@ -8,7 +8,6 @@ import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.CANBus.CANBusStatus;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -16,6 +15,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -44,7 +44,6 @@ import frc.robot.commands.Climber.PositionClimber;
 import frc.robot.commands.Climber.PrepositionForClimb;
 import frc.robot.commands.Drive.AlignTargetOdometry;
 import frc.robot.commands.Drive.AlignToNote;
-import frc.robot.commands.Drive.RotateToAngle;
 import frc.robot.commands.Drive.TeleopSwerve;
 import frc.robot.commands.Pathplanner.RunPPath;
 import frc.robot.commands.Test.MovePickupShootTest;
@@ -56,7 +55,6 @@ import frc.robot.subsystems.LimelightVision;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TransferSubsystem;
-import frc.robot.utils.AllianceUtil;
 import frc.robot.utils.ShootingData;
 import frc.robot.utils.ViewArmShooterByDistance;
 import monologue.Annotations.Log;
@@ -106,6 +104,8 @@ public class RobotContainer implements Logged {
         BooleanSupplier keepAngle;
 
         public BooleanSupplier fieldRelative;
+
+        private boolean forceRobotRelative = false;
 
         // private Trigger logShotTrigger;
 
@@ -228,6 +228,8 @@ public class RobotContainer implements Logged {
                                                         && m_shooter.bothAtSpeed() && driver.leftBumper().getAsBoolean()
                                                         && m_swerve.getDistanceFromStageEdge() < 4.2
                                                         && m_swerve.getDistanceFromStageEdge() > 3
+                                                        && Math.abs(m_swerve
+                                                                        .getFieldRelativeSpeeds().vxMetersPerSecond) < 1
                                                         && m_swerve.getY() < 5);
 
                         lobshootTrigger.onTrue(m_cf.transferNoteToShooterCommand());
@@ -247,7 +249,7 @@ public class RobotContainer implements Logged {
 
                 // KEEP IN BUTTON ORDER
 
-                fieldRelative = driver.y().negate().and(driver.rightBumper().negate());
+                fieldRelative = () -> !forceRobotRelative;
 
                 keepAngle = () -> false;
                 // align for speaker shots
@@ -263,16 +265,18 @@ public class RobotContainer implements Logged {
 
                 driver.rightBumper().and(driver.a().negate()).onTrue(
                                 Commands.sequence(
+                                                Commands.runOnce(() -> forceRobotRelative = true),
                                                 m_intake.startIntakeCommand(),
                                                 m_arm.setGoalCommand(ArmConstants.pickupAngleRadians),
                                                 Commands.parallel(
                                                                 new TransferIntakeToSensor(m_transfer, m_intake,
                                                                                 m_swerve, 20),
-                                                                m_cf.rumbleCommand(driver))));
+                                                                m_cf.rumbleCommand(driver))))
+                                .onFalse(Commands.runOnce(() -> forceRobotRelative = false));
 
                 // pick up notes with vision align
                 driver.rightBumper().and(driver.a()).onTrue(
-                                Commands.sequence(
+                                Commands.sequence(Commands.runOnce(() -> forceRobotRelative = true),
                                                 m_arm.setGoalCommand(ArmConstants.pickupAngleRadians),
                                                 Commands.waitUntil(() -> m_arm.getAtSetpoint()),
                                                 m_intake.startIntakeCommand(),
@@ -285,7 +289,8 @@ public class RobotContainer implements Logged {
                                                                                 () -> -driver.getLeftY(),
                                                                                 () -> driver.getLeftX(),
                                                                                 () -> driver.getRightX()),
-                                                                m_cf.rumbleCommand(driver))));
+                                                                m_cf.rumbleCommand(driver))))
+                                .onFalse(Commands.runOnce(() -> forceRobotRelative = false));
 
                 // align with amp corner for lob shots
                 driver.leftBumper().whileTrue(
@@ -297,8 +302,7 @@ public class RobotContainer implements Logged {
                                                                 () -> driver.getRightX(), true),
                                                 m_cf.rumbleCommand(driver),
                                                 m_cf.positionArmRunShooterByDistanceLobShot(false)))
-                                // m_cf.startShooterSpeedCompedCommand(FieldConstants.lobRPM),
-                                // m_arm.setGoalCommand(FieldConstants.lobAngleRads)))
+
                                 .onFalse(
                                                 Commands.parallel(
                                                                 m_shooter.stopShooterCommand(),
@@ -317,20 +321,26 @@ public class RobotContainer implements Logged {
 
                 driver.x().onTrue(m_shooter.startShooterCommand(3500, 5));
 
-                driver.a().and(driver.leftTrigger().negate()).and(driver.rightBumper().negate())
-                                .onTrue(
-                                                Commands.parallel(new PositionClimber(m_climber, 10, .6),
-                                                                new PrepositionForClimb(m_swerve, m_cf, 0)));
+                driver.povUp().onTrue(Commands.parallel(new PositionClimber(m_climber, 10, .6),
+                                new PrepositionForClimb(m_swerve, m_cf, true),
+                                Commands.runOnce(() -> forceRobotRelative = true)));
 
-                driver.povUp().onTrue(m_shooter.increaseRPMCommand(100));
+                driver.povDown().onTrue(Commands.parallel(new PositionClimber(m_climber, 10, .6),
+                                new PrepositionForClimb(m_swerve, m_cf, false),
+                                Commands.runOnce(() -> forceRobotRelative = true)));
 
-                driver.povDown().onTrue(m_shooter.decreaseRPMCommand(100));
+                // driver.povUp().onTrue(m_shooter.increaseRPMCommand(100));
 
-                driver.povRight().onTrue(Commands.runOnce(() -> m_arm.incrementArmAngle(10)));
+                // driver.povDown().onTrue(m_shooter.decreaseRPMCommand(100));
 
-                driver.povLeft().onTrue(Commands.runOnce(() -> m_arm.decrementArmAngle(10)));
+                // driver.povRight().onTrue(Commands.runOnce(() ->
+                // m_arm.incrementArmAngle(10)));
+
+                // driver.povLeft().onTrue(Commands.runOnce(() -> m_arm.decrementArmAngle(10)));
 
                 driver.start().onTrue(Commands.runOnce(() -> m_swerve.zeroGyro()));
+
+                driver.rightStick().or(driver.leftStick()).onTrue(Commands.runOnce(() -> forceRobotRelative = false));
 
                 driver.back().onTrue(
                                 Commands.sequence(
@@ -435,11 +445,11 @@ public class RobotContainer implements Logged {
                 // setup.leftBumper().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(25)));
 
                 setup.povDown().onTrue(
-                                m_arm.setGoalCommand(ArmConstants.armAngleOnBottomStopBar));
+                                new PositionClimber(m_climber, 5, .6));
 
-                setup.povUp().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(25)));
+                setup.povUp().onTrue(new PositionClimber(m_climber, 10, .6));
 
-                setup.leftTrigger().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(30)));
+                setup.leftTrigger().onTrue(new PositionClimber(m_climber, 12, .6));
 
                 setup.rightBumper().onTrue(m_arm.setGoalCommand(Units.degreesToRadians(35)));
 
@@ -461,7 +471,6 @@ public class RobotContainer implements Logged {
         }
 
         private void setDefaultCommands() {
-
                 m_swerve.setDefaultCommand(
                                 new TeleopSwerve(
                                                 m_swerve,
